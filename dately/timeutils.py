@@ -4,8 +4,14 @@ import time
 
 # Import all functions and classes from custom utility modules
 from .utils import *
-from .mold.pyd.Compiled import get_time_fragment as gtf, anytime_regex, timemeridiem_regex, timeboundary_regex, time_only_regex
-
+from .mold.pyd.Compiled import (
+    datetime_regex as datetime_pattern_search, 
+    anytime_regex, 
+    timemeridiem_regex, 
+    timeboundary_regex, 
+    time_only_regex, 
+    get_time_fragment as gtf, 
+)
 
 
 # Define public interface
