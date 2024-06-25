@@ -469,7 +469,7 @@ class DatelyDate:
                 return True
         return False
 
-    def sequence(self, start_date, end_date, to_format='%b %-d, %Y'):
+    def sequence(self, start_date, end_date, to_format=None):
         """
         Generate a sequence of formatted dates between two dates.
 
@@ -477,21 +477,23 @@ class DatelyDate:
             start_date (any): The start date of the sequence, which can be a datetime object or convertible to one.
             end_date (any): The end date of the sequence, which can be a datetime object or convertible to one.
             to_format (str, optional): The format string to use for formatting the dates.
-                Defaults to '%b %-d, %Y'.
+                Defaults to None.
 
         Returns:
             list of str: List of formatted date strings from start to end date inclusive.
         """
+        # Check if the start_date and end_date are valid datetime objects
         if not self._is_datetime(start_date):
-            start_date = self.convert_date(start_date)
+            start_date = self.convert_date(start_date, to_format=to_format)
+        
         if not self._is_datetime(end_date):
-            end_date = self.convert_date(end_date)
-
+            end_date = self.convert_date(end_date, to_format=to_format)
+        
         # Calculate the number of days between the start and end dates
         delta = end_date - start_date
         
         # Generate the list of dates and format them
-        date_list = [(start_date + datetime.timedelta(days=i)).strftime(to_format) for i in range(delta.days + 1)]
+        date_list = [self.convert_date(start_date + datetime.timedelta(days=i), to_format=to_format) for i in range(delta.days + 1)]
         
         return date_list
 
