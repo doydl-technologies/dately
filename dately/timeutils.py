@@ -27,6 +27,7 @@ __all__ = [
     "strTime",
     "stripTimeZone",
     "validate_timezone",
+    "validate_date",
 ]
 
 def get_time():
