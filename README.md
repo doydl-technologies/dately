@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/cedricmoorejr/dately/blob/main/dately/assets/dately_logo.png" alt="Dately Logo" width="500"/>
+</p>
+
 # Date Parsing and Component Extraction Module
 
 This module, currently available only for the Windows operating system, provides comprehensive functionalities for date parsing, detection, extraction, and conversion. It efficiently handles both individual dates and large arrays of dates, offering robust support for various input types including date strings, datetime objects, pandas Series, and NumPy arrays. The core functionalities include converting dates to specified formats or datetime objects, as well as parsing, detecting, and extracting date components. Leveraging regular expressions and NumPy, it processes dates with high speed and accuracy, ensuring consistent date handling across different platforms, specifically optimized for Windows environments.
