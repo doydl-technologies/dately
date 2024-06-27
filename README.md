@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/dately_logo.png" alt="Dately Logo" style="max-width: 100%; height: auto;"/>
+  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/dately_logo.png" alt="Dately Logo" width="500"/>
 </p>
 
 
