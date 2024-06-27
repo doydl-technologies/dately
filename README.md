@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/dately_logo.png" alt="Dately Logo" width="500"/>
+  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/dately_logo.png" alt="Dately Logo" style="max-width: 100%; height: auto;"/>
 </p>
 
 
-### Dately Library: Comprehensive Date and Time Handling in Python
+Dately Library: Comprehensive Date and Time Handling in Python
 
 The `dately` module is a comprehensive library designed for advanced date and time manipulation. It offers extensive capabilities to handle various date and time formats, ensuring compatibility across different systems and data structures. The module provides tools for validating, extracting, and transforming date and time information with a focus on performance and accuracy.
 
