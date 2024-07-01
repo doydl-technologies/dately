@@ -611,7 +611,8 @@ class ZoneInfoManager:
 
         result = self.__Request.make_request(params)
         if 'response' in result:
-            return result['response']
+            data = result['response']
+            return [zone for zone in data['zones'] if zone['zoneName'] in [from_zone, to_zone]]
         else:
             return result
 
