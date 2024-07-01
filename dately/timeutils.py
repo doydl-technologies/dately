@@ -10,6 +10,10 @@ from .mold.pyd.Compiled import (
     timemeridiem_regex, 
     timeboundary_regex, 
     time_only_regex, 
+    timezone_offset_regex,
+    timezone_abbreviation_regex,
+    iana_timezone_identifier_regex,
+    full_timezone_name_regex,
     get_time_fragment as gtf, 
 )
 
@@ -28,6 +32,7 @@ __all__ = [
     "stripTimeZone",
     "validate_timezone",
     "validate_date",
+    "remove_marker",
 ]
 
 def get_time():
@@ -166,6 +171,23 @@ def stripTimeZone(datetime_string):
             return cleanstr(new_str)
 
     return datetime_string
+    
+def remove_marker(text):
+    """
+    Removes ' NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET' from the provided text.
+
+    Parameters:
+    text (str): The input text from which the marker needs to be removed.
+
+    Returns:
+    str: The cleaned text without the specified marker.
+    """
+    # Define the regex pattern to match the specific string to remove
+    pattern = re.compile(r" NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET")
+
+    # Replace the matched string with nothing (effectively removing it)
+    cleaned_text = pattern.sub("", text)
+    return cleaned_text
 
 def make_datetime_string(date_string):
     """
