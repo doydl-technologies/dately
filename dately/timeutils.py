@@ -332,8 +332,14 @@ def replace_time_by_position(datetime_string, component, new_value):
                     or if the microsecond value is not a digit.
     """
     # Validate and adjust the new value based on the component
+##    if component == 'hour':
+##        new_value = str(max(0, min(23, int(new_value))))
     if component == 'hour':
-        new_value = str(max(0, min(23, int(new_value))))
+        # Check if the input is a string and starts with a '0' 
+        if isinstance(new_value, str) and new_value.startswith("0") and len(new_value) == 2 and int(new_value) < 10:
+            new_value = "0" + str(max(0, min(23, int(new_value))))
+        else:
+            new_value = str(max(0, min(23, int(new_value))))   
     elif component in ['minute', 'second']:
         new_value = str(max(0, min(59, int(new_value)))).zfill(2)
     elif component == 'microsecond':
