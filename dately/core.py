@@ -274,7 +274,7 @@ class DatelyDate:
             if tzinfo is not None:
                 datetime_string = replace_time_by_position(datetime_string, 'tzinfo', tzinfo)
             if time_indicator == '':
-                return stripTimeIndicator(datetime_string)
+                return remove_marker(stripTimeIndicator(datetime_string))
 
             if time_indicator is not None and time_indicator.upper() in ["AM", "PM"]:
                 timepattern = anytime_regex
@@ -286,7 +286,7 @@ class DatelyDate:
             result = validate_timezone(datetime_string)
             if result[0] is False:
                 raise ValueError
-            return datetime_string
+            return remove_marker(datetime_string)
 
         if isinstance(datetime_strings, str):
             return process(datetime_strings)
