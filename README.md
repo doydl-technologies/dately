@@ -4,6 +4,10 @@
 
 ### Dately Library: Comprehensive Date and Time Handling in Python
 
+[![Downloads](https://static.pepy.tech/badge/dately)](https://pepy.tech/project/dately)
+[![Downloads](https://static.pepy.tech/badge/dately/month)](https://pepy.tech/project/dately)
+[![Downloads](https://static.pepy.tech/badge/dately/week)](https://pepy.tech/project/dately)
+
 The `dately` module is a comprehensive library designed for advanced date and time manipulation. It offers extensive capabilities to handle various date and time formats, ensuring compatibility across different systems and data structures. The module provides tools for validating, extracting, and transforming date and time information with a focus on performance and accuracy.
 
 #### Table of Contents
