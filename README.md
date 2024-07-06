@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/dately_logo.png" alt="Dately Logo" width="500"/>
+  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/py_dately_logo.png" alt="Dately Logo" width="700"/>
 </p>
 
 ### Dately Library: Comprehensive Date and Time Handling in Python
