@@ -1,5 +1,6 @@
 import base64
 import re
+from .webutils import is_valid_url
 
 # Define public interface
 __all__ = ['Shift']
@@ -33,7 +34,6 @@ class Shift:
                 return True
             except ValueError:
                 return False
-	
     class format:
         @staticmethod
         def chr(data, call):
@@ -42,6 +42,9 @@ class Shift:
                 if not Shift.bool.bytes(data):
                     return base64.b64encode(data.encode('utf-8')).decode('utf-8')
             elif call == "format":
+                if is_valid_url(data):
+                    return data
+                
                 if Shift.bool.bytes(data):
                     try:
                         return base64.b64decode(data).decode('utf-8')
@@ -64,14 +67,15 @@ class Shift:
                         raise ValueError("Invalid binary input.")
             else:
                 raise ValueError("Invalid call. Use 'unformat' or 'format'.")               
-
     class type:
         @staticmethod
-        def map(s, add, ret=False):
+        def map(s, add=None, ret=False):
             formatted = Shift.format.chr(s, "format")
-            str_formatted = f'{formatted}{add}'
+            str_formatted = formatted
+            if add:
+                str_formatted += add
             unformatted = Shift.format.chr(str_formatted, "unformat")
+
             if ret:
                 return Shift.format.chr(unformatted, "format")
             return unformatted
-
