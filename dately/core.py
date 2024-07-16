@@ -2,7 +2,9 @@ import threading
 
 def import_specific_parts():
     global TimeZoner
+    global Holidate
     from .timezone import TimeZoner
+    from .holiday import Holidate
 
 thread = threading.Thread(target=import_specific_parts)
 thread.start()
@@ -528,5 +530,6 @@ dt = DatelyDate()
 # Define public interface
 __all__ = [
     "dt",
-    "TimeZoner"
+    "TimeZoner",
+    "Holidate",
 ]
