@@ -1,7 +1,35 @@
 import time
+import os
+import json
+import pandas as pd
+import sys
 
 # Define public interface
-__all__ = ['UnixTime']
+__all__ = ['UnixTime', 'DataImport']
+
+class VersionChecker:
+    @staticmethod
+    def check_version_sufficiency(minimum_required_version='3.9'):
+        """
+        Checks if the current version is at least the minimum required version.
+
+        Args:
+            minimum_required_version (str): The minimum version required.
+
+        Returns:
+            bool: True if the current version is equal to or greater than the minimum required version, False otherwise.
+        """
+        current_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+        parts_current = list(map(int, current_version.split('.')))
+        parts_minimum = list(map(int, minimum_required_version.split('.')))
+
+        # Normalize the length of version lists by padding with zeros
+        max_length = max(len(parts_current), len(parts_minimum))
+        parts_current.extend([0] * (max_length - len(parts_current)))
+        parts_minimum.extend([0] * (max_length - len(parts_minimum)))
+
+        return parts_current >= parts_minimum
+
 
 class UnixTime:
     @staticmethod
@@ -58,3 +86,40 @@ class UnixTime:
             return int(value) if value is not None else default
         except (TypeError, ValueError):
             return default
+
+class DataImport:
+    @staticmethod
+    def load_holiday_urls():
+        current_dir = os.path.dirname(__file__)
+        json_file_path = os.path.join(current_dir, 'sources', 'holiday.json')
+        with open(json_file_path, 'r', encoding='utf-8') as file:
+            loaded_data = json.load(file)
+        return loaded_data
+
+    @staticmethod
+    def load_timezone_data():
+        """
+        Load timezone data from a JSON file and recreate the timezone objects depending on the Python version.
+        """
+        current_dir = os.path.dirname(__file__)
+        json_file_path = os.path.join(current_dir, 'sources', 'timezone_data.json')
+        
+        with open(json_file_path, 'r') as file:
+            loaded_data = json.load(file)
+        if VersionChecker.check_version_sufficiency():
+            from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+            for entry in loaded_data:
+                try:
+                    entry['timezone_object'] = ZoneInfo(entry['zoneName'])
+                except ZoneInfoNotFoundError:
+                    print(f"Unknown timezone: {entry['zoneName']}")
+                    entry['timezone_object'] = None
+        else:
+            import pytz
+            for entry in loaded_data:
+                try:
+                    entry['timezone_object'] = pytz.timezone(entry['zoneName'])
+                except pytz.UnknownTimeZoneError:
+                    print(f"Unknown timezone: {entry['zoneName']}")
+                    entry['timezone_object'] = None
+        return loaded_data
