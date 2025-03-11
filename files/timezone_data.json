@@ -1,0 +1,4178 @@
+[
+    {
+        "countryCode": "CI",
+        "countryName": "Ivory Coast",
+        "zoneName": "Africa/Abidjan",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GH",
+        "countryName": "Ghana",
+        "zoneName": "Africa/Accra",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ET",
+        "countryName": "Ethiopia",
+        "zoneName": "Africa/Addis_Ababa",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "DZ",
+        "countryName": "Algeria",
+        "zoneName": "Africa/Algiers",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ER",
+        "countryName": "Eritrea",
+        "zoneName": "Africa/Asmara",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ML",
+        "countryName": "Mali",
+        "zoneName": "Africa/Bamako",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CF",
+        "countryName": "Central African Republic",
+        "zoneName": "Africa/Bangui",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GM",
+        "countryName": "Gambia",
+        "zoneName": "Africa/Banjul",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GW",
+        "countryName": "Guinea-Bissau",
+        "zoneName": "Africa/Bissau",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MW",
+        "countryName": "Malawi",
+        "zoneName": "Africa/Blantyre",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CG",
+        "countryName": "Republic of the Congo",
+        "zoneName": "Africa/Brazzaville",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BI",
+        "countryName": "Burundi",
+        "zoneName": "Africa/Bujumbura",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "EG",
+        "countryName": "Egypt",
+        "zoneName": "Africa/Cairo",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MA",
+        "countryName": "Morocco",
+        "zoneName": "Africa/Casablanca",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+00:00",
+        "Abbreviation (STD)": "+01:00",
+        "Abbreviation (DST)": "+00:00"
+    },
+    {
+        "countryCode": "ES",
+        "countryName": "Spain",
+        "zoneName": "Africa/Ceuta",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "GN",
+        "countryName": "Guinea",
+        "zoneName": "Africa/Conakry",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SN",
+        "countryName": "Senegal",
+        "zoneName": "Africa/Dakar",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TZ",
+        "countryName": "Tanzania",
+        "zoneName": "Africa/Dar_es_Salaam",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "DJ",
+        "countryName": "Djibouti",
+        "zoneName": "Africa/Djibouti",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CM",
+        "countryName": "Cameroon",
+        "zoneName": "Africa/Douala",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MA",
+        "countryName": "Morocco",
+        "zoneName": "Africa/El_Aaiun",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+00:00",
+        "Abbreviation (STD)": "+01:00",
+        "Abbreviation (DST)": "+00:00"
+    },
+    {
+        "countryCode": "SL",
+        "countryName": "Sierra Leone",
+        "zoneName": "Africa/Freetown",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BW",
+        "countryName": "Botswana",
+        "zoneName": "Africa/Gaborone",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ZW",
+        "countryName": "Zimbabwe",
+        "zoneName": "Africa/Harare",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ZA",
+        "countryName": "South Africa",
+        "zoneName": "Africa/Johannesburg",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "SAST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SS",
+        "countryName": "South Sudan",
+        "zoneName": "Africa/Juba",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UG",
+        "countryName": "Uganda",
+        "zoneName": "Africa/Kampala",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SD",
+        "countryName": "Sudan",
+        "zoneName": "Africa/Khartoum",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RW",
+        "countryName": "Rwanda",
+        "zoneName": "Africa/Kigali",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CD",
+        "countryName": "Democratic Republic of the Congo",
+        "zoneName": "Africa/Kinshasa",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NG",
+        "countryName": "Nigeria",
+        "zoneName": "Africa/Lagos",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GA",
+        "countryName": "Gabon",
+        "zoneName": "Africa/Libreville",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TG",
+        "countryName": "Togo",
+        "zoneName": "Africa/Lome",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AO",
+        "countryName": "Angola",
+        "zoneName": "Africa/Luanda",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CD",
+        "countryName": "Democratic Republic of the Congo",
+        "zoneName": "Africa/Lubumbashi",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ZM",
+        "countryName": "Zambia",
+        "zoneName": "Africa/Lusaka",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GQ",
+        "countryName": "Equatorial Guinea",
+        "zoneName": "Africa/Malabo",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MZ",
+        "countryName": "Mozambique",
+        "zoneName": "Africa/Maputo",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LS",
+        "countryName": "Lesotho",
+        "zoneName": "Africa/Maseru",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "SAST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SZ",
+        "countryName": "Eswatini",
+        "zoneName": "Africa/Mbabane",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "SAST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SO",
+        "countryName": "Somalia",
+        "zoneName": "Africa/Mogadishu",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LR",
+        "countryName": "Liberia",
+        "zoneName": "Africa/Monrovia",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KE",
+        "countryName": "Kenya",
+        "zoneName": "Africa/Nairobi",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TD",
+        "countryName": "Chad",
+        "zoneName": "Africa/Ndjamena",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NE",
+        "countryName": "Niger",
+        "zoneName": "Africa/Niamey",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MR",
+        "countryName": "Mauritania",
+        "zoneName": "Africa/Nouakchott",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BF",
+        "countryName": "Burkina Faso",
+        "zoneName": "Africa/Ouagadougou",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BJ",
+        "countryName": "Benin",
+        "zoneName": "Africa/Porto-Novo",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ST",
+        "countryName": "Sao Tome and Principe",
+        "zoneName": "Africa/Sao_Tome",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LY",
+        "countryName": "Libya",
+        "zoneName": "Africa/Tripoli",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TN",
+        "countryName": "Tunisia",
+        "zoneName": "Africa/Tunis",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NA",
+        "countryName": "Namibia",
+        "zoneName": "Africa/Windhoek",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Adak",
+        "Offset": "-09:00",
+        "UTC offset (STD)": "-10:00",
+        "UTC offset (DST)": "-09:00",
+        "Abbreviation (STD)": "HST",
+        "Abbreviation (DST)": "HDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Anchorage",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "AI",
+        "countryName": "Anguilla",
+        "zoneName": "America/Anguilla",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AG",
+        "countryName": "Antigua and Barbuda",
+        "zoneName": "America/Antigua",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Araguaina",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Buenos_Aires",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Catamarca",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Cordoba",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Jujuy",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/La_Rioja",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Mendoza",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Rio_Gallegos",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Salta",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/San_Juan",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/San_Luis",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Tucuman",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AR",
+        "countryName": "Argentina",
+        "zoneName": "America/Argentina/Ushuaia",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AW",
+        "countryName": "Aruba",
+        "zoneName": "America/Aruba",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PY",
+        "countryName": "Paraguay",
+        "zoneName": "America/Asuncion",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": "-03:00"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Atikokan",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Bahia",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Bahia_Banderas",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BB",
+        "countryName": "Barbados",
+        "zoneName": "America/Barbados",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Belem",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BZ",
+        "countryName": "Belize",
+        "zoneName": "America/Belize",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Blanc-Sablon",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Boa_Vista",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CO",
+        "countryName": "Colombia",
+        "zoneName": "America/Bogota",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Boise",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": "-06:00",
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": "MDT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Cambridge_Bay",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": "-06:00",
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": "MDT"
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Campo_Grande",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Cancun",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "VE",
+        "countryName": "Venezuela",
+        "zoneName": "America/Caracas",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GF",
+        "countryName": "French Guiana",
+        "zoneName": "America/Cayenne",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KY",
+        "countryName": "Cayman Islands",
+        "zoneName": "America/Cayman",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Chicago",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Chihuahua",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Ciudad_Juarez",
+        "Offset": "-06:00"
+    },
+    {
+        "countryCode": "CR",
+        "countryName": "Costa Rica",
+        "zoneName": "America/Costa_Rica",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Creston",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Cuiaba",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CW",
+        "countryName": "Curacao",
+        "zoneName": "America/Curacao",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GL",
+        "countryName": "Greenland",
+        "zoneName": "America/Danmarkshavn",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Dawson",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Dawson_Creek",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Denver",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": "-06:00",
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": "MDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Detroit",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "DM",
+        "countryName": "Dominica",
+        "zoneName": "America/Dominica",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Edmonton",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": "-06:00",
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": "MDT"
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Eirunepe",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SV",
+        "countryName": "El Salvador",
+        "zoneName": "America/El_Salvador",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Fort_Nelson",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Fortaleza",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Glace_Bay",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Goose_Bay",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "TC",
+        "countryName": "Turks and Caicos Islands",
+        "zoneName": "America/Grand_Turk",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "GD",
+        "countryName": "Grenada",
+        "zoneName": "America/Grenada",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GP",
+        "countryName": "Guadeloupe",
+        "zoneName": "America/Guadeloupe",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GT",
+        "countryName": "Guatemala",
+        "zoneName": "America/Guatemala",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "EC",
+        "countryName": "Ecuador",
+        "zoneName": "America/Guayaquil",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GY",
+        "countryName": "Guyana",
+        "zoneName": "America/Guyana",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Halifax",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "CU",
+        "countryName": "Cuba",
+        "zoneName": "America/Havana",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Hermosillo",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Indianapolis",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Knox",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Marengo",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Petersburg",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Tell_City",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Vevay",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Vincennes",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Indiana/Winamac",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Inuvik",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": "-06:00",
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": "MDT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Iqaluit",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "JM",
+        "countryName": "Jamaica",
+        "zoneName": "America/Jamaica",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Juneau",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Kentucky/Louisville",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Kentucky/Monticello",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "BQ",
+        "countryName": "Bonaire, Saint Eustatius and Saba",
+        "zoneName": "America/Kralendijk",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BO",
+        "countryName": "Bolivia",
+        "zoneName": "America/La_Paz",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PE",
+        "countryName": "Peru",
+        "zoneName": "America/Lima",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Los_Angeles",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-08:00",
+        "UTC offset (DST)": "-07:00",
+        "Abbreviation (STD)": "PST",
+        "Abbreviation (DST)": "PDT"
+    },
+    {
+        "countryCode": "SX",
+        "countryName": "Sint Maarten",
+        "zoneName": "America/Lower_Princes",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Maceio",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NI",
+        "countryName": "Nicaragua",
+        "zoneName": "America/Managua",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Manaus",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MF",
+        "countryName": "Saint Martin",
+        "zoneName": "America/Marigot",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MQ",
+        "countryName": "Martinique",
+        "zoneName": "America/Martinique",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Matamoros",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Mazatlan",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Menominee",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Merida",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Metlakatla",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Mexico_City",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PM",
+        "countryName": "Saint Pierre and Miquelon",
+        "zoneName": "America/Miquelon",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": "-02:00",
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": "-02:00"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Moncton",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Monterrey",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UY",
+        "countryName": "Uruguay",
+        "zoneName": "America/Montevideo",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MS",
+        "countryName": "Montserrat",
+        "zoneName": "America/Montserrat",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BS",
+        "countryName": "Bahamas",
+        "zoneName": "America/Nassau",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/New_York",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Nome",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Noronha",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-02:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/North_Dakota/Beulah",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/North_Dakota/Center",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/North_Dakota/New_Salem",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "GL",
+        "countryName": "Greenland",
+        "zoneName": "America/Nuuk",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": "-02:00",
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": "-02:00"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Ojinaga",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PA",
+        "countryName": "Panama",
+        "zoneName": "America/Panama",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SR",
+        "countryName": "Suriname",
+        "zoneName": "America/Paramaribo",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Phoenix",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "HT",
+        "countryName": "Haiti",
+        "zoneName": "America/Port-au-Prince",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "TT",
+        "countryName": "Trinidad and Tobago",
+        "zoneName": "America/Port_of_Spain",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Porto_Velho",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PR",
+        "countryName": "Puerto Rico",
+        "zoneName": "America/Puerto_Rico",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CL",
+        "countryName": "Chile",
+        "zoneName": "America/Punta_Arenas",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Rankin_Inlet",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Recife",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Regina",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Resolute",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Rio_Branco",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Santarem",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CL",
+        "countryName": "Chile",
+        "zoneName": "America/Santiago",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "-04:00",
+        "Abbreviation (DST)": "-03:00"
+    },
+    {
+        "countryCode": "DO",
+        "countryName": "Dominican Republic",
+        "zoneName": "America/Santo_Domingo",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BR",
+        "countryName": "Brazil",
+        "zoneName": "America/Sao_Paulo",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GL",
+        "countryName": "Greenland",
+        "zoneName": "America/Scoresbysund",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-01:00",
+        "UTC offset (DST)": "+00:00",
+        "Abbreviation (STD)": "-01:00",
+        "Abbreviation (DST)": "+00:00"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Sitka",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "BL",
+        "countryName": "Saint Barthelemy",
+        "zoneName": "America/St_Barthelemy",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/St_Johns",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-03:30",
+        "UTC offset (DST)": "-02:30",
+        "Abbreviation (STD)": "NST",
+        "Abbreviation (DST)": "NDT"
+    },
+    {
+        "countryCode": "KN",
+        "countryName": "Saint Kitts and Nevis",
+        "zoneName": "America/St_Kitts",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LC",
+        "countryName": "Saint Lucia",
+        "zoneName": "America/St_Lucia",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "VI",
+        "countryName": "U.S. Virgin Islands",
+        "zoneName": "America/St_Thomas",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "VC",
+        "countryName": "Saint Vincent and the Grenadines",
+        "zoneName": "America/St_Vincent",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Swift_Current",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "HN",
+        "countryName": "Honduras",
+        "zoneName": "America/Tegucigalpa",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GL",
+        "countryName": "Greenland",
+        "zoneName": "America/Thule",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "MX",
+        "countryName": "Mexico",
+        "zoneName": "America/Tijuana",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-08:00",
+        "UTC offset (DST)": "-07:00",
+        "Abbreviation (STD)": "PST",
+        "Abbreviation (DST)": "PDT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Toronto",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-05:00",
+        "UTC offset (DST)": "-04:00",
+        "Abbreviation (STD)": "EST",
+        "Abbreviation (DST)": "EDT"
+    },
+    {
+        "countryCode": "VG",
+        "countryName": "British Virgin Islands",
+        "zoneName": "America/Tortola",
+        "Offset": "-04:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Vancouver",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-08:00",
+        "UTC offset (DST)": "-07:00",
+        "Abbreviation (STD)": "PST",
+        "Abbreviation (DST)": "PDT"
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Whitehorse",
+        "Offset": "-07:00",
+        "UTC offset (STD)": "-07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CA",
+        "countryName": "Canada",
+        "zoneName": "America/Winnipeg",
+        "Offset": "-05:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": "CDT"
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "America/Yakutat",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": "-08:00",
+        "Abbreviation (STD)": "AKST",
+        "Abbreviation (DST)": "AKDT"
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Casey",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Davis",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/DumontDUrville",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Antarctica/Macquarie",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": "+11:00",
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": "AEDT"
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Mawson",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/McMurdo",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": "+13:00",
+        "Abbreviation (STD)": "NZST",
+        "Abbreviation (DST)": "NZDT"
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Palmer",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Rothera",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Syowa",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Troll",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "+00:00",
+        "Abbreviation (DST)": "+02:00"
+    },
+    {
+        "countryCode": "AQ",
+        "countryName": "Antarctica",
+        "zoneName": "Antarctica/Vostok",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SJ",
+        "countryName": "Svalbard and Jan Mayen",
+        "zoneName": "Arctic/Longyearbyen",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "YE",
+        "countryName": "Yemen",
+        "zoneName": "Asia/Aden",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Almaty",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "JO",
+        "countryName": "Jordan",
+        "zoneName": "Asia/Amman",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Anadyr",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Aqtau",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Aqtobe",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TM",
+        "countryName": "Turkmenistan",
+        "zoneName": "Asia/Ashgabat",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Atyrau",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "IQ",
+        "countryName": "Iraq",
+        "zoneName": "Asia/Baghdad",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BH",
+        "countryName": "Bahrain",
+        "zoneName": "Asia/Bahrain",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AZ",
+        "countryName": "Azerbaijan",
+        "zoneName": "Asia/Baku",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TH",
+        "countryName": "Thailand",
+        "zoneName": "Asia/Bangkok",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Barnaul",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LB",
+        "countryName": "Lebanon",
+        "zoneName": "Asia/Beirut",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "KG",
+        "countryName": "Kyrgyzstan",
+        "zoneName": "Asia/Bishkek",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BN",
+        "countryName": "Brunei",
+        "zoneName": "Asia/Brunei",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Chita",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MN",
+        "countryName": "Mongolia",
+        "zoneName": "Asia/Choibalsan",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LK",
+        "countryName": "Sri Lanka",
+        "zoneName": "Asia/Colombo",
+        "Offset": "+05:30",
+        "UTC offset (STD)": "+05:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SY",
+        "countryName": "Syria",
+        "zoneName": "Asia/Damascus",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BD",
+        "countryName": "Bangladesh",
+        "zoneName": "Asia/Dhaka",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TL",
+        "countryName": "Timor Leste",
+        "zoneName": "Asia/Dili",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AE",
+        "countryName": "United Arab Emirates",
+        "zoneName": "Asia/Dubai",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TJ",
+        "countryName": "Tajikistan",
+        "zoneName": "Asia/Dushanbe",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CY",
+        "countryName": "Cyprus",
+        "zoneName": "Asia/Famagusta",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "PS",
+        "countryName": "Palestinian Territory",
+        "zoneName": "Asia/Gaza",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "PS",
+        "countryName": "Palestinian Territory",
+        "zoneName": "Asia/Hebron",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "VN",
+        "countryName": "Vietnam",
+        "zoneName": "Asia/Ho_Chi_Minh",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "HK",
+        "countryName": "Hong Kong",
+        "zoneName": "Asia/Hong_Kong",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "HKT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MN",
+        "countryName": "Mongolia",
+        "zoneName": "Asia/Hovd",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Irkutsk",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ID",
+        "countryName": "Indonesia",
+        "zoneName": "Asia/Jakarta",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WIB",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ID",
+        "countryName": "Indonesia",
+        "zoneName": "Asia/Jayapura",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WIT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "IL",
+        "countryName": "Israel",
+        "zoneName": "Asia/Jerusalem",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "IST",
+        "Abbreviation (DST)": "IDT"
+    },
+    {
+        "countryCode": "AF",
+        "countryName": "Afghanistan",
+        "zoneName": "Asia/Kabul",
+        "Offset": "+04:30",
+        "UTC offset (STD)": "+04:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Kamchatka",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PK",
+        "countryName": "Pakistan",
+        "zoneName": "Asia/Karachi",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "PKT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NP",
+        "countryName": "Nepal",
+        "zoneName": "Asia/Kathmandu",
+        "Offset": "+05:45",
+        "UTC offset (STD)": "+05:45",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:45",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Khandyga",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "IN",
+        "countryName": "India",
+        "zoneName": "Asia/Kolkata",
+        "Offset": "+05:30",
+        "UTC offset (STD)": "+05:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "IST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Krasnoyarsk",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MY",
+        "countryName": "Malaysia",
+        "zoneName": "Asia/Kuala_Lumpur",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MY",
+        "countryName": "Malaysia",
+        "zoneName": "Asia/Kuching",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KW",
+        "countryName": "Kuwait",
+        "zoneName": "Asia/Kuwait",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MO",
+        "countryName": "Macao",
+        "zoneName": "Asia/Macau",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Magadan",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ID",
+        "countryName": "Indonesia",
+        "zoneName": "Asia/Makassar",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WITA",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PH",
+        "countryName": "Philippines",
+        "zoneName": "Asia/Manila",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "PST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "OM",
+        "countryName": "Oman",
+        "zoneName": "Asia/Muscat",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CY",
+        "countryName": "Cyprus",
+        "zoneName": "Asia/Nicosia",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Novokuznetsk",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Novosibirsk",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Omsk",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Oral",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KH",
+        "countryName": "Cambodia",
+        "zoneName": "Asia/Phnom_Penh",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "ID",
+        "countryName": "Indonesia",
+        "zoneName": "Asia/Pontianak",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "WIB",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KP",
+        "countryName": "North Korea",
+        "zoneName": "Asia/Pyongyang",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "KST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "QA",
+        "countryName": "Qatar",
+        "zoneName": "Asia/Qatar",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Qostanay",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan",
+        "zoneName": "Asia/Qyzylorda",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SA",
+        "countryName": "Saudi Arabia",
+        "zoneName": "Asia/Riyadh",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Sakhalin",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UZ",
+        "countryName": "Uzbekistan",
+        "zoneName": "Asia/Samarkand",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KR",
+        "countryName": "South Korea",
+        "zoneName": "Asia/Seoul",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "KST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CN",
+        "countryName": "China",
+        "zoneName": "Asia/Shanghai",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SG",
+        "countryName": "Singapore",
+        "zoneName": "Asia/Singapore",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Srednekolymsk",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TW",
+        "countryName": "Taiwan",
+        "zoneName": "Asia/Taipei",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "CST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UZ",
+        "countryName": "Uzbekistan",
+        "zoneName": "Asia/Tashkent",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GE",
+        "countryName": "Georgia",
+        "zoneName": "Asia/Tbilisi",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "IR",
+        "countryName": "Iran",
+        "zoneName": "Asia/Tehran",
+        "Offset": "+03:30",
+        "UTC offset (STD)": "+03:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "BT",
+        "countryName": "Bhutan",
+        "zoneName": "Asia/Thimphu",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "JP",
+        "countryName": "Japan",
+        "zoneName": "Asia/Tokyo",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "JST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Tomsk",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MN",
+        "countryName": "Mongolia",
+        "zoneName": "Asia/Ulaanbaatar",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CN",
+        "countryName": "China",
+        "zoneName": "Asia/Urumqi",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Ust-Nera",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LA",
+        "countryName": "Laos",
+        "zoneName": "Asia/Vientiane",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Vladivostok",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Yakutsk",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MM",
+        "countryName": "Myanmar",
+        "zoneName": "Asia/Yangon",
+        "Offset": "+06:30",
+        "UTC offset (STD)": "+06:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Asia/Yekaterinburg",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AM",
+        "countryName": "Armenia",
+        "zoneName": "Asia/Yerevan",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PT",
+        "countryName": "Portugal",
+        "zoneName": "Atlantic/Azores",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "-01:00",
+        "UTC offset (DST)": "+00:00",
+        "Abbreviation (STD)": "-01:00",
+        "Abbreviation (DST)": "+00:00"
+    },
+    {
+        "countryCode": "BM",
+        "countryName": "Bermuda",
+        "zoneName": "Atlantic/Bermuda",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-04:00",
+        "UTC offset (DST)": "-03:00",
+        "Abbreviation (STD)": "AST",
+        "Abbreviation (DST)": "ADT"
+    },
+    {
+        "countryCode": "ES",
+        "countryName": "Spain",
+        "zoneName": "Atlantic/Canary",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "WET",
+        "Abbreviation (DST)": "WEST"
+    },
+    {
+        "countryCode": "CV",
+        "countryName": "Cabo Verde",
+        "zoneName": "Atlantic/Cape_Verde",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-01:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-01:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "FO",
+        "countryName": "Faroe Islands",
+        "zoneName": "Atlantic/Faroe",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "WET",
+        "Abbreviation (DST)": "WEST"
+    },
+    {
+        "countryCode": "PT",
+        "countryName": "Portugal",
+        "zoneName": "Atlantic/Madeira",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "WET",
+        "Abbreviation (DST)": "WEST"
+    },
+    {
+        "countryCode": "IS",
+        "countryName": "Iceland",
+        "zoneName": "Atlantic/Reykjavik",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GS",
+        "countryName": "South Georgia and the South Sandwich Islands",
+        "zoneName": "Atlantic/South_Georgia",
+        "Offset": "-14:00",
+        "UTC offset (STD)": "-02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-02:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SH",
+        "countryName": "Saint Helena",
+        "zoneName": "Atlantic/St_Helena",
+        "Offset": "+00:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "FK",
+        "countryName": "Falkland Islands",
+        "zoneName": "Atlantic/Stanley",
+        "Offset": "-03:00",
+        "UTC offset (STD)": "-03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Adelaide",
+        "Offset": "+09:30",
+        "UTC offset (STD)": "+09:30",
+        "UTC offset (DST)": "+10:30",
+        "Abbreviation (STD)": "ACST",
+        "Abbreviation (DST)": "ACDT"
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Brisbane",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Broken_Hill",
+        "Offset": "+09:30",
+        "UTC offset (STD)": "+09:30",
+        "UTC offset (DST)": "+10:30",
+        "Abbreviation (STD)": "ACST",
+        "Abbreviation (DST)": "ACDT"
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Darwin",
+        "Offset": "+09:30",
+        "UTC offset (STD)": "+09:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "ACST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Eucla",
+        "Offset": "+08:45",
+        "UTC offset (STD)": "+08:45",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+08:45",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Hobart",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": "+11:00",
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": "AEDT"
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Lindeman",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Lord_Howe",
+        "Offset": "+10:30",
+        "UTC offset (STD)": "+10:30",
+        "UTC offset (DST)": "+11:00",
+        "Abbreviation (STD)": "+10:30",
+        "Abbreviation (DST)": "+11:00"
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Melbourne",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": "+11:00",
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": "AEDT"
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Perth",
+        "Offset": "+08:00",
+        "UTC offset (STD)": "+08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "AWST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AU",
+        "countryName": "Australia",
+        "zoneName": "Australia/Sydney",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": "+11:00",
+        "Abbreviation (STD)": "AEST",
+        "Abbreviation (DST)": "AEDT"
+    },
+    {
+        "countryCode": "NL",
+        "countryName": "Netherlands",
+        "zoneName": "Europe/Amsterdam",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "AD",
+        "countryName": "Andorra",
+        "zoneName": "Europe/Andorra",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Astrakhan",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GR",
+        "countryName": "Greece",
+        "zoneName": "Europe/Athens",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "RS",
+        "countryName": "Serbia",
+        "zoneName": "Europe/Belgrade",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "zoneName": "Europe/Berlin",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "SK",
+        "countryName": "Slovakia",
+        "zoneName": "Europe/Bratislava",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "BE",
+        "countryName": "Belgium",
+        "zoneName": "Europe/Brussels",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RO",
+        "countryName": "Romania",
+        "zoneName": "Europe/Bucharest",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "HU",
+        "countryName": "Hungary",
+        "zoneName": "Europe/Budapest",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "DE",
+        "countryName": "Germany",
+        "zoneName": "Europe/Busingen",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "MD",
+        "countryName": "Moldova",
+        "zoneName": "Europe/Chisinau",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "DK",
+        "countryName": "Denmark",
+        "zoneName": "Europe/Copenhagen",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "IE",
+        "countryName": "Ireland",
+        "zoneName": "Europe/Dublin",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+00:00",
+        "Abbreviation (STD)": "IST",
+        "Abbreviation (DST)": "GMT"
+    },
+    {
+        "countryCode": "GI",
+        "countryName": "Gibraltar",
+        "zoneName": "Europe/Gibraltar",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "GG",
+        "countryName": "Guernsey",
+        "zoneName": "Europe/Guernsey",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": "BST"
+    },
+    {
+        "countryCode": "FI",
+        "countryName": "Finland",
+        "zoneName": "Europe/Helsinki",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "IM",
+        "countryName": "Isle of Man",
+        "zoneName": "Europe/Isle_of_Man",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": "BST"
+    },
+    {
+        "countryCode": "TR",
+        "countryName": "Turkey",
+        "zoneName": "Europe/Istanbul",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "JE",
+        "countryName": "Jersey",
+        "zoneName": "Europe/Jersey",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": "BST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Kaliningrad",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Kirov",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UA",
+        "countryName": "Ukraine",
+        "zoneName": "Europe/Kyiv",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "PT",
+        "countryName": "Portugal",
+        "zoneName": "Europe/Lisbon",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "WET",
+        "Abbreviation (DST)": "WEST"
+    },
+    {
+        "countryCode": "SI",
+        "countryName": "Slovenia",
+        "zoneName": "Europe/Ljubljana",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "GB",
+        "countryName": "United Kingdom",
+        "zoneName": "Europe/London",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+00:00",
+        "UTC offset (DST)": "+01:00",
+        "Abbreviation (STD)": "GMT",
+        "Abbreviation (DST)": "BST"
+    },
+    {
+        "countryCode": "LU",
+        "countryName": "Luxembourg",
+        "zoneName": "Europe/Luxembourg",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "ES",
+        "countryName": "Spain",
+        "zoneName": "Europe/Madrid",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "MT",
+        "countryName": "Malta",
+        "zoneName": "Europe/Malta",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "AX",
+        "countryName": "Aland Islands",
+        "zoneName": "Europe/Mariehamn",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "BY",
+        "countryName": "Belarus",
+        "zoneName": "Europe/Minsk",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MC",
+        "countryName": "Monaco",
+        "zoneName": "Europe/Monaco",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Moscow",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MSK",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NO",
+        "countryName": "Norway",
+        "zoneName": "Europe/Oslo",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "FR",
+        "countryName": "France",
+        "zoneName": "Europe/Paris",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "ME",
+        "countryName": "Montenegro",
+        "zoneName": "Europe/Podgorica",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "CZ",
+        "countryName": "Czechia",
+        "zoneName": "Europe/Prague",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "LV",
+        "countryName": "Latvia",
+        "zoneName": "Europe/Riga",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "IT",
+        "countryName": "Italy",
+        "zoneName": "Europe/Rome",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Samara",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SM",
+        "countryName": "San Marino",
+        "zoneName": "Europe/San_Marino",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "BA",
+        "countryName": "Bosnia and Herzegovina",
+        "zoneName": "Europe/Sarajevo",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Saratov",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UA",
+        "countryName": "Ukraine",
+        "zoneName": "Europe/Simferopol",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "MSK",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MK",
+        "countryName": "North Macedonia",
+        "zoneName": "Europe/Skopje",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "BG",
+        "countryName": "Bulgaria",
+        "zoneName": "Europe/Sofia",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "SE",
+        "countryName": "Sweden",
+        "zoneName": "Europe/Stockholm",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "EE",
+        "countryName": "Estonia",
+        "zoneName": "Europe/Tallinn",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "AL",
+        "countryName": "Albania",
+        "zoneName": "Europe/Tirane",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Ulyanovsk",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "LI",
+        "countryName": "Liechtenstein",
+        "zoneName": "Europe/Vaduz",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "VA",
+        "countryName": "Vatican",
+        "zoneName": "Europe/Vatican",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "AT",
+        "countryName": "Austria",
+        "zoneName": "Europe/Vienna",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "LT",
+        "countryName": "Lithuania",
+        "zoneName": "Europe/Vilnius",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+02:00",
+        "UTC offset (DST)": "+03:00",
+        "Abbreviation (STD)": "EET",
+        "Abbreviation (DST)": "EEST"
+    },
+    {
+        "countryCode": "RU",
+        "countryName": "Russia",
+        "zoneName": "Europe/Volgograd",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+03:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PL",
+        "countryName": "Poland",
+        "zoneName": "Europe/Warsaw",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "HR",
+        "countryName": "Croatia",
+        "zoneName": "Europe/Zagreb",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "CH",
+        "countryName": "Switzerland",
+        "zoneName": "Europe/Zurich",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+01:00",
+        "UTC offset (DST)": "+02:00",
+        "Abbreviation (STD)": "CET",
+        "Abbreviation (DST)": "CEST"
+    },
+    {
+        "countryCode": "MG",
+        "countryName": "Madagascar",
+        "zoneName": "Indian/Antananarivo",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "IO",
+        "countryName": "British Indian Ocean Territory",
+        "zoneName": "Indian/Chagos",
+        "Offset": "+06:00",
+        "UTC offset (STD)": "+06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CX",
+        "countryName": "Christmas Island",
+        "zoneName": "Indian/Christmas",
+        "Offset": "+07:00",
+        "UTC offset (STD)": "+07:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+07:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CC",
+        "countryName": "Cocos Islands",
+        "zoneName": "Indian/Cocos",
+        "Offset": "+06:30",
+        "UTC offset (STD)": "+06:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+06:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KM",
+        "countryName": "Comoros",
+        "zoneName": "Indian/Comoro",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TF",
+        "countryName": "French Southern Territories",
+        "zoneName": "Indian/Kerguelen",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SC",
+        "countryName": "Seychelles",
+        "zoneName": "Indian/Mahe",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MV",
+        "countryName": "Maldives",
+        "zoneName": "Indian/Maldives",
+        "Offset": "+05:00",
+        "UTC offset (STD)": "+05:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+05:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MU",
+        "countryName": "Mauritius",
+        "zoneName": "Indian/Mauritius",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "YT",
+        "countryName": "Mayotte",
+        "zoneName": "Indian/Mayotte",
+        "Offset": "+03:00",
+        "UTC offset (STD)": "+03:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "EAT",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "RE",
+        "countryName": "Reunion",
+        "zoneName": "Indian/Reunion",
+        "Offset": "+04:00",
+        "UTC offset (STD)": "+04:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+04:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "WS",
+        "countryName": "Samoa",
+        "zoneName": "Pacific/Apia",
+        "Offset": "+13:00",
+        "UTC offset (STD)": "+13:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+13:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "zoneName": "Pacific/Auckland",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": "+13:00",
+        "Abbreviation (STD)": "NZST",
+        "Abbreviation (DST)": "NZDT"
+    },
+    {
+        "countryCode": "PG",
+        "countryName": "Papua New Guinea",
+        "zoneName": "Pacific/Bougainville",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NZ",
+        "countryName": "New Zealand",
+        "zoneName": "Pacific/Chatham",
+        "Offset": "+12:45",
+        "UTC offset (STD)": "+12:45",
+        "UTC offset (DST)": "+13:45",
+        "Abbreviation (STD)": "+12:45",
+        "Abbreviation (DST)": "+13:45"
+    },
+    {
+        "countryCode": "FM",
+        "countryName": "Micronesia",
+        "zoneName": "Pacific/Chuuk",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CL",
+        "countryName": "Chile",
+        "zoneName": "Pacific/Easter",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": "-05:00",
+        "Abbreviation (STD)": "-06:00",
+        "Abbreviation (DST)": "-05:00"
+    },
+    {
+        "countryCode": "VU",
+        "countryName": "Vanuatu",
+        "zoneName": "Pacific/Efate",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TK",
+        "countryName": "Tokelau",
+        "zoneName": "Pacific/Fakaofo",
+        "Offset": "+13:00",
+        "UTC offset (STD)": "+13:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+13:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "FJ",
+        "countryName": "Fiji",
+        "zoneName": "Pacific/Fiji",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TV",
+        "countryName": "Tuvalu",
+        "zoneName": "Pacific/Funafuti",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "EC",
+        "countryName": "Ecuador",
+        "zoneName": "Pacific/Galapagos",
+        "Offset": "-06:00",
+        "UTC offset (STD)": "-06:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-06:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PF",
+        "countryName": "French Polynesia",
+        "zoneName": "Pacific/Gambier",
+        "Offset": "-09:00",
+        "UTC offset (STD)": "-09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "SB",
+        "countryName": "Solomon Islands",
+        "zoneName": "Pacific/Guadalcanal",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "GU",
+        "countryName": "Guam",
+        "zoneName": "Pacific/Guam",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": null,
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "US",
+        "countryName": "United States",
+        "zoneName": "Pacific/Honolulu",
+        "Offset": "-10:00",
+        "UTC offset (STD)": "-10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "HST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KI",
+        "countryName": "Kiribati",
+        "zoneName": "Pacific/Kanton",
+        "Offset": "+13:00",
+        "UTC offset (STD)": "+13:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+13:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KI",
+        "countryName": "Kiribati",
+        "zoneName": "Pacific/Kiritimati",
+        "Offset": "+14:00",
+        "UTC offset (STD)": "+14:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+14:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "FM",
+        "countryName": "Micronesia",
+        "zoneName": "Pacific/Kosrae",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MH",
+        "countryName": "Marshall Islands",
+        "zoneName": "Pacific/Kwajalein",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MH",
+        "countryName": "Marshall Islands",
+        "zoneName": "Pacific/Majuro",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PF",
+        "countryName": "French Polynesia",
+        "zoneName": "Pacific/Marquesas",
+        "Offset": "-09:30",
+        "UTC offset (STD)": "-09:30",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-09:30",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UM",
+        "countryName": "United States Minor Outlying Islands",
+        "zoneName": "Pacific/Midway",
+        "Offset": "-11:00",
+        "UTC offset (STD)": "-11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "SST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NR",
+        "countryName": "Nauru",
+        "zoneName": "Pacific/Nauru",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NU",
+        "countryName": "Niue",
+        "zoneName": "Pacific/Niue",
+        "Offset": "-11:00",
+        "UTC offset (STD)": "-11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "NF",
+        "countryName": "Norfolk Island",
+        "zoneName": "Pacific/Norfolk",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": "+12:00",
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": "+12:00"
+    },
+    {
+        "countryCode": "NC",
+        "countryName": "New Caledonia",
+        "zoneName": "Pacific/Noumea",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "AS",
+        "countryName": "American Samoa",
+        "zoneName": "Pacific/Pago_Pago",
+        "Offset": "-11:00",
+        "UTC offset (STD)": "-11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "SST",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PW",
+        "countryName": "Palau",
+        "zoneName": "Pacific/Palau",
+        "Offset": "+09:00",
+        "UTC offset (STD)": "+09:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+09:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PN",
+        "countryName": "Pitcairn",
+        "zoneName": "Pacific/Pitcairn",
+        "Offset": "-08:00",
+        "UTC offset (STD)": "-08:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-08:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "FM",
+        "countryName": "Micronesia",
+        "zoneName": "Pacific/Pohnpei",
+        "Offset": "+11:00",
+        "UTC offset (STD)": "+11:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+11:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PG",
+        "countryName": "Papua New Guinea",
+        "zoneName": "Pacific/Port_Moresby",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "CK",
+        "countryName": "Cook Islands",
+        "zoneName": "Pacific/Rarotonga",
+        "Offset": "-10:00",
+        "UTC offset (STD)": "-10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "MP",
+        "countryName": "Northern Mariana Islands",
+        "zoneName": "Pacific/Saipan",
+        "Offset": "+10:00",
+        "UTC offset (STD)": "+10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": null,
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "PF",
+        "countryName": "French Polynesia",
+        "zoneName": "Pacific/Tahiti",
+        "Offset": "-10:00",
+        "UTC offset (STD)": "-10:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "-10:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "KI",
+        "countryName": "Kiribati",
+        "zoneName": "Pacific/Tarawa",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "TO",
+        "countryName": "Tonga",
+        "zoneName": "Pacific/Tongatapu",
+        "Offset": "+13:00",
+        "UTC offset (STD)": "+13:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+13:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "UM",
+        "countryName": "United States Minor Outlying Islands",
+        "zoneName": "Pacific/Wake",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    },
+    {
+        "countryCode": "WF",
+        "countryName": "Wallis and Futuna",
+        "zoneName": "Pacific/Wallis",
+        "Offset": "+12:00",
+        "UTC offset (STD)": "+12:00",
+        "UTC offset (DST)": null,
+        "Abbreviation (STD)": "+12:00",
+        "Abbreviation (DST)": null
+    }
+]
