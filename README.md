@@ -29,7 +29,6 @@
     - [Overview](#overview)
     - [Basic Usage](#basic-usage)
     - [Phrase Examples](#phrase-examples)
-    - [Pre-tokenized Mode](#pre-tokenized-mode)
     - [Customizing Week Start](#customizing-week-start)
       
 #### Why Choose dately?
@@ -441,18 +440,6 @@ dtly.parse("last 5 weekends")
 | `"middle of last year"`          | `datetime.date(2023, 7, 1)`  |
 | `"start of the 2nd week of May"` | `(2024-05-06, 2024-05-12)`   |
 
----
-
-### Pre-tokenized Mode
-
-You can bypass text processing and pass in your own list of normalized tokens:
-
-```python
-import dately as dtly 
-
-dtly.parse(["first", "monday", "of", "july"])
-# → datetime.date(2024, 7, 1)
-```
 
 ---
 
