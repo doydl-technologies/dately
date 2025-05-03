@@ -7,28 +7,28 @@ from libc.stdlib cimport free  # Import free to release allocated memory
 from cython cimport unicode, boundscheck, wraparound
 from cpython cimport array
 
-cdef extern from "root_dir_search.h":
-    char* find_directory(const char *start_path, const char *dir_name)
+##cdef extern from "root_dir_search.h":
+##    char* find_directory(const char *start_path, const char *dir_name)
+##
+##def get_directory_path(directory_name):
+##    script_dir = os.path.dirname(os.path.abspath(__file__))
+##    directory_path_c = find_directory(script_dir.encode('utf-8'), directory_name.encode('utf-8'))
+##    if directory_path_c:
+##        directory_path = directory_path_c.decode('utf-8')
+##        free(directory_path_c)  # Free the allocated memory
+##        return directory_path
+##    else:
+##        raise EnvironmentError(f"{directory_name} directory not found.")
+##
+### Find the dately path
+##dately_path = get_directory_path("dately_")
+##if dately_path:
+##    sys.path.append(dately_path)
+##else:
+##    raise EnvironmentError("dately directory not found.")
 
-def get_directory_path(directory_name):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    directory_path_c = find_directory(script_dir.encode('utf-8'), directory_name.encode('utf-8'))
-    if directory_path_c:
-        directory_path = directory_path_c.decode('utf-8')
-        free(directory_path_c)  # Free the allocated memory
-        return directory_path
-    else:
-        raise EnvironmentError(f"{directory_name} directory not found.")
 
-# Find the dately path
-dately_path = get_directory_path("dately")
-if dately_path:
-    sys.path.append(dately_path)
-else:
-    raise EnvironmentError("dately directory not found.")
-
-from mold.pyd.time_zones import time_zones_dict
-
+from .time_zones import time_zones_dict
 
 
 
@@ -80,12 +80,18 @@ full_names_pattern = r'\b(' + '|'.join(full_names) + r')\b'
 # Define the regex patterns in a dictionary
 regex_patterns = {
     "timemeridiem": r'\s*\b(AM|PM)\b\s*',
-    # Purpose: Matches a time string in the format HH:MM:SS or HH:MM:SS.microseconds.
-    "timeonly": r'(?P<hours>\d{1,2}):(?P<minutes>\d{2}):(?P<seconds>\d{2})(?:\.(?P<microseconds>\d+))?',
+    "timeonly": r'(?P<hours>\d{1,2}):(?P<minutes>\d{2})(?::(?P<seconds>\d{2})(?:\.(?P<microseconds>\d+))?)?',    
     "timezone_offset": r'(?<!\d)[+-]?(?:\d{1,2}(?::\d{1,2})?|\d{3,4})(?!\d)',
     "iana_timezone_identifier": r'\b[A-Za-z_]+/[A-Za-z_]+\b',
+    # "anytime": (
+    #     r"(?<!\d)(\d{1,2}:\d{2}:\d{2}|\d{6})"
+    #     r"(?:\.\d{1,6})?"
+    #     r"(?:\s*[AP]M)?"
+    #     r"(?:\s*(?:[+-]\d{2}:?\d{2}|[+-]\d{4}|[A-Z]{3,4}|Z))?"
+    #     r"(?=\s|$)"
+    # ),
     "anytime": (
-        r"(?<!\d)(\d{1,2}:\d{2}:\d{2}|\d{6})"
+        r"(?<!\d)(\d{1,2}:\d{2}(?::\d{2})?|\d{6})"
         r"(?:\.\d{1,6})?"
         r"(?:\s*[AP]M)?"
         r"(?:\s*(?:[+-]\d{2}:?\d{2}|[+-]\d{4}|[A-Z]{3,4}|Z))?"
@@ -184,3 +190,12 @@ __all__ = [
     'timezone_abbreviation_regex',
     'full_timezone_name_regex',
 ]
+
+
+
+
+
+
+
+
+

@@ -12,7 +12,7 @@
         "name": "Compiled",
         "sources": [
             "Compiled.pyx",
-            "dately_search_impl.c"
+            "root_dir_search_impl.c"
         ]
     },
     "module_name": "Compiled"
@@ -1569,7 +1569,7 @@ struct __pyx_opt_args_7cpython_11contextvars_get_value_no_default {
   PyObject *default_value;
 };
 
-/* "Compiled.pyx":146
+/* "Compiled.pyx":154
  * timeplus_regex = get_pattern("timeplus")
  * 
  * cdef class cRegexps:             # <<<<<<<<<<<<<<
@@ -2710,7 +2710,6 @@ static const char __pyx_k_d_1_2[] = "\\d{1,2}";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_utf_8[] = "utf-8";
 static const char __pyx_k_append[] = "append";
-static const char __pyx_k_dately[] = "dately";
 static const char __pyx_k_enable[] = "enable";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_import[] = "__import__";
@@ -2735,6 +2734,7 @@ static const char __pyx_k_timeplus[] = "timeplus";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_component[] = "component";
 static const char __pyx_k_d_d_1_2_S[] = "(?<!\\d)(\\d{1,2}:\\S.*)";
+static const char __pyx_k_dately_[] = "dately_";
 static const char __pyx_k_full_name[] = "full_name";
 static const char __pyx_k_isenabled[] = "isenabled";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
@@ -2824,9 +2824,9 @@ static const char __pyx_k_P_hour24_0_9_1_0_9_2_0_3_d_1_2[] = "(?P<hour24>(?:[0-9
 static const char __pyx_k_P_hour24_d_1_2_0_0_9_1_0_9_2_0[] = "(?P<hour24>(?:\\d{1,2}|0?[0-9]|1[0-9]|2[0-3]))";
 static const char __pyx_k_b_d_1_2_d_2_Z_b_d_2_d_2_b_A_Za[] = "\\b\\d{1,2}(:\\d{2})?Z\\b|[\\+\\-]\\d{2}:?\\d{2}|\\b[A-Za-z]+/[A-Za-z_]+\\b|\\bAM\\b|\\bPM\\b";
 static const char __pyx_k_d_1_2_d_2_d_2_d_6_d_1_6_s_AP_M[] = "(\\d{1,2}:\\d{2}:\\d{2}|\\d{6})(?:\\.\\d{1,6})?(?:\\s*[AP]M)?(?:\\s*(?:[+-]\\d{2}:?\\d{2}|[+-]\\d{4}|[A-Z]{3,4}|Z))?";
-static const char __pyx_k_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP[] = "(?<!\\d)(\\d{1,2}:\\d{2}:\\d{2}|\\d{6})(?:\\.\\d{1,6})?(?:\\s*[AP]M)?(?:\\s*(?:[+-]\\d{2}:?\\d{2}|[+-]\\d{4}|[A-Z]{3,4}|Z))?(?=\\s|$)";
+static const char __pyx_k_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP[] = "(?<!\\d)(\\d{1,2}:\\d{2}(?::\\d{2})?|\\d{6})(?:\\.\\d{1,6})?(?:\\s*[AP]M)?(?:\\s*(?:[+-]\\d{2}:?\\d{2}|[+-]\\d{4}|[A-Z]{3,4}|Z))?(?=\\s|$)";
 static const char __pyx_k_iana_timezone_identifier_regex[] = "iana_timezone_identifier_regex";
-static const char __pyx_k_P_hours_d_1_2_P_minutes_d_2_P_s[] = "(?P<hours>\\d{1,2}):(?P<minutes>\\d{2}):(?P<seconds>\\d{2})(?:\\.(?P<microseconds>\\d+))?";
+static const char __pyx_k_P_hours_d_1_2_P_minutes_d_2_P_s[] = "(?P<hours>\\d{1,2}):(?P<minutes>\\d{2})(?::(?P<seconds>\\d{2})(?:\\.(?P<microseconds>\\d+))?)?";
 static const char __pyx_k_P_timezone_d_2_0_9_2_A_Za_z_s_A[] = "(?P<timezone>(?:[\\+\\-]\\d{2}:[0-9]{2}|[A-Za-z\\s]+|[A-Za-z]{2,4}|UTC|[\\+\\-]\\d{2}:?\\d{2}))";
 static const char __pyx_k_P_weekday_Mon_Tue_Wed_Thu_Fri_S[] = "(?P<weekday>Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
 static const char __pyx_k_P_weekday_Monday_Tuesday_Wednes[] = "(?P<weekday>Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)";
@@ -3053,9 +3053,9 @@ typedef struct {
   PyObject *__pyx_kp_u_d_d_1_2_S;
   PyObject *__pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d;
   PyObject *__pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP;
-  PyObject *__pyx_n_u_dately;
   PyObject *__pyx_kp_u_dately_directory_not_found;
   PyObject *__pyx_n_s_dately_path;
+  PyObject *__pyx_n_u_dately_;
   PyObject *__pyx_n_s_datetime;
   PyObject *__pyx_n_u_datetime_hour;
   PyObject *__pyx_n_u_datetime_microsecond;
@@ -3309,9 +3309,9 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_kp_u_d_d_1_2_S);
   Py_CLEAR(clear_module_state->__pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d);
   Py_CLEAR(clear_module_state->__pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP);
-  Py_CLEAR(clear_module_state->__pyx_n_u_dately);
   Py_CLEAR(clear_module_state->__pyx_kp_u_dately_directory_not_found);
   Py_CLEAR(clear_module_state->__pyx_n_s_dately_path);
+  Py_CLEAR(clear_module_state->__pyx_n_u_dately_);
   Py_CLEAR(clear_module_state->__pyx_n_s_datetime);
   Py_CLEAR(clear_module_state->__pyx_n_u_datetime_hour);
   Py_CLEAR(clear_module_state->__pyx_n_u_datetime_microsecond);
@@ -3543,9 +3543,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_kp_u_d_d_1_2_S);
   Py_VISIT(traverse_module_state->__pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d);
   Py_VISIT(traverse_module_state->__pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP);
-  Py_VISIT(traverse_module_state->__pyx_n_u_dately);
   Py_VISIT(traverse_module_state->__pyx_kp_u_dately_directory_not_found);
   Py_VISIT(traverse_module_state->__pyx_n_s_dately_path);
+  Py_VISIT(traverse_module_state->__pyx_n_u_dately_);
   Py_VISIT(traverse_module_state->__pyx_n_s_datetime);
   Py_VISIT(traverse_module_state->__pyx_n_u_datetime_hour);
   Py_VISIT(traverse_module_state->__pyx_n_u_datetime_microsecond);
@@ -3881,9 +3881,9 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_kp_u_d_d_1_2_S __pyx_mstate_global->__pyx_kp_u_d_d_1_2_S
 #define __pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d __pyx_mstate_global->__pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d
 #define __pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP __pyx_mstate_global->__pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP
-#define __pyx_n_u_dately __pyx_mstate_global->__pyx_n_u_dately
 #define __pyx_kp_u_dately_directory_not_found __pyx_mstate_global->__pyx_kp_u_dately_directory_not_found
 #define __pyx_n_s_dately_path __pyx_mstate_global->__pyx_n_s_dately_path
+#define __pyx_n_u_dately_ __pyx_mstate_global->__pyx_n_u_dately_
 #define __pyx_n_s_datetime __pyx_mstate_global->__pyx_n_s_datetime
 #define __pyx_n_u_datetime_hour __pyx_mstate_global->__pyx_n_u_datetime_hour
 #define __pyx_n_u_datetime_microsecond __pyx_mstate_global->__pyx_n_u_datetime_microsecond
@@ -5305,7 +5305,7 @@ static PyObject *__pyx_pf_8Compiled_get_directory_path(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 
-/* "Compiled.pyx":67
+/* "Compiled.pyx":66
  * }
  * 
  * cpdef object datetime(unicode fmt):             # <<<<<<<<<<<<<<
@@ -5339,7 +5339,7 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("datetime", 1);
 
-  /* "Compiled.pyx":68
+  /* "Compiled.pyx":67
  * 
  * cpdef object datetime(unicode fmt):
  *     cdef unicode regex = fmt             # <<<<<<<<<<<<<<
@@ -5349,7 +5349,7 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
   __Pyx_INCREF(__pyx_v_fmt);
   __pyx_v_regex = __pyx_v_fmt;
 
-  /* "Compiled.pyx":70
+  /* "Compiled.pyx":69
  *     cdef unicode regex = fmt
  *     cdef unicode key, value
  *     for key, value in __datetime_named_group_patterns__.items():             # <<<<<<<<<<<<<<
@@ -5359,9 +5359,9 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
   __pyx_t_2 = 0;
   if (unlikely(__pyx_v_8Compiled___datetime_named_group_patterns__ == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 70, __pyx_L1_error)
+    __PYX_ERR(0, 69, __pyx_L1_error)
   }
-  __pyx_t_5 = __Pyx_dict_iterator(__pyx_v_8Compiled___datetime_named_group_patterns__, 1, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_dict_iterator(__pyx_v_8Compiled___datetime_named_group_patterns__, 1, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_1);
   __pyx_t_1 = __pyx_t_5;
@@ -5369,17 +5369,17 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_5, &__pyx_t_6, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 70, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GOTREF(__pyx_t_6);
-    if (!(likely(PyUnicode_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None) || __Pyx_RaiseUnexpectedTypeError("unicode", __pyx_t_5))) __PYX_ERR(0, 70, __pyx_L1_error)
-    if (!(likely(PyUnicode_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None) || __Pyx_RaiseUnexpectedTypeError("unicode", __pyx_t_6))) __PYX_ERR(0, 70, __pyx_L1_error)
+    if (!(likely(PyUnicode_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None) || __Pyx_RaiseUnexpectedTypeError("unicode", __pyx_t_5))) __PYX_ERR(0, 69, __pyx_L1_error)
+    if (!(likely(PyUnicode_CheckExact(__pyx_t_6))||((__pyx_t_6) == Py_None) || __Pyx_RaiseUnexpectedTypeError("unicode", __pyx_t_6))) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_key, ((PyObject*)__pyx_t_5));
     __pyx_t_5 = 0;
     __Pyx_XDECREF_SET(__pyx_v_value, ((PyObject*)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "Compiled.pyx":71
+    /* "Compiled.pyx":70
  *     cdef unicode key, value
  *     for key, value in __datetime_named_group_patterns__.items():
  *         regex = regex.replace(key, value)             # <<<<<<<<<<<<<<
@@ -5388,16 +5388,16 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
  */
     if (unlikely(__pyx_v_regex == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "replace");
-      __PYX_ERR(0, 71, __pyx_L1_error)
+      __PYX_ERR(0, 70, __pyx_L1_error)
     }
-    __pyx_t_6 = PyUnicode_Replace(__pyx_v_regex, __pyx_v_key, __pyx_v_value, -1L); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_6 = PyUnicode_Replace(__pyx_v_regex, __pyx_v_key, __pyx_v_value, -1L); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF_SET(__pyx_v_regex, ((PyObject*)__pyx_t_6));
     __pyx_t_6 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "Compiled.pyx":72
+  /* "Compiled.pyx":71
  *     for key, value in __datetime_named_group_patterns__.items():
  *         regex = regex.replace(key, value)
  *     return re.compile(u'^' + regex + u'$')             # <<<<<<<<<<<<<<
@@ -5405,14 +5405,14 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
  * # Create regex patterns for timezone abbreviations and full timezone names
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_compile); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_compile); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_kp_u_, __pyx_v_regex); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_kp_u_, __pyx_v_regex); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_8 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_6, __pyx_kp_u__2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_6, __pyx_kp_u__2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -5434,7 +5434,7 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_4, 1+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -5442,7 +5442,7 @@ static PyObject *__pyx_f_8Compiled_datetime(PyObject *__pyx_v_fmt, CYTHON_UNUSED
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "Compiled.pyx":67
+  /* "Compiled.pyx":66
  * }
  * 
  * cpdef object datetime(unicode fmt):             # <<<<<<<<<<<<<<
@@ -5520,12 +5520,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 66, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "datetime") < 0)) __PYX_ERR(0, 67, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "datetime") < 0)) __PYX_ERR(0, 66, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -5536,7 +5536,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("datetime", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 67, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("datetime", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 66, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5550,7 +5550,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_fmt), (&PyUnicode_Type), 1, "fmt", 1))) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_fmt), (&PyUnicode_Type), 1, "fmt", 1))) __PYX_ERR(0, 66, __pyx_L1_error)
   __pyx_r = __pyx_pf_8Compiled_2datetime(__pyx_self, __pyx_v_fmt);
 
   /* function exit code */
@@ -5577,7 +5577,7 @@ static PyObject *__pyx_pf_8Compiled_2datetime(CYTHON_UNUSED PyObject *__pyx_self
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("datetime", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8Compiled_datetime(__pyx_v_fmt, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8Compiled_datetime(__pyx_v_fmt, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5594,7 +5594,7 @@ static PyObject *__pyx_pf_8Compiled_2datetime(CYTHON_UNUSED PyObject *__pyx_self
   return __pyx_r;
 }
 
-/* "Compiled.pyx":117
+/* "Compiled.pyx":125
  * 
  * # Function to compile the regex patterns
  * cpdef dict compile_regex_patterns():             # <<<<<<<<<<<<<<
@@ -5623,19 +5623,19 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compile_regex_patterns", 1);
 
-  /* "Compiled.pyx":118
+  /* "Compiled.pyx":126
  * # Function to compile the regex patterns
  * cpdef dict compile_regex_patterns():
  *     cdef dict compiled_patterns = {}             # <<<<<<<<<<<<<<
  *     for key, pattern in regex_patterns.items():
  *         compiled_patterns[key] = re.compile(pattern, re.IGNORECASE)
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_compiled_patterns = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Compiled.pyx":119
+  /* "Compiled.pyx":127
  * cpdef dict compile_regex_patterns():
  *     cdef dict compiled_patterns = {}
  *     for key, pattern in regex_patterns.items():             # <<<<<<<<<<<<<<
@@ -5643,13 +5643,13 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
  *     return compiled_patterns
  */
   __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_regex_patterns); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_regex_patterns); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (unlikely(__pyx_t_5 == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 127, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(__pyx_t_5, 0, __pyx_n_s_items, (&__pyx_t_3), (&__pyx_t_4)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_XDECREF(__pyx_t_1);
@@ -5658,7 +5658,7 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
   while (1) {
     __pyx_t_7 = __Pyx_dict_iter_next(__pyx_t_1, __pyx_t_3, &__pyx_t_2, &__pyx_t_6, &__pyx_t_5, NULL, __pyx_t_4);
     if (unlikely(__pyx_t_7 == 0)) break;
-    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 127, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_6);
@@ -5666,21 +5666,21 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
     __Pyx_XDECREF_SET(__pyx_v_pattern, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "Compiled.pyx":120
+    /* "Compiled.pyx":128
  *     cdef dict compiled_patterns = {}
  *     for key, pattern in regex_patterns.items():
  *         compiled_patterns[key] = re.compile(pattern, re.IGNORECASE)             # <<<<<<<<<<<<<<
  *     return compiled_patterns
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_compile); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_compile); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_re); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_IGNORECASE); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_IGNORECASE); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -5702,16 +5702,16 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
       __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_8, __pyx_callargs+1-__pyx_t_7, 2+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
-    if (unlikely((PyDict_SetItem(__pyx_v_compiled_patterns, __pyx_v_key, __pyx_t_5) < 0))) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (unlikely((PyDict_SetItem(__pyx_v_compiled_patterns, __pyx_v_key, __pyx_t_5) < 0))) __PYX_ERR(0, 128, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "Compiled.pyx":121
+  /* "Compiled.pyx":129
  *     for key, pattern in regex_patterns.items():
  *         compiled_patterns[key] = re.compile(pattern, re.IGNORECASE)
  *     return compiled_patterns             # <<<<<<<<<<<<<<
@@ -5723,7 +5723,7 @@ static PyObject *__pyx_f_8Compiled_compile_regex_patterns(CYTHON_UNUSED int __py
   __pyx_r = __pyx_v_compiled_patterns;
   goto __pyx_L0;
 
-  /* "Compiled.pyx":117
+  /* "Compiled.pyx":125
  * 
  * # Function to compile the regex patterns
  * cpdef dict compile_regex_patterns():             # <<<<<<<<<<<<<<
@@ -5774,7 +5774,7 @@ static PyObject *__pyx_pf_8Compiled_4compile_regex_patterns(CYTHON_UNUSED PyObje
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compile_regex_patterns", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8Compiled_compile_regex_patterns(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8Compiled_compile_regex_patterns(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5791,7 +5791,7 @@ static PyObject *__pyx_pf_8Compiled_4compile_regex_patterns(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "Compiled.pyx":127
+/* "Compiled.pyx":135
  * 
  * # Function to get compiled pattern by name
  * cdef object get_pattern(str name):             # <<<<<<<<<<<<<<
@@ -5811,7 +5811,7 @@ static PyObject *__pyx_f_8Compiled_get_pattern(PyObject *__pyx_v_name) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_pattern", 1);
 
-  /* "Compiled.pyx":128
+  /* "Compiled.pyx":136
  * # Function to get compiled pattern by name
  * cdef object get_pattern(str name):
  *     return compiled_patterns.get(name, None)             # <<<<<<<<<<<<<<
@@ -5819,9 +5819,9 @@ static PyObject *__pyx_f_8Compiled_get_pattern(PyObject *__pyx_v_name) {
  * # Call the get_pattern function to retrieve the compiled regex
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_compiled_patterns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_compiled_patterns); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -5842,7 +5842,7 @@ static PyObject *__pyx_f_8Compiled_get_pattern(PyObject *__pyx_v_name) {
     PyObject *__pyx_callargs[3] = {__pyx_t_2, __pyx_v_name, Py_None};
     __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_4, 2+__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
@@ -5850,7 +5850,7 @@ static PyObject *__pyx_f_8Compiled_get_pattern(PyObject *__pyx_v_name) {
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "Compiled.pyx":127
+  /* "Compiled.pyx":135
  * 
  * # Function to get compiled pattern by name
  * cdef object get_pattern(str name):             # <<<<<<<<<<<<<<
@@ -5871,7 +5871,7 @@ static PyObject *__pyx_f_8Compiled_get_pattern(PyObject *__pyx_v_name) {
   return __pyx_r;
 }
 
-/* "Compiled.pyx":149
+/* "Compiled.pyx":157
  *     cdef dict time_component_patterns
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -5913,69 +5913,69 @@ static int __pyx_pf_8Compiled_8cRegexps___cinit__(struct __pyx_obj_8Compiled_cRe
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 1);
 
-  /* "Compiled.pyx":151
+  /* "Compiled.pyx":159
  *     def __cinit__(self):
  *         self.time_component_patterns = {
  *             "second": second_regex,             # <<<<<<<<<<<<<<
  *             "minute": minute_regex,
  *             "hour": hour_regex,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_second_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_second_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_second, __pyx_t_2) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_second, __pyx_t_2) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":152
+  /* "Compiled.pyx":160
  *         self.time_component_patterns = {
  *             "second": second_regex,
  *             "minute": minute_regex,             # <<<<<<<<<<<<<<
  *             "hour": hour_regex,
  *             "microsecond": microsecond_regex,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_minute_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_minute_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_minute, __pyx_t_2) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_minute, __pyx_t_2) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":153
+  /* "Compiled.pyx":161
  *             "second": second_regex,
  *             "minute": minute_regex,
  *             "hour": hour_regex,             # <<<<<<<<<<<<<<
  *             "microsecond": microsecond_regex,
  *             "tzinfo": timezone_regex
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_hour_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_hour_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_hour, __pyx_t_2) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_hour, __pyx_t_2) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":154
+  /* "Compiled.pyx":162
  *             "minute": minute_regex,
  *             "hour": hour_regex,
  *             "microsecond": microsecond_regex,             # <<<<<<<<<<<<<<
  *             "tzinfo": timezone_regex
  *         }
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_microsecond_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_microsecond_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_microsecond, __pyx_t_2) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_microsecond, __pyx_t_2) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":155
+  /* "Compiled.pyx":163
  *             "hour": hour_regex,
  *             "microsecond": microsecond_regex,
  *             "tzinfo": timezone_regex             # <<<<<<<<<<<<<<
  *         }
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_timezone_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_timezone_regex); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_tzinfo, __pyx_t_2) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_tzinfo, __pyx_t_2) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":150
+  /* "Compiled.pyx":158
  * 
  *     def __cinit__(self):
  *         self.time_component_patterns = {             # <<<<<<<<<<<<<<
@@ -5988,7 +5988,7 @@ static int __pyx_pf_8Compiled_8cRegexps___cinit__(struct __pyx_obj_8Compiled_cRe
   __pyx_v_self->time_component_patterns = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "Compiled.pyx":149
+  /* "Compiled.pyx":157
  *     cdef dict time_component_patterns
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -6009,7 +6009,7 @@ static int __pyx_pf_8Compiled_8cRegexps___cinit__(struct __pyx_obj_8Compiled_cRe
   return __pyx_r;
 }
 
-/* "Compiled.pyx":158
+/* "Compiled.pyx":166
  *         }
  * 
  *     cpdef object get_time_fragments(self, str component):             # <<<<<<<<<<<<<<
@@ -6045,7 +6045,7 @@ static PyObject *__pyx_f_8Compiled_8cRegexps_get_time_fragments(struct __pyx_obj
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_time_fragments); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_time_fragments); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_8Compiled_8cRegexps_3get_time_fragments)) {
         __Pyx_XDECREF(__pyx_r);
@@ -6068,7 +6068,7 @@ static PyObject *__pyx_f_8Compiled_8cRegexps_get_time_fragments(struct __pyx_obj
           PyObject *__pyx_callargs[2] = {__pyx_t_4, __pyx_v_component};
           __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_3, __pyx_callargs+1-__pyx_t_5, 1+__pyx_t_5);
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         }
@@ -6090,7 +6090,7 @@ static PyObject *__pyx_f_8Compiled_8cRegexps_get_time_fragments(struct __pyx_obj
     #endif
   }
 
-  /* "Compiled.pyx":159
+  /* "Compiled.pyx":167
  * 
  *     cpdef object get_time_fragments(self, str component):
  *         return self.time_component_patterns.get(component)             # <<<<<<<<<<<<<<
@@ -6100,15 +6100,15 @@ static PyObject *__pyx_f_8Compiled_8cRegexps_get_time_fragments(struct __pyx_obj
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(__pyx_v_self->time_component_patterns == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "get");
-    __PYX_ERR(0, 159, __pyx_L1_error)
+    __PYX_ERR(0, 167, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->time_component_patterns, __pyx_v_component, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->time_component_patterns, __pyx_v_component, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "Compiled.pyx":158
+  /* "Compiled.pyx":166
  *         }
  * 
  *     cpdef object get_time_fragments(self, str component):             # <<<<<<<<<<<<<<
@@ -6183,12 +6183,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 158, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 166, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_time_fragments") < 0)) __PYX_ERR(0, 158, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "get_time_fragments") < 0)) __PYX_ERR(0, 166, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -6199,7 +6199,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_time_fragments", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 158, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_time_fragments", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 166, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6213,7 +6213,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_component), (&PyUnicode_Type), 1, "component", 1))) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_component), (&PyUnicode_Type), 1, "component", 1))) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_r = __pyx_pf_8Compiled_8cRegexps_2get_time_fragments(((struct __pyx_obj_8Compiled_cRegexps *)__pyx_v_self), __pyx_v_component);
 
   /* function exit code */
@@ -6240,7 +6240,7 @@ static PyObject *__pyx_pf_8Compiled_8cRegexps_2get_time_fragments(struct __pyx_o
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_time_fragments", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_8Compiled_8cRegexps_get_time_fragments(__pyx_v_self, __pyx_v_component, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_8Compiled_8cRegexps_get_time_fragments(__pyx_v_self, __pyx_v_component, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6737,9 +6737,9 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_kp_u_d_d_1_2_S, __pyx_k_d_d_1_2_S, sizeof(__pyx_k_d_d_1_2_S), 0, 1, 0, 0},
     {&__pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d, __pyx_k_d_d_1_2_d_1_2_d_3_4_d, sizeof(__pyx_k_d_d_1_2_d_1_2_d_3_4_d), 0, 1, 0, 0},
     {&__pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP, __pyx_k_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP, sizeof(__pyx_k_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP), 0, 1, 0, 0},
-    {&__pyx_n_u_dately, __pyx_k_dately, sizeof(__pyx_k_dately), 0, 1, 0, 1},
     {&__pyx_kp_u_dately_directory_not_found, __pyx_k_dately_directory_not_found, sizeof(__pyx_k_dately_directory_not_found), 0, 1, 0, 0},
     {&__pyx_n_s_dately_path, __pyx_k_dately_path, sizeof(__pyx_k_dately_path), 0, 0, 1, 1},
+    {&__pyx_n_u_dately_, __pyx_k_dately_, sizeof(__pyx_k_dately_), 0, 1, 0, 1},
     {&__pyx_n_s_datetime, __pyx_k_datetime, sizeof(__pyx_k_datetime), 0, 0, 1, 1},
     {&__pyx_n_u_datetime_hour, __pyx_k_datetime_hour, sizeof(__pyx_k_datetime_hour), 0, 1, 0, 1},
     {&__pyx_n_u_datetime_microsecond, __pyx_k_datetime_microsecond, sizeof(__pyx_k_datetime_microsecond), 0, 1, 0, 1},
@@ -6885,11 +6885,11 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "Compiled.pyx":24
  * 
  * # Find the dately path
- * dately_path = get_directory_path("dately")             # <<<<<<<<<<<<<<
+ * dately_path = get_directory_path("dately_")             # <<<<<<<<<<<<<<
  * if dately_path:
  *     sys.path.append(dately_path)
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_u_dately); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_n_u_dately_); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
@@ -6898,44 +6898,44 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * else:
  *     raise EnvironmentError("dately directory not found.")             # <<<<<<<<<<<<<<
  * 
- * from mold.pyd.time_zones import time_zones_dict
+ * 
  */
   __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_dately_directory_not_found); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "Compiled.pyx":67
+  /* "Compiled.pyx":66
  * }
  * 
  * cpdef object datetime(unicode fmt):             # <<<<<<<<<<<<<<
  *     cdef unicode regex = fmt
  *     cdef unicode key, value
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_s_fmt); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_n_s_fmt); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_datetime, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_datetime, 66, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 66, __pyx_L1_error)
 
-  /* "Compiled.pyx":117
+  /* "Compiled.pyx":125
  * 
  * # Function to compile the regex patterns
  * cpdef dict compile_regex_patterns():             # <<<<<<<<<<<<<<
  *     cdef dict compiled_patterns = {}
  *     for key, pattern in regex_patterns.items():
  */
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_compile_regex_patterns, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_compile_regex_patterns, 125, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 125, __pyx_L1_error)
 
-  /* "Compiled.pyx":158
+  /* "Compiled.pyx":166
  *         }
  * 
  *     cpdef object get_time_fragments(self, str component):             # <<<<<<<<<<<<<<
  *         return self.time_component_patterns.get(component)
  * 
  */
-  __pyx_tuple__13 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_component); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_component); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_get_time_fragments, 158, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_Compiled_pyx, __pyx_n_s_get_time_fragments, 166, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 166, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -7025,15 +7025,15 @@ static int __Pyx_modinit_type_init_code(void) {
   __pyx_vtabptr_8Compiled_cRegexps = &__pyx_vtable_8Compiled_cRegexps;
   __pyx_vtable_8Compiled_cRegexps.get_time_fragments = (PyObject *(*)(struct __pyx_obj_8Compiled_cRegexps *, PyObject *, int __pyx_skip_dispatch))__pyx_f_8Compiled_8cRegexps_get_time_fragments;
   #if CYTHON_USE_TYPE_SPECS
-  __pyx_ptype_8Compiled_cRegexps = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_8Compiled_cRegexps_spec, NULL); if (unlikely(!__pyx_ptype_8Compiled_cRegexps)) __PYX_ERR(0, 146, __pyx_L1_error)
-  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_8Compiled_cRegexps_spec, __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_ptype_8Compiled_cRegexps = (PyTypeObject *) __Pyx_PyType_FromModuleAndSpec(__pyx_m, &__pyx_type_8Compiled_cRegexps_spec, NULL); if (unlikely(!__pyx_ptype_8Compiled_cRegexps)) __PYX_ERR(0, 154, __pyx_L1_error)
+  if (__Pyx_fix_up_extension_type_from_spec(&__pyx_type_8Compiled_cRegexps_spec, __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #else
   __pyx_ptype_8Compiled_cRegexps = &__pyx_type_8Compiled_cRegexps;
   #endif
   #if !CYTHON_COMPILING_IN_LIMITED_API
   #endif
   #if !CYTHON_USE_TYPE_SPECS
-  if (__Pyx_PyType_Ready(__pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_PyType_Ready(__pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #endif
   #if PY_MAJOR_VERSION < 3
   __pyx_ptype_8Compiled_cRegexps->tp_print = 0;
@@ -7043,13 +7043,13 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_ptype_8Compiled_cRegexps->tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #endif
-  if (__Pyx_SetVtable(__pyx_ptype_8Compiled_cRegexps, __pyx_vtabptr_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_ptype_8Compiled_cRegexps, __pyx_vtabptr_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_MergeVtables(__pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_MergeVtables(__pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_cRegexps, (PyObject *) __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_cRegexps, (PyObject *) __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #if !CYTHON_COMPILING_IN_LIMITED_API
-  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject *) __pyx_ptype_8Compiled_cRegexps) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
   #endif
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -7451,7 +7451,7 @@ if (!__Pyx_RefNanny) {
   /* "Compiled.pyx":24
  * 
  * # Find the dately path
- * dately_path = get_directory_path("dately")             # <<<<<<<<<<<<<<
+ * dately_path = get_directory_path("dately_")             # <<<<<<<<<<<<<<
  * if dately_path:
  *     sys.path.append(dately_path)
  */
@@ -7465,7 +7465,7 @@ if (!__Pyx_RefNanny) {
 
   /* "Compiled.pyx":25
  * # Find the dately path
- * dately_path = get_directory_path("dately")
+ * dately_path = get_directory_path("dately_")
  * if dately_path:             # <<<<<<<<<<<<<<
  *     sys.path.append(dately_path)
  * else:
@@ -7477,7 +7477,7 @@ if (!__Pyx_RefNanny) {
   if (likely(__pyx_t_4)) {
 
     /* "Compiled.pyx":26
- * dately_path = get_directory_path("dately")
+ * dately_path = get_directory_path("dately_")
  * if dately_path:
  *     sys.path.append(dately_path)             # <<<<<<<<<<<<<<
  * else:
@@ -7496,7 +7496,7 @@ if (!__Pyx_RefNanny) {
 
     /* "Compiled.pyx":25
  * # Find the dately path
- * dately_path = get_directory_path("dately")
+ * dately_path = get_directory_path("dately_")
  * if dately_path:             # <<<<<<<<<<<<<<
  *     sys.path.append(dately_path)
  * else:
@@ -7509,7 +7509,7 @@ if (!__Pyx_RefNanny) {
  * else:
  *     raise EnvironmentError("dately directory not found.")             # <<<<<<<<<<<<<<
  * 
- * from mold.pyd.time_zones import time_zones_dict
+ * 
  */
   /*else*/ {
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_EnvironmentError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
@@ -7520,125 +7520,125 @@ if (!__Pyx_RefNanny) {
   }
   __pyx_L2:;
 
-  /* "Compiled.pyx":30
- *     raise EnvironmentError("dately directory not found.")
+  /* "Compiled.pyx":31
  * 
- * from mold.pyd.time_zones import time_zones_dict             # <<<<<<<<<<<<<<
+ * 
+ * from .mold.pyd.time_zones import time_zones_dict             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_n_s_time_zones_dict);
   __Pyx_GIVEREF(__pyx_n_s_time_zones_dict);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_time_zones_dict)) __PYX_ERR(0, 30, __pyx_L1_error);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_mold_pyd_time_zones, __pyx_t_3, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_time_zones_dict)) __PYX_ERR(0, 31, __pyx_L1_error);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_mold_pyd_time_zones, __pyx_t_3, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time_zones_dict, __pyx_t_3) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time_zones_dict, __pyx_t_3) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":36
+  /* "Compiled.pyx":35
  * 
  * cdef dict __datetime_named_group_patterns__ = {
  *     '%a': r'(?P<weekday>Mon|Tue|Wed|Thu|Fri|Sat|Sun)',             # <<<<<<<<<<<<<<
  *     '%A': r'(?P<weekday>Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)',
  *     '%w': r'(?P<weekday>\d)',
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(29); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(29); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_a, __pyx_kp_u_P_weekday_Mon_Tue_Wed_Thu_Fri_S) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_A, __pyx_kp_u_P_weekday_Monday_Tuesday_Wednes) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_w, __pyx_kp_u_P_weekday_d) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_u, __pyx_kp_u_d) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_b, __pyx_kp_u_P_month_A_Za_z_3) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_B, __pyx_kp_u_P_month_A_Za_z) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_m, __pyx_kp_u_P_month_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_m_2, __pyx_kp_u_P_month_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_d_2, __pyx_kp_u_P_day_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_d_3, __pyx_kp_u_P_day_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_j, __pyx_kp_u_P_day_d_1_3) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_H, __pyx_kp_u_P_hour24_0_9_1_0_9_2_0_3_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_H_2, __pyx_kp_u_P_hour24_d_1_2_0_0_9_1_0_9_2_0) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_I, __pyx_kp_u_P_hour12_d_1_2_0_1_9_1_0_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_I_2, __pyx_kp_u_P_hour12_d_1_2_0_1_9_1_0_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_M, __pyx_kp_u_P_minute_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_M_2, __pyx_kp_u_P_minute_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_S, __pyx_kp_u_P_second_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_S_2, __pyx_kp_u_P_second_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_f, __pyx_kp_u_P_microsecond_d_1_6) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_p, __pyx_kp_u_P_am_pm_AM_PM) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_y, __pyx_kp_u_P_year_d_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_y_2, __pyx_kp_u_P_year_d_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_Y, __pyx_kp_u_P_year_d_4) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_z, __pyx_kp_u_P_timezone_d_4_d_2_d_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_Z, __pyx_kp_u_P_timezone_d_2_0_9_2_A_Za_z_s_A) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_q, __pyx_kp_u_d) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_U, __pyx_kp_u_d_1_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_V, __pyx_kp_u_d_1_2_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_a, __pyx_kp_u_P_weekday_Mon_Tue_Wed_Thu_Fri_S) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_A, __pyx_kp_u_P_weekday_Monday_Tuesday_Wednes) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_w, __pyx_kp_u_P_weekday_d) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_u, __pyx_kp_u_d) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_b, __pyx_kp_u_P_month_A_Za_z_3) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_B, __pyx_kp_u_P_month_A_Za_z) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_m, __pyx_kp_u_P_month_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_m_2, __pyx_kp_u_P_month_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_d_2, __pyx_kp_u_P_day_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_d_3, __pyx_kp_u_P_day_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_j, __pyx_kp_u_P_day_d_1_3) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_H, __pyx_kp_u_P_hour24_0_9_1_0_9_2_0_3_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_H_2, __pyx_kp_u_P_hour24_d_1_2_0_0_9_1_0_9_2_0) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_I, __pyx_kp_u_P_hour12_d_1_2_0_1_9_1_0_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_I_2, __pyx_kp_u_P_hour12_d_1_2_0_1_9_1_0_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_M, __pyx_kp_u_P_minute_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_M_2, __pyx_kp_u_P_minute_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_S, __pyx_kp_u_P_second_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_S_2, __pyx_kp_u_P_second_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_f, __pyx_kp_u_P_microsecond_d_1_6) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_p, __pyx_kp_u_P_am_pm_AM_PM) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_y, __pyx_kp_u_P_year_d_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_y_2, __pyx_kp_u_P_year_d_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_Y, __pyx_kp_u_P_year_d_4) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_z, __pyx_kp_u_P_timezone_d_4_d_2_d_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_Z, __pyx_kp_u_P_timezone_d_2_0_9_2_A_Za_z_s_A) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_q, __pyx_kp_u_d) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_U, __pyx_kp_u_d_1_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_kp_u_V, __pyx_kp_u_d_1_2_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_XGOTREF(__pyx_v_8Compiled___datetime_named_group_patterns__);
   __Pyx_DECREF_SET(__pyx_v_8Compiled___datetime_named_group_patterns__, ((PyObject*)__pyx_t_2));
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":67
+  /* "Compiled.pyx":66
  * }
  * 
  * cpdef object datetime(unicode fmt):             # <<<<<<<<<<<<<<
  *     cdef unicode regex = fmt
  *     cdef unicode key, value
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_3datetime, 0, __pyx_n_s_datetime, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_3datetime, 0, __pyx_n_s_datetime, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime, __pyx_t_2) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime, __pyx_t_2) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":75
+  /* "Compiled.pyx":74
  * 
  * # Create regex patterns for timezone abbreviations and full timezone names
  * timezone_abbrv = list(time_zones_dict.keys())             # <<<<<<<<<<<<<<
  * timezone_abbrv_pattern = r'\b(' + '|'.join(timezone_abbrv) + r')\b'
  * full_names = [info['full_name'] for info in time_zones_dict.values()]
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_keys); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_keys); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PySequence_ListKeepNew(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PySequence_ListKeepNew(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbrv, __pyx_t_3) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbrv, __pyx_t_3) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":76
+  /* "Compiled.pyx":75
  * # Create regex patterns for timezone abbreviations and full timezone names
  * timezone_abbrv = list(time_zones_dict.keys())
  * timezone_abbrv_pattern = r'\b(' + '|'.join(timezone_abbrv) + r')\b'             # <<<<<<<<<<<<<<
  * full_names = [info['full_name'] for info in time_zones_dict.values()]
  * full_names_pattern = r'\b(' + '|'.join(full_names) + r')\b'
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_timezone_abbrv); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_timezone_abbrv); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyUnicode_Join(__pyx_kp_u__11, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = PyUnicode_Join(__pyx_kp_u__11, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_b_2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_b_2, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_3, __pyx_kp_u_b_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_3, __pyx_kp_u_b_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbrv_pattern, __pyx_t_2) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbrv_pattern, __pyx_t_2) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":77
+  /* "Compiled.pyx":76
  * timezone_abbrv = list(time_zones_dict.keys())
  * timezone_abbrv_pattern = r'\b(' + '|'.join(timezone_abbrv) + r')\b'
  * full_names = [info['full_name'] for info in time_zones_dict.values()]             # <<<<<<<<<<<<<<
@@ -7646,16 +7646,16 @@ if (!__Pyx_RefNanny) {
  * 
  */
   { /* enter inner scope */
-    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L5_error)
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 77, __pyx_L5_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_time_zones_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 76, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_9);
     if (unlikely(__pyx_t_9 == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "values");
-      __PYX_ERR(0, 77, __pyx_L5_error)
+      __PYX_ERR(0, 76, __pyx_L5_error)
     }
-    __pyx_t_10 = __Pyx_dict_iterator(__pyx_t_9, 0, __pyx_n_s_values, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L5_error)
+    __pyx_t_10 = __Pyx_dict_iterator(__pyx_t_9, 0, __pyx_n_s_values, (&__pyx_t_7), (&__pyx_t_8)); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 76, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF(__pyx_t_3);
@@ -7664,15 +7664,15 @@ if (!__Pyx_RefNanny) {
     while (1) {
       __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_3, __pyx_t_7, &__pyx_t_6, NULL, &__pyx_t_10, NULL, __pyx_t_8);
       if (unlikely(__pyx_t_11 == 0)) break;
-      if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 77, __pyx_L5_error)
+      if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 76, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_8Compiled_info);
       __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_8Compiled_info, __pyx_t_10);
       __Pyx_GIVEREF(__pyx_t_10);
       __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyObject_Dict_GetItem(__pyx_7genexpr__pyx_v_8Compiled_info, __pyx_n_u_full_name); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 77, __pyx_L5_error)
+      __pyx_t_10 = __Pyx_PyObject_Dict_GetItem(__pyx_7genexpr__pyx_v_8Compiled_info, __pyx_n_u_full_name); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 76, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 77, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 76, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7685,280 +7685,280 @@ if (!__Pyx_RefNanny) {
     goto __pyx_L1_error;
     __pyx_L8_exit_scope:;
   } /* exit inner scope */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_names, __pyx_t_2) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_names, __pyx_t_2) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":78
+  /* "Compiled.pyx":77
  * timezone_abbrv_pattern = r'\b(' + '|'.join(timezone_abbrv) + r')\b'
  * full_names = [info['full_name'] for info in time_zones_dict.values()]
  * full_names_pattern = r'\b(' + '|'.join(full_names) + r')\b'             # <<<<<<<<<<<<<<
  * 
  * # Define the regex patterns in a dictionary
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_full_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_full_names); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyUnicode_Join(__pyx_kp_u__11, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_Join(__pyx_kp_u__11, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_b_2, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_b_2, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_2, __pyx_kp_u_b_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyUnicode_ConcatInPlace(__pyx_t_2, __pyx_kp_u_b_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_names_pattern, __pyx_t_3) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_names_pattern, __pyx_t_3) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":82
+  /* "Compiled.pyx":81
  * # Define the regex patterns in a dictionary
  * regex_patterns = {
  *     "timemeridiem": r'\s*\b(AM|PM)\b\s*',             # <<<<<<<<<<<<<<
- *     # Purpose: Matches a time string in the format HH:MM:SS or HH:MM:SS.microseconds.
- *     "timeonly": r'(?P<hours>\d{1,2}):(?P<minutes>\d{2}):(?P<seconds>\d{2})(?:\.(?P<microseconds>\d+))?',
+ *     # # Purpose: Matches a time string in the format HH:MM:SS or HH:MM:SS.microseconds.
+ *     # "timeonly": r'(?P<hours>\d{1,2}):(?P<minutes>\d{2}):(?P<seconds>\d{2})(?:\.(?P<microseconds>\d+))?',
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(14); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(14); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timemeridiem, __pyx_kp_u_s_b_AM_PM_b_s) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timeonly, __pyx_kp_u_P_hours_d_1_2_P_minutes_d_2_P_s) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timezone_offset, __pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_iana_timezone_identifier, __pyx_kp_u_b_A_Za_z__A_Za_z__b) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_anytime, __pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timeplus, __pyx_kp_u_d_1_2_d_2_d_2_d_6_d_1_6_s_AP_M) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_establish_time_boundary, __pyx_kp_u_d_d_1_2_S) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_second, __pyx_kp_u_d_2_d_2_d_2_d) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_minute, __pyx_kp_u_d_2_d_2_d_2_d_2) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_hour, __pyx_kp_u_d_1_2_d_2_d_2_d) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_microsecond, __pyx_kp_u_d_2_d_2_d_2_d_3) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_timezone, __pyx_kp_u_b_d_1_2_d_2_Z_b_d_2_d_2_b_A_Za) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timemeridiem, __pyx_kp_u_s_b_AM_PM_b_s) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timeonly, __pyx_kp_u_P_hours_d_1_2_P_minutes_d_2_P_s) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timezone_offset, __pyx_kp_u_d_d_1_2_d_1_2_d_3_4_d) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_iana_timezone_identifier, __pyx_kp_u_b_A_Za_z__A_Za_z__b) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_anytime, __pyx_kp_u_d_d_1_2_d_2_d_2_d_6_d_1_6_s_AP) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timeplus, __pyx_kp_u_d_1_2_d_2_d_2_d_6_d_1_6_s_AP_M) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_establish_time_boundary, __pyx_kp_u_d_d_1_2_S) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_second, __pyx_kp_u_d_2_d_2_d_2_d) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_minute, __pyx_kp_u_d_2_d_2_d_2_d_2) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_hour, __pyx_kp_u_d_1_2_d_2_d_2_d) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_microsecond, __pyx_kp_u_d_2_d_2_d_2_d_3) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_datetime_timezone, __pyx_kp_u_b_d_1_2_d_2_Z_b_d_2_d_2_b_A_Za) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
 
-  /* "Compiled.pyx":112
+  /* "Compiled.pyx":120
  *         r'\bAM\b|\bPM\b'                   # AM/PM indicator
  *     ),
  *     "timezone_abbreviation": timezone_abbrv_pattern,             # <<<<<<<<<<<<<<
  *     "full_timezone_name": full_names_pattern
  * }
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_timezone_abbrv_pattern); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_timezone_abbrv_pattern); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timezone_abbreviation, __pyx_t_2) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_timezone_abbreviation, __pyx_t_2) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "Compiled.pyx":113
+  /* "Compiled.pyx":121
  *     ),
  *     "timezone_abbreviation": timezone_abbrv_pattern,
  *     "full_timezone_name": full_names_pattern             # <<<<<<<<<<<<<<
  * }
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_full_names_pattern); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_full_names_pattern); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_full_timezone_name, __pyx_t_2) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_full_timezone_name, __pyx_t_2) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_regex_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_regex_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":117
+  /* "Compiled.pyx":125
  * 
  * # Function to compile the regex patterns
  * cpdef dict compile_regex_patterns():             # <<<<<<<<<<<<<<
  *     cdef dict compiled_patterns = {}
  *     for key, pattern in regex_patterns.items():
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_5compile_regex_patterns, 0, __pyx_n_s_compile_regex_patterns, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_5compile_regex_patterns, 0, __pyx_n_s_compile_regex_patterns, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_compile_regex_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_compile_regex_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":124
+  /* "Compiled.pyx":132
  * 
  * # Compile the regex patterns at the module level
  * compiled_patterns = compile_regex_patterns()             # <<<<<<<<<<<<<<
  * 
  * # Function to get compiled pattern by name
  */
-  __pyx_t_3 = __pyx_f_8Compiled_compile_regex_patterns(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_compile_regex_patterns(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_compiled_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 124, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_compiled_patterns, __pyx_t_3) < 0) __PYX_ERR(0, 132, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":131
+  /* "Compiled.pyx":139
  * 
  * # Call the get_pattern function to retrieve the compiled regex
  * second_regex = get_pattern("datetime_second")             # <<<<<<<<<<<<<<
  * minute_regex = get_pattern("datetime_minute")
  * hour_regex = get_pattern("datetime_hour")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_second); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_second); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_second_regex, __pyx_t_3) < 0) __PYX_ERR(0, 131, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_second_regex, __pyx_t_3) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":132
+  /* "Compiled.pyx":140
  * # Call the get_pattern function to retrieve the compiled regex
  * second_regex = get_pattern("datetime_second")
  * minute_regex = get_pattern("datetime_minute")             # <<<<<<<<<<<<<<
  * hour_regex = get_pattern("datetime_hour")
  * microsecond_regex = get_pattern("datetime_microsecond")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_minute); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_minute); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_minute_regex, __pyx_t_3) < 0) __PYX_ERR(0, 132, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_minute_regex, __pyx_t_3) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":133
+  /* "Compiled.pyx":141
  * second_regex = get_pattern("datetime_second")
  * minute_regex = get_pattern("datetime_minute")
  * hour_regex = get_pattern("datetime_hour")             # <<<<<<<<<<<<<<
  * microsecond_regex = get_pattern("datetime_microsecond")
  * timezone_regex = get_pattern("datetime_timezone")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_hour); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_hour); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_hour_regex, __pyx_t_3) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_hour_regex, __pyx_t_3) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":134
+  /* "Compiled.pyx":142
  * minute_regex = get_pattern("datetime_minute")
  * hour_regex = get_pattern("datetime_hour")
  * microsecond_regex = get_pattern("datetime_microsecond")             # <<<<<<<<<<<<<<
  * timezone_regex = get_pattern("datetime_timezone")
  * timezone_offset_regex = get_pattern("timezone_offset")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_microsecond); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_microsecond); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_microsecond_regex, __pyx_t_3) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_microsecond_regex, __pyx_t_3) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":135
+  /* "Compiled.pyx":143
  * hour_regex = get_pattern("datetime_hour")
  * microsecond_regex = get_pattern("datetime_microsecond")
  * timezone_regex = get_pattern("datetime_timezone")             # <<<<<<<<<<<<<<
  * timezone_offset_regex = get_pattern("timezone_offset")
  * iana_timezone_identifier_regex = get_pattern("iana_timezone_identifier")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_timezone); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_datetime_timezone); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_regex, __pyx_t_3) < 0) __PYX_ERR(0, 135, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_regex, __pyx_t_3) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":136
+  /* "Compiled.pyx":144
  * microsecond_regex = get_pattern("datetime_microsecond")
  * timezone_regex = get_pattern("datetime_timezone")
  * timezone_offset_regex = get_pattern("timezone_offset")             # <<<<<<<<<<<<<<
  * iana_timezone_identifier_regex = get_pattern("iana_timezone_identifier")
  * timemeridiem_regex = get_pattern("timemeridiem")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timezone_offset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timezone_offset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_offset_regex, __pyx_t_3) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_offset_regex, __pyx_t_3) < 0) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":137
+  /* "Compiled.pyx":145
  * timezone_regex = get_pattern("datetime_timezone")
  * timezone_offset_regex = get_pattern("timezone_offset")
  * iana_timezone_identifier_regex = get_pattern("iana_timezone_identifier")             # <<<<<<<<<<<<<<
  * timemeridiem_regex = get_pattern("timemeridiem")
  * time_only_regex = get_pattern("timeonly")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_iana_timezone_identifier); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_iana_timezone_identifier); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_iana_timezone_identifier_regex, __pyx_t_3) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_iana_timezone_identifier_regex, __pyx_t_3) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":138
+  /* "Compiled.pyx":146
  * timezone_offset_regex = get_pattern("timezone_offset")
  * iana_timezone_identifier_regex = get_pattern("iana_timezone_identifier")
  * timemeridiem_regex = get_pattern("timemeridiem")             # <<<<<<<<<<<<<<
  * time_only_regex = get_pattern("timeonly")
  * anytime_regex = get_pattern("anytime")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timemeridiem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timemeridiem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timemeridiem_regex, __pyx_t_3) < 0) __PYX_ERR(0, 138, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timemeridiem_regex, __pyx_t_3) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":139
+  /* "Compiled.pyx":147
  * iana_timezone_identifier_regex = get_pattern("iana_timezone_identifier")
  * timemeridiem_regex = get_pattern("timemeridiem")
  * time_only_regex = get_pattern("timeonly")             # <<<<<<<<<<<<<<
  * anytime_regex = get_pattern("anytime")
  * timeboundary_regex = get_pattern("establish_time_boundary")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timeonly); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timeonly); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time_only_regex, __pyx_t_3) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time_only_regex, __pyx_t_3) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":140
+  /* "Compiled.pyx":148
  * timemeridiem_regex = get_pattern("timemeridiem")
  * time_only_regex = get_pattern("timeonly")
  * anytime_regex = get_pattern("anytime")             # <<<<<<<<<<<<<<
  * timeboundary_regex = get_pattern("establish_time_boundary")
  * timezone_abbreviation_regex  = get_pattern("timezone_abbreviation")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_anytime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_anytime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_anytime_regex, __pyx_t_3) < 0) __PYX_ERR(0, 140, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_anytime_regex, __pyx_t_3) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":141
+  /* "Compiled.pyx":149
  * time_only_regex = get_pattern("timeonly")
  * anytime_regex = get_pattern("anytime")
  * timeboundary_regex = get_pattern("establish_time_boundary")             # <<<<<<<<<<<<<<
  * timezone_abbreviation_regex  = get_pattern("timezone_abbreviation")
  * full_timezone_name_regex = get_pattern("full_timezone_name")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_establish_time_boundary); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_establish_time_boundary); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timeboundary_regex, __pyx_t_3) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timeboundary_regex, __pyx_t_3) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":142
+  /* "Compiled.pyx":150
  * anytime_regex = get_pattern("anytime")
  * timeboundary_regex = get_pattern("establish_time_boundary")
  * timezone_abbreviation_regex  = get_pattern("timezone_abbreviation")             # <<<<<<<<<<<<<<
  * full_timezone_name_regex = get_pattern("full_timezone_name")
  * timeplus_regex = get_pattern("timeplus")
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timezone_abbreviation); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timezone_abbreviation); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbreviation_regex, __pyx_t_3) < 0) __PYX_ERR(0, 142, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timezone_abbreviation_regex, __pyx_t_3) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":143
+  /* "Compiled.pyx":151
  * timeboundary_regex = get_pattern("establish_time_boundary")
  * timezone_abbreviation_regex  = get_pattern("timezone_abbreviation")
  * full_timezone_name_regex = get_pattern("full_timezone_name")             # <<<<<<<<<<<<<<
  * timeplus_regex = get_pattern("timeplus")
  * 
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_full_timezone_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_full_timezone_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_timezone_name_regex, __pyx_t_3) < 0) __PYX_ERR(0, 143, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_full_timezone_name_regex, __pyx_t_3) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":144
+  /* "Compiled.pyx":152
  * timezone_abbreviation_regex  = get_pattern("timezone_abbreviation")
  * full_timezone_name_regex = get_pattern("full_timezone_name")
  * timeplus_regex = get_pattern("timeplus")             # <<<<<<<<<<<<<<
  * 
  * cdef class cRegexps:
  */
-  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timeplus); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_8Compiled_get_pattern(__pyx_n_u_timeplus); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timeplus_regex, __pyx_t_3) < 0) __PYX_ERR(0, 144, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timeplus_regex, __pyx_t_3) < 0) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":158
+  /* "Compiled.pyx":166
  *         }
  * 
  *     cpdef object get_time_fragments(self, str component):             # <<<<<<<<<<<<<<
  *         return self.time_component_patterns.get(component)
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_8cRegexps_3get_time_fragments, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_cRegexps_get_time_fragments, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_8Compiled_8cRegexps_3get_time_fragments, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_cRegexps_get_time_fragments, NULL, __pyx_n_s_Compiled, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_8Compiled_cRegexps, __pyx_n_s_get_time_fragments, __pyx_t_3) < 0) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_8Compiled_cRegexps, __pyx_n_s_get_time_fragments, __pyx_t_3) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_8Compiled_cRegexps);
 
@@ -7983,102 +7983,102 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_setstate_cython, __pyx_t_3) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":162
+  /* "Compiled.pyx":170
  * 
  * # Create an instance of the cRegexps class
  * cdef cRegexps regexps = cRegexps()             # <<<<<<<<<<<<<<
  * 
  * # Define module-level variables for compiled regex patterns
  */
-  __pyx_t_3 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_8Compiled_cRegexps)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_8Compiled_cRegexps)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XGOTREF((PyObject *)__pyx_v_8Compiled_regexps);
   __Pyx_DECREF_SET(__pyx_v_8Compiled_regexps, ((struct __pyx_obj_8Compiled_cRegexps *)__pyx_t_3));
   __Pyx_GIVEREF(__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":165
+  /* "Compiled.pyx":173
  * 
  * # Define module-level variables for compiled regex patterns
  * datetime_regex = datetime             # <<<<<<<<<<<<<<
  * get_time_fragment = regexps.get_time_fragments
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime_regex, __pyx_t_3) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime_regex, __pyx_t_3) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":166
+  /* "Compiled.pyx":174
  * # Define module-level variables for compiled regex patterns
  * datetime_regex = datetime
  * get_time_fragment = regexps.get_time_fragments             # <<<<<<<<<<<<<<
  * 
  * # Define public interface
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_8Compiled_regexps), __pyx_n_s_get_time_fragments); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_8Compiled_regexps), __pyx_n_s_get_time_fragments); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_time_fragment, __pyx_t_3) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_time_fragment, __pyx_t_3) < 0) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "Compiled.pyx":169
+  /* "Compiled.pyx":177
  * 
  * # Define public interface
  * __all__ = [             # <<<<<<<<<<<<<<
  *     'datetime_regex',
  *     'timemeridiem_regex',
  */
-  __pyx_t_3 = PyList_New(16); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_3 = PyList_New(16); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_n_u_datetime_regex);
   __Pyx_GIVEREF(__pyx_n_u_datetime_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_u_datetime_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_u_datetime_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timemeridiem_regex);
   __Pyx_GIVEREF(__pyx_n_u_timemeridiem_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 1, __pyx_n_u_timemeridiem_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 1, __pyx_n_u_timemeridiem_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_anytime_regex);
   __Pyx_GIVEREF(__pyx_n_u_anytime_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 2, __pyx_n_u_anytime_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 2, __pyx_n_u_anytime_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timezone_regex);
   __Pyx_GIVEREF(__pyx_n_u_timezone_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 3, __pyx_n_u_timezone_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 3, __pyx_n_u_timezone_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timeboundary_regex);
   __Pyx_GIVEREF(__pyx_n_u_timeboundary_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 4, __pyx_n_u_timeboundary_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 4, __pyx_n_u_timeboundary_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_second_regex);
   __Pyx_GIVEREF(__pyx_n_u_second_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 5, __pyx_n_u_second_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 5, __pyx_n_u_second_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_minute_regex);
   __Pyx_GIVEREF(__pyx_n_u_minute_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 6, __pyx_n_u_minute_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 6, __pyx_n_u_minute_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_hour_regex);
   __Pyx_GIVEREF(__pyx_n_u_hour_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 7, __pyx_n_u_hour_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 7, __pyx_n_u_hour_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_microsecond_regex);
   __Pyx_GIVEREF(__pyx_n_u_microsecond_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 8, __pyx_n_u_microsecond_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 8, __pyx_n_u_microsecond_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_get_time_fragment);
   __Pyx_GIVEREF(__pyx_n_u_get_time_fragment);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 9, __pyx_n_u_get_time_fragment)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 9, __pyx_n_u_get_time_fragment)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_time_only_regex);
   __Pyx_GIVEREF(__pyx_n_u_time_only_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 10, __pyx_n_u_time_only_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 10, __pyx_n_u_time_only_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timeplus_regex);
   __Pyx_GIVEREF(__pyx_n_u_timeplus_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 11, __pyx_n_u_timeplus_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 11, __pyx_n_u_timeplus_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_iana_timezone_identifier_regex);
   __Pyx_GIVEREF(__pyx_n_u_iana_timezone_identifier_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 12, __pyx_n_u_iana_timezone_identifier_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 12, __pyx_n_u_iana_timezone_identifier_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timezone_offset_regex);
   __Pyx_GIVEREF(__pyx_n_u_timezone_offset_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 13, __pyx_n_u_timezone_offset_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 13, __pyx_n_u_timezone_offset_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_timezone_abbreviation_regex);
   __Pyx_GIVEREF(__pyx_n_u_timezone_abbreviation_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 14, __pyx_n_u_timezone_abbreviation_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 14, __pyx_n_u_timezone_abbreviation_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
   __Pyx_INCREF(__pyx_n_u_full_timezone_name_regex);
   __Pyx_GIVEREF(__pyx_n_u_full_timezone_name_regex);
-  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 15, __pyx_n_u_full_timezone_name_regex)) __PYX_ERR(0, 169, __pyx_L1_error);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_3) < 0) __PYX_ERR(0, 169, __pyx_L1_error)
+  if (__Pyx_PyList_SET_ITEM(__pyx_t_3, 15, __pyx_n_u_full_timezone_name_regex)) __PYX_ERR(0, 177, __pyx_L1_error);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_3) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "Compiled.pyx":1
