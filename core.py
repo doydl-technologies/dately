@@ -459,6 +459,10 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
             return
         else:
             return processed_data
+            
+    # handle single datetime/date directly
+    elif isinstance(dates, (dt, d)):
+        return process(dates, to_format=to_format, delta=delta)             
     else:
         # For all other types, use the helper to dispatch.
         return _apply_to_data(dates, process, to_format=to_format, delta=delta)
