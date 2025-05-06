@@ -420,7 +420,9 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
                     input_format = replace_non_padded_with_padded(input_format)
                     parsed_date = dt.strptime(date, input_format) + td(days=int(delta))
 
-            if to_format and isinstance(parsed_date, dt):
+            if to_format:
+                if isinstance(parsed_date, d) and not isinstance(parsed_date, dt):
+                    parsed_date = dt.combine(parsed_date, dt.min.time())  
                 return date_format_leading_zero(parsed_date, to_format)
             else:
                 return parsed_date
