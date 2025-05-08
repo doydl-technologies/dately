@@ -52,53 +52,79 @@ import pandas as panda
 
 # ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from .mold.pyd.time_zones import time_zones_dict as tz_dict
-
+from .dt_nlp.arithmetic import timeline
 
 
 
 #────────────────────────────────────────────────────────────────────────────
 # REGEX FOR DETECTING TIME COMPONENTS IN STRINGS
 #────────────────────────────────────────────────────────────────────────────
-# This regex pattern is used to detect time-related components in a string. It 
-# supports various time formats, including standard clock times, fractional 
-# seconds, AM/PM markers, and optional time zones.
-# 
+# This regex pattern detects time-related components in a string. It supports
+# a wide range of time formats and time zone expressions, using a **whitelist**
+# of valid timezone abbreviations (from `tz_dict`) instead of a generic pattern.
+#
 # ### Pattern Details:
-# - Prevention of False Matches:
-#   - Ensures the detected pattern is not preceded by a digit (`(?<!\d)`) to 
-#     avoid misinterpreting numbers as times.
-# 
-# - Option 1: Standard Time Formats
-#   - Matches times written as:
-#     - `HH:MM`, `HH:MM:SS`, or compact form `HHMMSS`
-#     - Supports fractional seconds (e.g., `12:30:45.123456`)
-#     - Recognizes AM/PM markers (e.g., `3:45 PM`)
-#     - Optionally detects time zones (e.g., `UTC`, `+02:00`, `Z`)
-# 
-# - Option 2: Standalone Timezones
-#   - Matches timezone-only strings if preceded by whitespace or start-of-string:
-#     - `+02:00`, `-0400`, `EST`, `UTC`, `Z`
-#   
-# - Lookahead (`(?=\s|$)`)
-#   - Ensures the match must be followed by whitespace or end-of-string to 
-#     prevent partial matches inside words.
-# 
+#
+# - **False Match Prevention:**
+#   - Ensures the match is not **preceded by a digit** (`(?<!\d)`) to avoid
+#     interpreting numbers like "1230" in "AB1230CD" as a time.
+#
+# - **Option 1: Standard Clock Times**
+#   - Matches time formats like:
+#     - `HH:MM`, `HH:MM:SS`, or `HHMMSS`
+#     - Optional fractional seconds (e.g., `.123456`)
+#     - Optional 12-hour markers (`AM`, `PM`)
+#     - Optional time zone suffixes, which may be:
+#         ▪ UTC offset: `+02:00`, `-0400`
+#         ▪ Time zone abbreviation from `tz_dict`: e.g., `EST`, `PST`, `UTC`
+#         ▪ The literal `Z` for Zulu/UTC
+#
+# - **Option 2: Standalone Timezones**
+#   - Matches a standalone timezone if it is:
+#     ▪ preceded by whitespace or the beginning of the string
+#     ▪ and matches one of the following:
+#         - UTC offsets (`+HH:MM`, `-HHMM`)
+#         - Approved abbreviations (from `tz_dict`)
+#         - `Z`
+#
+# - **Lookahead Requirement:**
+#   - A match must be **followed by whitespace or end-of-string** (`(?=\s|$)`)
+#     to avoid matching time inside words or identifiers.
+#
+# ### Key Enhancement:
+# - Replaces open-ended `[A-Z]{3,4}` with a strict whitelist from `tz_dict`
+#   to avoid false positives (e.g., interpreting "Jan" as a timezone).
+#
 # ### Use Case:
-# - Primarily used in date format detection to extract time components 
-#   from mixed datetime strings.
-# - Works in conjunction with the DateFormatFinder class.
+# - Used by `DateFormatFinder` to extract and isolate time components from
+#   strings during format detection. This helps distinguish whether the
+#   string represents a full datetime or a date-only value.
+# Collect the keys, drop the 12 month abbreviations just in case
+_month_abbrs = {f.upper() for f in timeline.months if len(f) == 3}
+_tz_abbrs = sorted({k.upper() for k in tz_dict.keys()} - _month_abbrs,
+                  key=len, reverse=True)         # longest first → greedy match
+_tz_pattern = "|".join(map(re.escape, _tz_abbrs))  # escapes + joins with |
+
 _TIME_DETECTION_RE = re.compile(
-    r"(?<!\d)(?:"                                 	# Ensure not preceded by a digit.
-        r"(?:(?:\d{1,2}:\d{2}(?::\d{2})?|\d{6})"  	# Option 1: time formats (HH:MM, HH:MM:SS, or HHMMSS)
-        r"(?:\.\d{1,6})?"                         	# Optional fractional seconds.
-        r"(?:\s*[AP]M)?"                          	# Optional AM/PM marker.
-        r"(?:\s*(?:[+-]\d{2}:?\d{2}|[+-]\d{4}|[A-Z]{3,4}|Z))?"  # Optional timezone.
-        r")"
-        r"|"                                      	# OR
-        r"(?:(?<=\s)|^)(?:[+-]\d{2}:?\d{2}|[+-]\d{4}|[A-Z]{3,4}|Z)"  # Option 2: timezone-only; must be preceded by whitespace or start-of-string.
-    r")(?=\s|$)",                                 	# Lookahead: must be followed by whitespace or end-of-string.
-    re.IGNORECASE
+    rf"""
+    (?<!\d)                           # not preceded by a digit
+    (?:                               # ──────────────────────────────
+        # Option 1 — clock time, with optional zone
+        (?:
+            (?:\d{{1,2}}:\d{{2}}(?: :\d{{2}})? | \d{{6}})
+            (?:\.\d{{1,6}})?          # fractional seconds
+            (?:\s*[AP]M)?             # AM/PM
+            (?:\s*(?:[+-]\d{{2}}:?\d{{2}} | [+-]\d{{4}} | (?:{_tz_pattern}) | Z))?
+        )
+        |
+        # Option 2 — standalone timezone
+        (?:(?<=\s)|^) (?:[+-]\d{{2}}:?\d{{2}} | [+-]\d{{4}} | (?:{_tz_pattern}) | Z)
+    )
+    (?=\s|$)                          # must be followed by space or end
+    """,
+    re.IGNORECASE | re.VERBOSE
 )
+
 
 #────────────────────────────────────────────────────────────────────────────
 # REGEX FOR DETECTING WEEKDAY NAMES IN STRINGS
