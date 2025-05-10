@@ -23,7 +23,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/dately)](https://pypi.org/project/dately/)
 [![PyPI](https://img.shields.io/pypi/v/dately)](https://pypi.org/project/dately/)
 [![NLP Ready](https://img.shields.io/badge/NLP-enabled-brightgreen)]()
-[![Powered by DOYDL Technologies](https://img.shields.io/badge/Powered%20by-DOYDL%20Technologies-blue)](https://doydl.studio)
+[![Powered by DOYDL Technologies](https://img.shields.io/badge/Powered%20by-DOYDL%20Technologies-blue)](https://doydl.com)
 ---
 
 #### Table of Contents
