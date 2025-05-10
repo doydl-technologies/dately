@@ -2,13 +2,28 @@
   <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/py_dately_logo.png" alt="Dately Logo" width="700"/>
 </p>
 
-### dately: Comprehensive Date, Time **& Natural-Language** Handling in Python
+
+---
+
+<div align="center">
+
+# 🌟 **dately** 🌟
+
+> **Comprehensive Date, Time **& Natural-Language** Handling in Python**
+
+</div>
+
+
+`dately` is an end-to-end date-and-time toolkit that now pairs its high-precision formatting utilities with a **mini natural-language-processing (NLP) engine**.  Whether you feed it an ISO-8601 timestamp, a plain month/day string, or a phrase like&nbsp;“second Tuesday of next quarter”, dately can turn it into an exact `datetime` object or `(start, end)` range.
+
 
 [![Downloads](https://static.pepy.tech/badge/dately)](https://pepy.tech/project/dately)
 [![Downloads](https://static.pepy.tech/badge/dately/month)](https://pepy.tech/project/dately)
 [![Downloads](https://static.pepy.tech/badge/dately/week)](https://pepy.tech/project/dately)
-
-`dately` is an end-to-end date-and-time toolkit that now pairs its high-precision formatting utilities with a **mini natural-language-processing (NLP) engine**.  Whether you feed it an ISO-8601 timestamp, a plain month/day string, or a phrase like&nbsp;“second Tuesday of next quarter”, dately can turn it into an exact `datetime` object or `(start, end)` range.
+[![Python](https://img.shields.io/pypi/pyversions/dately)](https://pypi.org/project/dately/)
+[![PyPI](https://img.shields.io/pypi/v/dately)](https://pypi.org/project/dately/)
+[![NLP Ready](https://img.shields.io/badge/NLP-enabled-brightgreen)]()
+---
 
 #### Table of Contents
 1. [Why Choose dately?](#why-choose-dately)
