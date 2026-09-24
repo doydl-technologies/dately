@@ -25,6 +25,6 @@ jobs:
       - name: Commit and Push os_versions.json
         run: |
           git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.name "actions-user"
           git add files/os_versions.json
           git diff --staged --exit-code || (git commit -m "Update os versions" && git push)
