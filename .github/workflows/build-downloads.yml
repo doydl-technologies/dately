@@ -18,8 +18,8 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
       - name: Verify release tag
@@ -45,7 +45,7 @@ jobs:
           $wheel = Get-ChildItem dist\*.whl | Select-Object -First 1
           python -m pip install $wheel.FullName
           python -m pytest -q
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dately-${{ matrix.python-version }}-windows-x64
           path: dist/*.whl
@@ -55,8 +55,8 @@ jobs:
     name: Source archive
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Install build tools
@@ -65,7 +65,7 @@ jobs:
         run: python -m build --sdist
       - name: Validate source metadata
         run: python -m twine check dist/*.tar.gz
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dately-source
           path: dist/*.tar.gz
