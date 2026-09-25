@@ -1,0 +1,104 @@
+name: Publish GitHub release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to publish
+        required: false
+        type: string
+      run_id:
+        description: Successful Build Python downloads run ID
+        required: false
+        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-release.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish:
+    name: Publish validated downloads
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Resolve release inputs
+        id: release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          tag="${INPUT_TAG:-$(git describe --tags --abbrev=0)}"
+          run_id="${INPUT_RUN_ID:-$(gh run list --workflow build-downloads.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')}"
+
+          if [[ -z "$tag" || -z "$run_id" ]]; then
+            echo "A release tag and successful build run are required." >&2
+            exit 1
+          fi
+
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+
+      - name: Download validated build artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.release.outputs.run_id }}
+        run: gh run download "$RUN_ID" --dir artifacts
+
+      - name: Verify release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel_count=$(find artifacts -type f -name '*.whl' | wc -l)
+          source_count=$(find artifacts -type f -name '*.tar.gz' | wc -l)
+
+          if [[ "$wheel_count" -ne 7 || "$source_count" -ne 1 ]]; then
+            echo "Expected seven wheels and one source archive; found $wheel_count wheels and $source_count source archives." >&2
+            exit 1
+          fi
+
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          set -euo pipefail
+          mapfile -t assets < <(find artifacts -type f \( -name '*.whl' -o -name '*.tar.gz' \) | sort)
+          notes=$(cat <<'EOF'
+          ## Highlights
+
+          - Corrects date/time replacement, sequence formatting, relative weekday, weekend, and natural-language parsing regressions.
+          - Re-enables TimeZoner and Holidate with isolated HTTP state and offline package data.
+          - Vendors the independent `agent_profile` implementation used for realistic user-agent generation.
+          - Provides tested Windows x64 wheels for CPython 3.8 through 3.14 plus a source distribution.
+          - Refreshes package metadata, documentation, branding, repository hygiene, and release automation.
+
+          ## Validation
+
+          - 18 automated tests passed.
+          - Every wheel was installed and tested on its target Python version.
+          - All wheel and source-distribution metadata passed `twine check`.
+
+          Package author: **cedricmoorejunior**
+          EOF
+          )
+
+          gh release create "$TAG" "${assets[@]}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$TAG" \
+            --notes "$notes" \
+            --latest \
+            --verify-tag
