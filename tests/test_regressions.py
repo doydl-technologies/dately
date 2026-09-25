@@ -142,4 +142,4 @@ def test_timezoner_and_holidate_are_enabled_without_network_access():
 
 
 def test_public_version_matches_release():
-    assert dately.__version__ == "3.3.0"
+    assert dately.__version__ == "3.3.1"

@@ -11,11 +11,11 @@ on:
         description: Successful Build Python downloads run ID
         required: false
         type: string
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/publish-release.yml"
+  workflow_run:
+    workflows:
+      - Build Python downloads
+    types:
+      - completed
 
 permissions:
   actions: read
@@ -24,9 +24,10 @@ permissions:
 jobs:
   publish:
     name: Publish validated downloads
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -35,11 +36,16 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          INPUT_RUN_ID: ${{ inputs.run_id }}
+          INPUT_RUN_ID: ${{ inputs.run_id || github.event.workflow_run.id }}
           INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -euo pipefail
-          tag="${INPUT_TAG:-$(git describe --tags --abbrev=0)}"
+          tag="$INPUT_TAG"
+          if [[ -z "$tag" ]]; then
+            tag=$(git tag --points-at "$RELEASE_SHA" | grep '^v' | sort -V | tail -1 || true)
+          fi
+          tag="${tag:-$(git describe --tags --abbrev=0)}"
           run_id="${INPUT_RUN_ID:-$(gh run list --workflow build-downloads.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')}"
 
           if [[ -z "$tag" || -z "$run_id" ]]; then
@@ -78,15 +84,7 @@ jobs:
           set -euo pipefail
           mapfile -t assets < <(find artifacts -type f \( -name '*.whl' -o -name '*.tar.gz' \) | sort)
           notes=$(cat <<'EOF'
-          ## Highlights
-
-          - Corrects date/time replacement, sequence formatting, relative weekday, weekend, and natural-language parsing regressions.
-          - Re-enables TimeZoner and Holidate with isolated HTTP state and offline package data.
-          - Vendors the independent `agent_profile` implementation used for realistic user-agent generation.
-          - Provides tested Windows x64 wheels for CPython 3.8 through 3.14 plus a source distribution.
-          - Refreshes package metadata, documentation, branding, repository hygiene, and release automation.
-
-          ## Validation
+          ## Distribution validation
 
           - 18 automated tests passed.
           - Every wheel was installed and tested on its target Python version.
@@ -100,5 +98,6 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --title "$TAG" \
             --notes "$notes" \
+            --generate-notes \
             --latest \
             --verify-tag
