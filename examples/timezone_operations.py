@@ -3,20 +3,24 @@
 #
 # doydl's Temporal Parsing & Normalization Engine — dately
 #
-# `dately` is a precision-first library for parsing, interpreting, and normalizing time expressions
-# across both structured data and natural language. Built for developers and data teams working in
-# time-sensitive domains, it delivers deterministic behavior, high-performance parsing, and
-# transparent reasoning around temporal meaning.
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed for integration into NLP pipelines, ETL processes, scheduling engines, and cross-platform
-# applications, `dately` supports everything from ISO formats and user-generated timestamps to
-# phrases like “next Friday” or “Q2 2025.” Its symbolic parser bridges the gap between language and
-# logic, enabling interpretable, testable, and production-grade handling of ambiguous or implicit
-# time references.
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
 #
-# Features include format inference, batch-safe transformations, timezone normalization, and a
-# modular architecture for composable workflows. Whether you're resolving date strings in a chatbot
-# or aligning logs across systems, `dately` brings clarity, consistency, and control to temporal data.
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
 #
@@ -48,6 +52,7 @@ import dately as dtly
 import pandas as pd
 import numpy as np
 
+
 # Set variables
 datestring = "2023-06-21"
 datestring_list = [
@@ -75,7 +80,7 @@ dtly.TimeZoner.CountryNames
 
 # Get the list of time zones
 dtly.TimeZoner.Zones
-# Output: ['Africa/Abidjan', 'Africa/Accra', 'Africa/Addis_Ababa', 'Africa/Algiers', 'Africa/Asmara', 'Africa/Bamako', 'Africa/Bangui'.....] 
+# Output: ['Africa/Abidjan', 'Africa/Accra', 'Africa/Addis_Ababa', 'Africa/Algiers', 'Africa/Asmara', 'Africa/Bamako', 'Africa/Bangui'.....]
 
 
 # Get time zones by country

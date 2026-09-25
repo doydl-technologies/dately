@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -74,9 +74,6 @@ This module focuses solely on structural and syntactic validation.
 It does **not** evaluate semantic realism (e.g., "55th day of the week").
 That logic belongs to the `semantic_validation` layer.
 """
-import re
-
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from ..arithmetic import numbers
 from ..temporal_preprocessing import PhraseEngine
 from ..temporal_core.temporal_units import (
@@ -86,17 +83,10 @@ from ..temporal_core.temporal_units import (
     _unit_map,
     normalize_named_unit,
     # _norm_ordinals,
-    base_temporal_units,
     is_valid_containment_with_partial,
 )
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 
 
 
@@ -219,7 +209,7 @@ anchor_modifier_valid_units = { # Each modifier maps to a set of allowed base te
     "next": {"day", "week", "month", "quarter", "year"},
     "last": {"day", "week", "month", "quarter", "year"},
     "this": {"day", "week", "month", "quarter", "year", "season"},
-    # "ago": {"day", "week", "month", "quarter", "year"}, 
+    # "ago": {"day", "week", "month", "quarter", "year"},
     "from": {"month", "quarter", "year"},  # often used in ranges
     "starting from": {"month", "quarter", "year"},  # range anchor
 }
@@ -244,28 +234,6 @@ def _normalize_anchor(token):
         unit_key, _ = named_units[t]
         return base_unit_map[unit_key]
     raise ValueError(f"Cannot normalize anchor token: {token!r}")
-
-# def is_valid_anchor(modifier, token):
-#     """
-#     Unified check for whether `modifier` (next/last/this/…) can apply to `token`,
-#     where `token` may be either a raw named time token or a base unit.
-#     """
-#     base = _normalize_anchor(token)
-#     valid = anchor_modifier_valid_units.get(modifier.lower(), set())
-#     return base in valid
-   
-# def is_valid_anchor(modifier, token):
-#     """
-#     Accepts either a named unit ("march") *or* a full partial date ("april 2023")
-#     and decides if the modifier can apply.
-#     """
-#     # allow partial dates as valid anchor targets
-#     if PhraseEngine.is_partial_date([token], include_year=True, return_val=False):
-#         return modifier.lower() in {"this", "last", "next"}
-#     base = _normalize_anchor(token)
-#     valid_units = anchor_modifier_valid_units.get(modifier.lower(), set())
-#     return base in valid_units
-  
 
 def is_valid_anchor(modifier, token):
     """
@@ -292,17 +260,17 @@ def is_valid_anchor(modifier, token):
     base = _normalize_anchor(token)
     valid_units = anchor_modifier_valid_units.get(mod, set())
     return base in valid_units
-   
-   
+
+
 def parse_anchoring_range(phrase):
     def normalize_unit(token):
         t = token.strip().lower()
         if t in _unit_map:
             return _unit_map[t]
         raise ValueError(f"Unknown unit: {token!r}")
-    
+
     tokens = phrase.strip().lower().split()
-    
+
     if not tokens or tokens[0] not in set(anchor_modifier_valid_units.keys()):
         return None
 
@@ -329,7 +297,7 @@ def parse_anchoring_range(phrase):
         "modifier": modifier,
         "count": count,
         "unit": unit
-    }  
+    }
 
 def is_anchoring_structure(tokens):
     return tokens and tokens[0] in set(anchor_modifier_valid_units.keys())
@@ -353,7 +321,7 @@ intersection_pairs = {
     "month": {"quarter", "year"},
     "quarter": {"year"},
 
-    # if I ever expose them directly (otherwise they'll normalize to 'quarter' or 'year'):    
+    # Direct season and half-year support before normalization to broader units:
     "season":    {"month", "quarter", "year"},
     "half_year": {"month", "quarter", "year"},
 }
@@ -361,7 +329,7 @@ intersection_pairs = {
 
 # Define a blacklist of (base_unit_A, base_unit_B) pairs
 # that should never be allowed to intersect.
-# Here we forbid same‐grain intersections:
+# Same-grain intersections are invalid:
 illegal_intersection_pairs = {
     # same-level units
     ("day", "day"),
@@ -452,7 +420,7 @@ def is_intersection_structure(tokens):
 def extract_compound_parts(tokens):
     if "of" not in tokens:
         return None  # not compound
-       
+
     idx = tokens.index("of")
     left = tokens[:idx]
     right = tokens[idx+1:]
@@ -470,42 +438,6 @@ def extract_compound_parts(tokens):
     contained_token = left[-1]
     return contained_token, anchor_token, modifier
 
-# def validate_compound_structure(contained_token, anchor_token, modifier=None):
-#     """
-#     Validates a compound structure like:
-#         <contained> of <modifier> <anchor>
-#     Includes support for partial date containers.
-#     """
-#     try:
-#         contained_unit = normalize_named_unit(contained_token)
-# 
-#         # Check if the anchor is a partial date
-#         container_unit = None
-#         if PhraseEngine.is_partial_date([anchor_token], return_val=False):
-#             parts = PhraseEngine.is_partial_date([anchor_token], return_val=True)
-#             if "day" in parts:
-#                 container_unit = "day"
-#             elif "month" in parts and "year" in parts:
-#                 container_unit = "month"
-#             else:
-#                 container_unit = "month"  # fallback if ambiguous
-#         else:
-#             container_unit = _normalize_anchor(anchor_token)
-# 
-#         # Step 1: Validate containment
-#         if not _is_hierarchy_correct(contained_unit, container_unit):
-#             return False, "Invalid containment: unit does not fit in anchor"
-# 
-#         # Step 2: Validate anchoring
-#         if modifier:
-#             if not is_valid_anchor(modifier, anchor_token):
-#                 return False, "Invalid modifier for this anchor"
-# 
-#         return True, "Valid compound structure"
-# 
-#     except Exception as e:
-#         return False, f"Validation error: {e}"
-
 def validate_compound_structure(contained_token, anchor_token, modifier=None):
     """
     Validates a compound structure like:
@@ -515,7 +447,6 @@ def validate_compound_structure(contained_token, anchor_token, modifier=None):
     try:
         contained_unit = normalize_named_unit(contained_token)
 
-        # -- NEW ------------------------------------------------------------
         # Accept partial dates (e.g. "april 2023") as the container anchor
         if PhraseEngine.is_partial_date([anchor_token], include_year=True, return_val=False):
             if not is_valid_containment_with_partial([anchor_token]):
@@ -524,7 +455,6 @@ def validate_compound_structure(contained_token, anchor_token, modifier=None):
             container_unit = "day" if parts.get("day") else "month"
         else:
             container_unit = _normalize_anchor(anchor_token)
-        # -------------------------------------------------------------------
 
         # Step‑1  containment hierarchy
         if not _is_hierarchy_correct(contained_unit, container_unit):
@@ -569,7 +499,7 @@ def parse_relative_structure(tokens):
       - "3 days ago"
       - "2 weeks from now"
       - "5 months before March"
-    
+
     Returns:
       {
         "unit": "day",
@@ -607,7 +537,7 @@ def parse_relative_structure(tokens):
         "unit": unit,
         "offset": direction * count
     }
-   
+
 def is_relative_structure(tokens):
     joined = " ".join(tokens).lower()
     return any(mod in joined for mod in relative_modifiers)

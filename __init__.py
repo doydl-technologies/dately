@@ -3,20 +3,24 @@
 #
 # doydl's Temporal Parsing & Normalization Engine — dately
 #
-# `dately` is a precision-first library for parsing, interpreting, and normalizing time expressions
-# across both structured data and natural language. Built for developers and data teams working in
-# time-sensitive domains, it delivers deterministic behavior, high-performance parsing, and
-# transparent reasoning around temporal meaning.
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed for integration into NLP pipelines, ETL processes, scheduling engines, and cross-platform
-# applications, `dately` supports everything from ISO formats and user-generated timestamps to
-# phrases like “next Friday” or “Q2 2025.” Its symbolic parser bridges the gap between language and
-# logic, enabling interpretable, testable, and production-grade handling of ambiguous or implicit
-# time references.
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
 #
-# Features include format inference, batch-safe transformations, timezone normalization, and a
-# modular architecture for composable workflows. Whether you're resolving date strings in a chatbot
-# or aligning logs across systems, `dately` brings clarity, consistency, and control to temporal data.
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
 #
@@ -56,7 +60,7 @@ machine-readable and human-generated temporal data, offering utilities that main
 integrity and consistent behavior across platforms, languages, and data formats.
 
 ─────────────────────────────────────────────────────────────────────────────────────
-✓ Structural Parsing and Transformation 
+✓ Structural Parsing and Transformation
 ─────────────────────────────────────────────────────────────────────────────────────
 The library’s core parsing engine operates across scalar and vectorized data structures—
 supporting Python strings and datetime objects, as well as NumPy arrays, Pandas Series, JSON-style
@@ -94,7 +98,7 @@ is especially valuable in CI/CD workflows, cross-platform APIs, Docker-based ser
 multi-environment scheduling applications.
 
 ─────────────────────────────────────────────────────────────────────────────────────
-✓ Performance and Vectorized Workflows 
+✓ Performance and Vectorized Workflows
 ─────────────────────────────────────────────────────────────────────────────────────
 dately has been optimized for high-performance execution. It employs vectorized operations
 throughout its API and optionally leverages Cython and compiled C extensions to accelerate
@@ -108,7 +112,7 @@ transformation. Each utility is designed for integration into larger systems, wi
 input validation, error recovery, and structural introspection.
 
 ─────────────────────────────────────────────────────────────────────────────────────
-✓ Natural Language Processing (NLP) for Temporal Reasoning 
+✓ Natural Language Processing (NLP) for Temporal Reasoning
 ─────────────────────────────────────────────────────────────────────────────────────
 In addition to structured parsing, dately features a purpose-built symbolic NLP engine for
 resolving natural language time expressions into discrete datetime values or bounded intervals.
@@ -117,15 +121,15 @@ rule-based architecture that offers full transparency and auditability—critica
 compliance-heavy domains such as healthcare, legal tech, and financial systems.
 
 The NLP pipeline consists of five stages:
-1. **Lexical Normalization** – Converts words to their numeric or canonical forms (e.g., 
+1. **Lexical Normalization** – Converts words to their numeric or canonical forms (e.g.,
    “second Friday” → ordinal(2), weekday=Friday).
-2. **Grammar Parsing** – Applies symbolic pattern recognition to identify structural motifs like 
+2. **Grammar Parsing** – Applies symbolic pattern recognition to identify structural motifs like
    anchored offsets or nested intervals.
-3. **Calendar Logic Resolution** – Translates abstract concepts (e.g., “weekends,” “next quarter”) 
+3. **Calendar Logic Resolution** – Translates abstract concepts (e.g., “weekends,” “next quarter”)
    into concrete calendar dates using arithmetic models.
-4. **Contextual Grounding** – Resolves ambiguous references (e.g., “this month”) relative to a 
+4. **Contextual Grounding** – Resolves ambiguous references (e.g., “this month”) relative to a
    configurable `reference_date`.
-5. **Structured Output Emission** – Produces standardized `datetime.date` objects or normalized 
+5. **Structured Output Emission** – Produces standardized `datetime.date` objects or normalized
    ranges ready for downstream use.
 
 This NLP component handles a wide array of expressions—absolute dates, ordinal references,
@@ -136,7 +140,7 @@ and suitable for rule-based scheduling, time-based querying, or human-in-the-loo
 systems.
 
 ─────────────────────────────────────────────────────────────────────────────────────
-✓ Integrated, Modular Design Philosophy 
+✓ Integrated, Modular Design Philosophy
 ─────────────────────────────────────────────────────────────────────────────────────
 What sets dately apart is its deliberate emphasis on modularity, clarity, and cross-domain
 applicability. Its components can be used independently or orchestrated together, allowing
@@ -149,8 +153,14 @@ By harmonizing symbolic reasoning, deterministic NLP, and high-throughput engine
 elevates temporal data from an error-prone nuisance to a rigorously modeled, first-class element of
 modern software architecture.
 """
-from . import core as __core
-from ._api import set_week_start
+if __package__:
+    from . import core as __core
+    from ._api import set_week_start
+    from ._version import __version__
+else:  # Allows test collectors to import this flat-layout package initializer.
+    from dately import core as __core
+    from dately._api import set_week_start
+    from dately._version import __version__
 
 
 __all__ = [
@@ -161,7 +171,8 @@ __all__ = [
     'replace_datestring',
     'sequence',
     'parse',
-    'set_week_start',    
+    'set_week_start',
+    '__version__',
     'Holidate',
     'TimeZoner',
 ]
@@ -175,13 +186,19 @@ replace_datestring =  __core.replace_datestring
 sequence =  __core.sequence
 parse =  __core.parse
 
-# Remove core to keep namespace clean
-del core
+# Remove core to keep namespace clean without relying on import side effects.
+globals().pop('core', None)
 
-# Import the real types and the factory functions for lazy loading
-from ._timezone import ZoneInfoManager, get_TimeZoner
-from ._holiday import HolidayManager, get_Holidate
-from ._proxy import proxyObj as _proxyObj
+# Import the real types and their lazy factories. Constructing either feature is
+# local-only; network access occurs only when a network-backed method is called.
+if __package__:
+    from ._holiday import HolidayManager
+    from ._proxy import proxyObj as _proxyObj
+    from ._timezone import ZoneInfoManager
+else:
+    from dately._holiday import HolidayManager
+    from dately._proxy import proxyObj as _proxyObj
+    from dately._timezone import ZoneInfoManager
 
 # -----------------------------
 # TimeZoner - Stub for Autocomplete/Docs
@@ -194,7 +211,7 @@ class TimeZonerStub:
         ConvertTimeZone(from_zone, to_zone, year=None, month=None, day=None, hour=None, minute=None, second=None)
         CurrentTimebyZone(zone_name)
         FilterZoneDetail(zone_name)
-    
+
     Properties:
         Zones, ZonesByCountry, Offsets, ObservesDST, CountryNames, CountryCodes
     """
@@ -215,7 +232,6 @@ class TimeZonerStub:
     @property
     def CountryCodes(self): pass
 
-# Lazy load wrapper for TimeZoner
 TimeZoner: ZoneInfoManager = _proxyObj('dately._timezone', 'get_TimeZoner')
 TimeZoner.__doc__ = TimeZonerStub.__doc__
 
@@ -224,7 +240,6 @@ def timezoner_stub_dir():
     return ['ConvertTimeZone', 'CurrentTimebyZone', 'FilterZoneDetail',
             'Zones', 'ZonesByCountry', 'Offsets', 'ObservesDST',
             'CountryNames', 'CountryCodes']
-TimeZoner.__dir__ = timezoner_stub_dir
 
 # --------------------------------------
 # Holidate - Stub for Autocomplete/Docs
@@ -242,28 +257,26 @@ class HolidateStub:
 
     def Holiday(self, country_name, year=None, format='list'): pass
 
-# Lazy load wrapper for Holidate
 Holidate: HolidayManager = _proxyObj('dately._holiday', 'get_Holidate')
 Holidate.__doc__ = HolidateStub.__doc__
 
 # -----------------------------
 def holidate_stub_dir():
     return ['ListCountries', 'Holiday']
-   
-Holidate.__dir__ = holidate_stub_dir
+
 
 # ------------------------------------------
 # Expose all symbols defined in __init__.py
 # ------------------------------------------
 def __dir__():
     base_dir = globals().keys()
-    base_dir = [f for f in base_dir if f.startswith("__") and f.endswith("__")]   
+    base_dir = [f for f in base_dir if f.startswith("__") and f.endswith("__")]
     return sorted(set(base_dir).union(
         {
             'extract_datetime_component', 'detect_date_format', 'convert_date',
             'replace_timestring', 'replace_datestring', 'sequence', 'parse',
-            'set_week_start', 'Holidate', 'TimeZoner'
+            'set_week_start', '__version__', 'Holidate', 'TimeZoner'
             }
         )
                   )
-                  
+

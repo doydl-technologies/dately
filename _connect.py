@@ -1,31 +1,68 @@
 # -*- coding: utf-8 -*-
 
+#
+# doydl's Temporal Parsing & Normalization Engine — dately
+#
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
+#
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
+#
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
+#
+# Copyright (c) 2024 by doydl technologies. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the “Software”), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
 import random
+import re
 from collections import OrderedDict
 import time
 import threading
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import requests
 import requests_cache
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
-from ._log import logger       
+from ._log import logger
 from ._mskutils import Shift
 from ._sysutils import UnixTime
 from ._webutils import UserAgentRandomizer, find_os_in_user_agent, findhost
 
 
-
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 class NoAPIKeysError(Exception):
     """Exception raised when no API keys are available."""
+
     pass
+
 
 class HTTPLite:
     """
@@ -37,8 +74,13 @@ class HTTPLite:
       - optional base64-decoded URLs
       - rate limit tracking
     """
+
     _instance = None
     _lock = threading.Lock()
+    _API_KEY_HOSTS = {
+        "FullVersion": {"api.timezonedb.com"},
+        "DependentVersion": {"api.ipgeolocation.io"},
+    }
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -55,30 +97,31 @@ class HTTPLite:
         """
         if not self.initialized:
             self.session = requests_cache.CachedSession(
-                cache_name='http_cache',
-                backend='memory',
+                cache_name="http_cache",
+                backend="memory",
                 expire_after=expire_after,
                 allowable_codes=(200,),
-                allowable_methods=('GET',),
+                allowable_methods=("GET",),
             )
-            self.session.headers.update({
-                "User-Agent": UserAgentRandomizer.get(),
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                "Accept-Language": "en-US,en;q=0.9",
-                "Connection": "keep-alive",
-                "Accept-Encoding": "gzip, deflate, br, zstd",
-                "DNT": "1",
-                "Upgrade-Insecure-Requests": "1",
-                "Priority": "u=0, i",
-                "Sec-Ch-Ua-Mobile": "?0",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": random.choice(["same-origin", "same-site"]),
-                "Sec-Fetch-User": "?1",
-                "Referer": "https://www.google.com"
-            })
+            self.session.headers.update(
+                {
+                    "User-Agent": UserAgentRandomizer.get(),
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                    "Accept-Language": "en-US,en;q=0.9",
+                    "Connection": "keep-alive",
+                    "DNT": "1",
+                    "Upgrade-Insecure-Requests": "1",
+                    "Priority": "u=0, i",
+                    "Sec-Ch-Ua-Mobile": "?0",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": random.choice(["same-origin", "same-site"]),
+                    "Sec-Fetch-User": "?1",
+                    "Referer": "https://www.google.com",
+                }
+            )
             # Determine the OS from the User-Agent and update headers accordingly
-            user_agent = self.session.headers['User-Agent']
+            user_agent = self.session.headers["User-Agent"]
             os_name = find_os_in_user_agent(user_agent)
             self.session.headers.update({"Sec-Ch-Ua-Platform": os_name})
 
@@ -100,17 +143,13 @@ class HTTPLite:
             self.api_keys = {}
             self.last_key = None
 
-            # If we want to do base64 decode for the url
+            # Decode base64-encoded URLs when possible.
             self.base_url = self._maybe_decode_base64(base_url)
             self.host = findhost(self.base_url) if self.base_url else None
 
-            # If using API keys, fetch them at once
-            if self.use_api_key:
-                self.initialize_api_keys()
-
             self.initialized = True
         else:
-            # Already initialized => we only possibly re-decode the base_url if changed
+            # Recompute URL state when the singleton is reused.
             self.base_url = self._maybe_decode_base64(base_url)
             self.host = findhost(self.base_url) if self.base_url else None
 
@@ -140,14 +179,17 @@ class HTTPLite:
         """
         Load keys from a remote JSON.
         """
-        url_unformatted = 'aHR0cHM6Ly96b256ZXMubmV0bGlmeS5hcHAvZGF0YS5qc29u'
+        url_unformatted = "aHR0cHM6Ly96b256ZXMubmV0bGlmeS5hcHAvZGF0YS5qc29u"
         url = Shift.format.chr(url_unformatted, "format")
         try:
             resp = self.session.get(url, timeout=10)
             resp.raise_for_status()
             data = resp.json()
             # fetch the dict for current_key_type, fallback empty if missing
-            self.api_keys = data.get(self.current_key_type, {})
+            keys = data.get(self.current_key_type, {})
+            if not isinstance(keys, dict):
+                raise ValueError(f"Invalid API-key group: {self.current_key_type}")
+            self.api_keys = keys
         except Exception as e:
             logger.warning(f"Error fetching API keys: {e}")
             self.api_keys = {}
@@ -164,19 +206,26 @@ class HTTPLite:
 
     def _get_random_key(self):
         """Select a random key from the loaded dictionary."""
+        if not self.api_keys:
+            self.initialize_api_keys()
         keys_list = list(self.api_keys.keys())
         if not keys_list:
             raise NoAPIKeysError("No API keys available.")
         random_key = random.choice(keys_list)
-        # Avoid repeating the same key if we can
+        # Avoid reusing the immediately previous key when alternatives exist.
         while random_key == self.last_key and len(keys_list) > 1:
             random_key = random.choice(keys_list)
         self.last_key = random_key
 
-        # The actual key is base64-encoded. Need Shift.format.str() to decode
-        api_key_unformatted = self.api_keys[random_key]['key']
+        # Key values are stored in the project's binary-string encoding.
+        api_key_unformatted = self.api_keys[random_key]["key"]
         api_key = Shift.format.str(api_key_unformatted, "format")
         return api_key
+
+    def _api_key_allowed_for_current_host(self):
+        """Return whether the selected key type belongs to the active host."""
+        allowed_hosts = self._API_KEY_HOSTS.get(self.current_key_type, set())
+        return bool(self.host and self.host.lower() in allowed_hosts)
 
     # ---------------------------
     # Rate Limit Handling
@@ -184,11 +233,11 @@ class HTTPLite:
     def _extract_rate_limit_info(self, headers):
         for key, value in headers.items():
             key_lower = key.lower()
-            if key_lower.endswith('-limit'):
+            if key_lower.endswith("-limit"):
                 self.rate_limit_limit = int(value)
-            elif key_lower.endswith('-remaining'):
+            elif key_lower.endswith("-remaining"):
                 self.rate_limit_remaining = int(value)
-            elif key_lower.endswith('-reset'):
+            elif key_lower.endswith("-reset"):
                 self.rate_limit_reset = int(value)
 
     def _log_rate_limit_status(self):
@@ -202,7 +251,7 @@ class HTTPLite:
     # URL, Headers, Delay
     # ---------------------------
     def update_base_url(self, new_url):
-        self.base_url = self._maybe_decode_base64(new_url)        
+        self.base_url = self._maybe_decode_base64(new_url)
         self.host = findhost(self.base_url)
 
     def random_delay(self, concurrent=False, delay_enabled=False):
@@ -247,9 +296,9 @@ class HTTPLite:
         """
         Return 'html' or 'json' based on content type.
         """
-        html_patterns = [r'text', r'html', r'charset', r'utf']
-        json_patterns = [r'application', r'json']
-        content_type = (type_input or '').lower()
+        html_patterns = [r"text", r"html", r"charset", r"utf"]
+        json_patterns = [r"application", r"json"]
+        content_type = (type_input or "").lower()
 
         def matches_any(patterns, content):
             return any(re.search(pattern, content) for pattern in patterns)
@@ -279,31 +328,39 @@ class HTTPLite:
     # ---------------------------
     # Making Requests
     # ---------------------------
-    def make_request(self, params, concurrent=False, return_url=True, delay_enabled=True, api_key_param_name="key"):
+    def make_request(
+        self,
+        params,
+        concurrent=False,
+        return_url=True,
+        delay_enabled=True,
+        api_key_param_name="key",
+        timeout=15,
+    ):
         """
         :param params: dict of query params
         :param concurrent: bool => indicates we might run multiple calls in threads
         :param return_url: bool => if True, wrap response in [{url: response_data}]
         :param delay_enabled: bool => if True, enforce random/min delay
         """
+        params = dict(params or {})
         try:
             # If not specifying format => default to 'html'
-            if 'format' not in params:
-                params['format'] = 'json'
+            if "format" not in params:
+                params["format"] = "json"
 
             # Possibly shuffle headers each time
             self.shuffle_headers()
 
             # If using API keys => put it in params
-            if self.use_api_key:
-                # api_key_param_name = "key"
+            if self.use_api_key and self._api_key_allowed_for_current_host():
                 api_key = self._get_random_key()
                 params[api_key_param_name] = api_key
 
             # Actually make the request
-            response = self.session.get(self.base_url, params=params)
+            response = self.session.get(self.base_url, params=params, timeout=timeout)
             self.code = response.status_code
-            self.content_type = response.headers.get('Content-Type')
+            self.content_type = response.headers.get("Content-Type")
 
             # If not from cache => do the delay after the request
             if not response.from_cache:
@@ -321,7 +378,7 @@ class HTTPLite:
                 return self._handle_rate_limit_exceeded(concurrent, return_url)
 
             # Force JSON response handling
-            response_data = {"response": response.json() if params['format'] == 'json' else response.text}   
+            response_data = {"response": response.json() if params["format"] == "json" else response.text}
 
             # Return shapes
             if concurrent:
@@ -335,7 +392,7 @@ class HTTPLite:
         except requests.exceptions.HTTPError as e:
             error_message = {"error": f"HTTP Error {e.response.status_code}: {str(e)}"}
         except NoAPIKeysError as e:
-            error_message = {"error": str(e)}            
+            error_message = {"error": str(e)}
         except Exception as e:
             error_message = {"error": str(e)}
         finally:
@@ -348,8 +405,7 @@ class HTTPLite:
     def _handle_rate_limit_exceeded(self, concurrent, return_url):
         msg = "Rate limit exceeded. Please try again later."
         if self.rate_limit_reset:
-            msg = (f"Rate limit exceeded. Wait until "
-                   f"{UnixTime.Date(self.rate_limit_reset)} to make more requests.")
+            msg = f"Rate limit exceeded. Wait until {UnixTime.Date(self.rate_limit_reset)} to make more requests."
         error_obj = {"status": "error", "message": msg}
         if not concurrent:
             return [{self.base_url: error_obj}]
@@ -378,12 +434,12 @@ class HTTPLite:
 
     def destroy_instance(self):
         """
-        Make the current instance unusable. 
+        Make the current instance unusable.
         """
         if self._instance:
             for key in dir(self._instance):
                 attr = getattr(self._instance, key)
-                if callable(attr) and key not in ['__class__', '__del__', '__dict__']:
+                if callable(attr) and key not in ["__class__", "__del__", "__dict__"]:
                     setattr(self._instance, key, self._make_unusable)
             self._instance = None
 
@@ -396,16 +452,15 @@ class HTTPLite:
 # The single global instance controlled by http_client
 # ---------------------------------------------------
 http_client = HTTPLite(
-    base_url='aHR0cDovL2FwaS50aW1lem9uZWRiLmNvbS92Mi4xL2xpc3QtdGltZS16b25lP2tleT0=',
+    base_url="https://api.timezonedb.com/v2.1/list-time-zone",
     expire_after=600,
     use_api_key=True,
-    default_key_type="FullVersion"
+    default_key_type="FullVersion",
 )
 
+
 def __dir__():
-    return ['http_client']
-
-__all__ = ['http_client']
+    return ["http_client"]
 
 
-
+__all__ = ["http_client"]

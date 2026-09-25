@@ -1,0 +1,13 @@
+include LICENSE
+include README.md
+recursive-include mold/include *.h
+recursive-include mold/src *_impl.c
+recursive-include mold/pyx *.pyx
+recursive-include assets *.png
+include files/country_variants.json
+include files/holiday.json
+include files/timezone_data.json
+recursive-include _vendor *.md
+recursive-include docs *.md *.html
+recursive-include examples *.py
+recursive-include tests *.py

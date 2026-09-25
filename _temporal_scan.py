@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -74,10 +74,10 @@ Core Focus:
 - Serve as the front-facing computation engine for relative temporal inference
 """
 import re
+import calendar
 from datetime import datetime as dt, timedelta as td, date as d
 from copy import deepcopy
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from .dt_nlp.relative_time import _parse_named_relative_expression
 from .dt_nlp.quantified_time import _parse_quantified_time_expression
 from .dt_nlp.arithmetic import timeline
@@ -95,13 +95,7 @@ from .dt_nlp.lexical_validation.vocabulary_checks import vocab_validate
 # ***************************************************************
 DEBUGGER = False
 
-      
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
+
 class RelativeDateResolver:
     """
     A class for computing results of date-related expressions.
@@ -110,16 +104,16 @@ class RelativeDateResolver:
     #─────────────────────────────
     def __init__(self, week_start='sunday'):
         self.reference_date = d.today()
-        self.Days = {k.lower(): v for k, v in {k: v for k, v in timeline.days.items() if k not in {"day", "days"}}.items() if isinstance(k, str) and k.lower() == v.lower()}             
-        self.Seasons = {k: v.lower() for k, v in timeline.seasons.items()}    
-        self.Quarters  = {k: v.lower() for k, v in timeline.quarters.items() if k == v}         
-        self.TimeUnits = timeline.time_units.union({"weekend"}) 
+        self.Days = {k.lower(): v for k, v in {k: v for k, v in timeline.days.items() if k not in {"day", "days"}}.items() if isinstance(k, str) and k.lower() == v.lower()}
+        self.Seasons = {k: v.lower() for k, v in timeline.seasons.items()}
+        self.Quarters  = {k: v.lower() for k, v in timeline.quarters.items() if k == v}
+        self.TimeUnits = timeline.time_units.union({"weekend"})
         self.SeasonsOrdered = [f for f in timeline.seasons.info] # ["winter", "spring", "summer", "fall"]
-        self.QuartersOrdered = timeline.quarters.list  # ["q1", "q2", "q3", "q4"]          
-        self._ORDINAL_RE = re.compile(r"^(\d+)(st|nd|rd|th)$")         
-        
+        self.QuartersOrdered = timeline.quarters.list  # ["q1", "q2", "q3", "q4"]
+        self._ORDINAL_RE = re.compile(r"^(\d+)(st|nd|rd|th)$")
+
         # Core settings
-        self.week_start = self._normalize_week_start(week_start) 
+        self.week_start = self._normalize_week_start(week_start)
         self.immediate_relative_days = {
             "yesterday": lambda ref: ref - td(days=1),
             "today": lambda ref: ref,
@@ -131,19 +125,19 @@ class RelativeDateResolver:
             idx = int(val)
             if idx not in range(0, 7):
                 raise ValueError(f"Invalid numeric weekday: {value}")
-            val = self.Days.get(idx)
-        val = self.Days.get(val, val) 
+            val = calendar.day_name[idx].lower()
+        val = self.Days.get(val, val)
         if val.lower() == "sunday":
             return "sunday"
         elif val.lower() == "monday":
             return "monday"
         else:
             raise ValueError(f"Invalid week start value: {value}")
-           
+
     def set_week_start(self, week_start):
         """Public method to update the week_start and reinitialize dependent logic."""
         self.week_start = self._normalize_week_start(week_start)
-        
+
     def _is_ordinal(self, tok: str) -> bool:
         """True if token looks like 1st / 2nd / 23rd …"""
         return bool(self._ORDINAL_RE.match(tok))
@@ -160,9 +154,9 @@ class RelativeDateResolver:
 
     def _add_weeks(self, base_date, n_weeks):
         if self.week_start.lower() == 'monday':
-            start_of_week = base_date - td(days=base_date.weekday())  
+            start_of_week = base_date - td(days=base_date.weekday())
         elif self.week_start.lower() == 'sunday':
-            start_of_week = base_date - td(days=(base_date.weekday() + 1) % 7) 
+            start_of_week = base_date - td(days=(base_date.weekday() + 1) % 7)
         return start_of_week + td(weeks=n_weeks)
 
     def _add_months(self, base_date, n_months):
@@ -172,7 +166,7 @@ class RelativeDateResolver:
         total_months = (year * 12 + (month - 1)) + n_months
         new_year, new_month = divmod(total_months, 12)
         new_year, new_month = int(new_year), new_month + 1
-        last_day = timeline.days_in_month(new_month, new_year).d       
+        last_day = timeline.days_in_month(new_month, new_year).d
         new_day = min(day, last_day)
         return d(new_year, new_month, new_day)
 
@@ -181,7 +175,7 @@ class RelativeDateResolver:
             return base_date.replace(year=base_date.year + n_years)
         except ValueError:
             return base_date.replace(year=base_date.year + n_years, day=28)
-           
+
     def _get_current_or_previous_quarter_start(self, base, quarter_key):
         current_year = base.year
         info = timeline.adj_quarters()[quarter_key]
@@ -200,8 +194,8 @@ class RelativeDateResolver:
         prev_year = current_start.year - 1
         info = timeline.adj_quarters()[quarter_key]
         mm, dd = map(int, info["start"].split("/"))
-        return d(prev_year, mm, dd)              
-       
+        return d(prev_year, mm, dd)
+
     def _resolve_temporal_boundary(self, base_date, start_date, end_date, direction):
         if direction == "this":
             if start_date <= base_date <= end_date:
@@ -225,8 +219,8 @@ class RelativeDateResolver:
                 return "previous"
             else:
                 return "previous"
-        return "this"    
-    
+        return "this"
+
     def _parse_date(self, date_str):
         try:
             mm, dd, yyyy = map(int, date_str.split('/'))
@@ -238,11 +232,11 @@ class RelativeDateResolver:
         try:
             month, day = date_str.split()
             month_number = timeline.adj_months(m=month, year=None).start.mm.int
-            year = self.reference_date.year 
+            year = self.reference_date.year
             return d(year, month_number, int(day))
         except (ValueError, IndexError):
             return None
-    
+
     def _determine_current_season(self, base_date, include_year=False):
         month = base_date.month
         year = base_date.year
@@ -268,14 +262,14 @@ class RelativeDateResolver:
         if month in (7, 8, 9):
             return "q3"
         if month in (10, 11, 12):
-            return "q4"       
+            return "q4"
 
     def _get_season_boundaries(self, season_name, year):
         info = timeline.adj_seasons(season=season_name.lower(), year=year, include_year=True)
         if not info:
             return None
         return info
-       
+
     def _range_from_unit(self, base_date, quantity, time_unit):
         if quantity == 0:
             return (base_date, base_date)
@@ -311,7 +305,7 @@ class RelativeDateResolver:
             return (start, end)
 
     # Arithmetic Fallback Handler
-    #-------------------------------------------------------  
+    #-------------------------------------------------------
     def _compute_arithmetic(self, tokens):
         direction = None
         quantity = 1
@@ -334,7 +328,7 @@ class RelativeDateResolver:
             direction = "this"
 
         # Normalize quantity based on direction
-        if direction in ["last", "previous"]:        
+        if direction in ["last", "previous"]:
             quantity = -abs(quantity)
         elif direction == "next":
             quantity = abs(quantity)
@@ -358,8 +352,7 @@ class RelativeDateResolver:
                     cursor = week_end + td(days=1)
                 return results if len(results) > 1 else results[0]
 
-            # elif direction == "last":
-            elif direction in ["last", "previous"]:            
+            elif direction in ["last", "previous"]:
                 cursor = self._add_weeks(base, -1)
                 for _ in range(abs(quantity)):
                     week_end = cursor
@@ -392,7 +385,7 @@ class RelativeDateResolver:
                 if result:
                     results.append(result)
                     base = (
-                        result[1] + td(days=1)
+                        result[0]
                         if direction_sign > 0
                         else result[0] - td(days=1)
                     )
@@ -418,19 +411,80 @@ class RelativeDateResolver:
         Main entry‑point.  Accepts a list of *already normalised* tokens and
         returns either
         """
-        if not tokens: return None
+        if not tokens:
+            return None
         tokens = [str(t).lower() for t in tokens]
 
-        # ------------------------------------------------------------------ 
+        # Explicit named period + year (for example, ``q2 2025``).
+        explicit_tokens = tokens[1:] if len(tokens) == 3 and tokens[0] == "this" else tokens
+        if (
+            len(explicit_tokens) == 2
+            and explicit_tokens[1].isdigit()
+            and len(explicit_tokens[1]) == 4
+        ):
+            named, year_token = explicit_tokens
+            year = int(year_token)
+            if named in self.Quarters:
+                info = timeline.adj_quarters()[self.Quarters[named]]
+                sm, sd = map(int, info["start"].split("/"))
+                em, ed = map(int, info["end"].split("/"))
+                return (d(year, sm, sd), d(year, em, ed))
+            if named in timeline.months:
+                info = timeline.adj_months(m=timeline.months[named], year=year)
+                sm, sd = map(int, info["start"].split("/"))
+                em, ed = map(int, info["end"].split("/"))
+                return (d(year, sm, sd), d(year, em, ed))
+            if named in self.Seasons:
+                info = self._get_season_boundaries(self.Seasons[named], year)
+                return (
+                    dt.strptime(info["start"], "%m/%d/%Y").date(),
+                    dt.strptime(info["end"], "%m/%d/%Y").date(),
+                )
+
+        # Generic boundaries such as ``start of Q3 2024``.
+        if len(tokens) >= 3 and tokens[0] in {"start", "middle", "end"} and tokens[1] == "of":
+            scope_result = self.compute(tokens[2:])
+            if not scope_result:
+                return None
+            if isinstance(scope_result, tuple):
+                scope_start, scope_end = scope_result
+            else:
+                scope_start = scope_end = scope_result
+            if tokens[0] == "start":
+                return scope_start
+            if tokens[0] == "end":
+                return scope_end
+            return scope_start + (scope_end - scope_start) // 2
+
+        # Positional halves such as ``first half of last year``.
+        if (
+            len(tokens) == 5
+            and tokens[0] in {"1st", "2nd"}
+            and tokens[1] == "half"
+            and tokens[2] == "of"
+            and tokens[3] in {"this", "next", "last"}
+        ):
+            scope_result = self.compute(tokens[3:])
+            if not isinstance(scope_result, tuple):
+                return None
+            start, end = scope_result
+            if start.month == 1 and start.day == 1 and end.month == 12 and end.day == 31:
+                midpoint = d(start.year, 6, 30)
+            else:
+                midpoint = start + (end - start) // 2
+            if tokens[0] == "1st":
+                return (start, midpoint)
+            return (midpoint + td(days=1), end)
+
+        # ------------------------------------------------------------------
         # 0) Normalize Implicit Forward Time Expressions
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles cases where the user writes a bare quantified time span like:
         #     ["6", "months"]
         #     ["3", "weeks"]
         #     ["1", "year"]
         #
-        # These are treated as forward-looking by default (i.e., as "next"),
-        # so we rewrite them to:
+        # Treat these forms as forward-looking by default:
         #     ["next", "6", "months"]
         #
         # Why:
@@ -449,7 +503,7 @@ class RelativeDateResolver:
         ):
             tokens = ["next"] + tokens
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 1) Handle Nested “Ago” Modifiers with Anchor Adjustment
         # ------------------------------------------------------------------
         # This block looks for extended forms of "ago" expressions, such as:
@@ -483,6 +537,17 @@ class RelativeDateResolver:
 
                     if quantity_token.isdigit() and unit_token in self.TimeUnits:
                         quantity = int(quantity_token)
+                        trailing_tokens = tokens[idx_ago + 1:]
+                        if "starting" in trailing_tokens and "from" in trailing_tokens:
+                            from_idx = trailing_tokens.index("from")
+                            anchor = _compute_starting_point(trailing_tokens[from_idx + 1:])
+                            if anchor:
+                                old_ref = self.reference_date
+                                self.reference_date = anchor
+                                try:
+                                    return _compute_ago_expression(quantity, unit_token)
+                                finally:
+                                    self.reference_date = old_ref
                         shifted_date = _compute_ago_expression(quantity, unit_token)
 
                         if shifted_date:
@@ -491,8 +556,8 @@ class RelativeDateResolver:
                             # IF NO leftover tokens => just return shifted date
                             if not remaining_tokens:
                                 return shifted_date
-                            
-                            # Otherwise, parse the leftover tokens with the new reference
+
+                            # Parse remaining tokens against the shifted reference date.
                             old_ref = self.reference_date
                             self.reference_date = shifted_date
                             result = self.compute(remaining_tokens)
@@ -500,10 +565,10 @@ class RelativeDateResolver:
                             return result
             except Exception:
                 pass
-               
-        # ------------------------------------------------------------------ 
+
+        # ------------------------------------------------------------------
         # 2) Basic “X Units Ago” Parsing
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles minimal expressions like: ["3", "days", "ago"]
         #
         # These are direct and require no reanchoring or nested scopes.
@@ -529,9 +594,9 @@ class RelativeDateResolver:
                 subunit  = tokens[1]
                 return _compute_ago_expression(quantity, subunit)
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 3) Resolve Single-Token Relative Days (e.g., Today, Tomorrow)
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Captures one-word expressions that refer to self-evident relative dates.
         #
         # These tokens are stored in `self.immediate_relative_days`, which maps:
@@ -549,9 +614,9 @@ class RelativeDateResolver:
             if word in self.immediate_relative_days:
                 return self.immediate_relative_days[word](self.reference_date)
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 4) Ordinal Subunit Range Within Scoped Period
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Captures phrases like “1st 5 days of next month” where:
         #     - an ordinal rank is applied (e.g., 1st, 2nd, last, middle)
         #     - to a quantity of a unit (e.g., 5 days)
@@ -569,13 +634,13 @@ class RelativeDateResolver:
         #     - ["2nd", "1", "month", "next", "quarter"]
         if (
             len(tokens) == 5
-            and self._is_ordinal(tokens[0])       
-            and tokens[1].isdigit()               
-            and tokens[2] in self.TimeUnits       
+            and self._is_ordinal(tokens[0])
+            and tokens[1].isdigit()
+            and tokens[2] in self.TimeUnits
             and tokens[3] in ["this", "next", "last"]
         ):
-            ordinal_pos = self._ordinal_value(tokens[0]) 
-            quantity    = int(tokens[1])                  
+            ordinal_pos = self._ordinal_value(tokens[0])
+            quantity    = int(tokens[1])
             subunit     = tokens[2]
             direction   = tokens[3]
             scope       = tokens[4]
@@ -592,9 +657,9 @@ class RelativeDateResolver:
                 ordinal_pos, quantity, subunit, r_start, r_end
             )
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 5) Nth Subunit Inside a Temporal Scope
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles expressions like “2nd Friday next month” or “3 day this week”.
         #
         # Pattern:
@@ -625,9 +690,9 @@ class RelativeDateResolver:
                     scope.lower()
                 )
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 6) Positional Subunit Selection Within a Named Period
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Resolves expressions that ask for a positional segment of subunits
         # within a directional named period, such as:
         #     • "start week last month"
@@ -668,9 +733,9 @@ class RelativeDateResolver:
                 position, subunit, r_start, r_end
             )
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 7) Resolve “Last X of Y” Constructs
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles phrases that describe the final occurrence of a subunit within
         # a larger temporal scope, such as:
         #     • "last day of April"
@@ -702,9 +767,9 @@ class RelativeDateResolver:
                     return _compute_final_subunit_in_range(subunit, r_start, r_end)
                 return None
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 8) Parse Anchored Expressions Using “Starting From”
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles temporal expressions that explicitly define a custom anchor point
         # from which a time span begins. These take the form:
         #     • "next 6 months starting from April 1"
@@ -727,9 +792,9 @@ class RelativeDateResolver:
         if "starting" in tokens and "from" in tokens:
             return _compute_starting_from_expression(tokens)
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 9) Unit-Aligned Date Ranges (e.g., Week of April 3)
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Handles simple expressions that describe a calendar unit anchored to a
         # specific date-like token, such as:
         #     • "week of April 3"
@@ -782,11 +847,11 @@ class RelativeDateResolver:
                         dt.strptime(info["start"], "%m/%d/%Y").date(),
                         dt.strptime(info["end"], "%m/%d/%Y").date()
                     )
-                    
-        # ------------------------------------------------------------------ 
+
+        # ------------------------------------------------------------------
         # 10) Scoped Quantity of Subunits Within a Named Period
-        # ------------------------------------------------------------------ 
-        # Resolves expressions that specify *how many* of a subunit to pull from 
+        # ------------------------------------------------------------------
+        # Resolves expressions that specify *how many* of a subunit to pull from
         # a broader named time span.
         #
         # Pattern:
@@ -822,9 +887,9 @@ class RelativeDateResolver:
                 direction, quantity, subunit, scope_direction, named_period
             )
 
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # 11) Position-Based Lookup Within a Time Unit
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Captures expressions that refer to the *position* within a larger temporal unit.
         #
         # Pattern:
@@ -850,10 +915,10 @@ class RelativeDateResolver:
             direction     = tokens[1]
             time_unit_str = tokens[2]
             return _compute_range_position(position, direction, time_unit_str)
-           
-        # ------------------------------------------------------------------           
+
+        # ------------------------------------------------------------------
         # 12) Named Unit Within Larger Scoped Unit
-        # ------------------------------------------------------------------ 
+        # ------------------------------------------------------------------
         # Captures expressions like "january next year", "friday this week", etc.
         #
         # Pattern:
@@ -885,7 +950,7 @@ class RelativeDateResolver:
                      or named in self.Quarters)
             ):
                 return _compute_named_of_timeunit(named, direction, big_unit)
-               
+
         # ------------------------------------------------------------------
         # 13) Repeated Named Units (e.g., Next 3 Fridays)
         # ------------------------------------------------------------------
@@ -922,7 +987,7 @@ class RelativeDateResolver:
                 return _compute_named_repetitions(
                     tokens[0], int(tokens[1]), named_unit
                 )
-                
+
         # ------------------------------------------------------------------
         # 14) Compound Scoped Subunit Expressions
         # ------------------------------------------------------------------
@@ -945,7 +1010,7 @@ class RelativeDateResolver:
         #        inside a resolved named period like a month, season, or quarter.
         #
         # Example:
-        #     ["next", "monday", "of", "june"] would match this but likely appear earlier.
+        #     ["next", "monday", "of", "june"] is handled by an earlier rule.
         #     ["last", "week", "this", "month"] → final week inside this month
         if (
             len(tokens) >= 3
@@ -1120,13 +1185,13 @@ class RelativeDateResolver:
 
         if main_token in timeline.months:
             month_name = timeline.months[main_token]
-            return _compute_specific_month(direction, month_name)        
+            return _compute_specific_month(direction, month_name)
 
         # ------------------------------------------------------------------
         # 16) Arithmetic-Based Fallback for Quantified Durations
         # ------------------------------------------------------------------
         # Final safety net for phrases that contain numeric time values but didn’t
-        # match any earlier explicit structure rules.
+        # match an earlier explicit structure rule.
         #
         # Examples:
         #     • ["5", "weeks"]
@@ -1158,21 +1223,21 @@ class RelativeDateResolver:
 # ──────────────────────────────────────────────────────────────────────────────
 # Temporal Subunit Computation Layer
 # ──────────────────────────────────────────────────────────────────────────────
-# 
-# The following defines the internal logic used to compute specific temporal 
+#
+# The following defines the internal logic used to compute specific temporal
 # subunits—such as weekdays, months, seasons, quarters, or custom spans—
 # from natural language expressions like:
-# 
+#
 #     - "next 2 Fridays"
 #     - "last 3 seasons"
 #     - "first weekend of next month"
 #     - "middle week of this quarter"
 #     - "3rd Monday in July"
 #     - "2 weeks starting from May 1"
-# 
-# It serves as the computational engine for resolving **structural temporal 
+#
+# It serves as the computational engine for resolving **structural temporal
 # patterns**, after token parsing and grammar recognition are complete.
-# 
+#
 # Core Responsibilities
 # ──────────────────────────────────────────────────────────────────────────────
 # • Interpret and resolve tokens like “next 3 months” or “last 2 weekends”.
@@ -1183,20 +1248,20 @@ class RelativeDateResolver:
 # • Handle complex relative expressions involving scope + direction + subunit.
 # • Perform contextual anchoring based on a live reference date.
 # • Use structured timeline data (calendar logic) for boundaries and validation.
-# 
+#
 # Why it Exists
 # ──────────────────────────────────────────────────────────────────────────────
 # Natural-language temporal expressions often contain hierarchical structure—
 # for example: “2nd week of April” requires:
 #     → computing the range for April
 #     → locating the second "week" within that range
-# 
+#
 # This layer provides **precision control** over such date-bound substructures,
 # including:
 #     - Cardinal/ordinal unit location ("3rd", "last")
 #     - Named units inside named periods ("March", "Friday", "Q2")
 #     - Implicit or computed ranges ("this year", "next weekend")
-# 
+#
 # Return Values
 # ──────────────────────────────────────────────────────────────────────────────
 # Each function returns one of:
@@ -1204,15 +1269,15 @@ class RelativeDateResolver:
 #     • `(start_date, end_date)` — for unit spans (weeks, months, etc.)
 #     • `list[date or tuple]` — when resolving multiple repetitions
 #     • `None` — if resolution fails or is out of scope
-# 
-# All computations are anchored on `resolver.reference_date`, which can be 
-# temporarily shifted to accommodate contextual phrases like 
+#
+# All computations are anchored on `resolver.reference_date`, which can be
+# temporarily shifted to accommodate contextual phrases like
 # “starting from March 15”.
 def _compute_named_repetitions(direction, quantity, named_unit):
     results = []
     temp_ref = resolver.reference_date
     if named_unit == "season":
-        current_season, current_year = resolver._determine_current_season(temp_ref, include_year=True)  # Added        
+        current_season, current_year = resolver._determine_current_season(temp_ref, include_year=True)
         index = resolver.SeasonsOrdered.index(current_season)
         step = 1 if direction == "next" else -1
         count = 0
@@ -1260,7 +1325,7 @@ def _compute_named_repetitions(direction, quantity, named_unit):
             temp = resolver._add_months(temp, step)
             current_year = temp.year
             current_month = temp.month
-            month_name = timeline.months.index[current_month].lower()            
+            month_name = timeline.months.index[current_month].lower()
             info = timeline.adj_months(month_name, current_year)
             start_mm, start_dd = map(int, info["start"].split("/"))
             end_mm, end_dd = map(int, info["end"].split("/"))
@@ -1269,7 +1334,7 @@ def _compute_named_repetitions(direction, quantity, named_unit):
             results.append((start, end))
             count += 1
         return results if quantity > 1 else results[0]
-       
+
     if named_unit == "year":
         current_year = resolver.reference_date.year
         step = 1 if direction == "next" else -1
@@ -1307,8 +1372,11 @@ def _compute_named_repetitions(direction, quantity, named_unit):
             return results if results else None
         results.append(result)
         if isinstance(result, tuple):
-            end_date = result[1]
-            temp_ref = end_date + td(days=1) if direction == "next" else result[0] - td(days=1)
+            if named_unit == "weekend" and direction == "next":
+                temp_ref = result[0]
+            else:
+                end_date = result[1]
+                temp_ref = end_date + td(days=1) if direction == "next" else result[0] - td(days=1)
         else:
             temp_ref = result + td(days=1) if direction == "next" else result - td(days=1)
         resolver.reference_date = old_ref
@@ -1356,12 +1424,12 @@ def _compute_named_repetitions_in_namedperiod(direction, quantity, subunit, scop
                 cursor = item - td(days=1)
             if cursor < range_start:
                 break
-        results.reverse()  # Ensures oldest-to-newest order    
+        results.reverse()  # Ensures oldest-to-newest order
     else:
         item = _find_this_subunit_in_scope(subunit, range_start, range_end)
         if item:
             results.append(item)
-    return results if results else None       
+    return results if results else None
 
 def _compute_named_of_timeunit(named, direction, big_unit):
     big_range = resolver.compute([direction, big_unit])
@@ -1371,11 +1439,11 @@ def _compute_named_of_timeunit(named, direction, big_unit):
 
     if named in resolver.Quarters:
         quarter_key = resolver.Quarters[named]
-        return _compute_specific_quarter(direction, quarter_key)    
-    
+        return _compute_specific_quarter(direction, quarter_key)
+
     if named == "day":
         return _compute_sub_day_in_range(big_unit, range_start, range_end)
-       
+
     if named in timeline.months:
         return _compute_sub_month_in_range(named, range_start, range_end)
     elif named in resolver.Days:
@@ -1431,7 +1499,7 @@ def _find_next_subunit_in_scope(subunit, start_cursor, range_end):
             return (start, end)
         return None
     return None
-   
+
 def _find_last_subunit_in_scope(subunit, range_start, end_cursor):
     if end_cursor < range_start:
         return None
@@ -1456,7 +1524,7 @@ def _find_last_subunit_in_scope(subunit, range_start, end_cursor):
         start_of_month = d(end_cursor.year, end_cursor.month, 1)
         if start_of_month < range_start:
             return None
-        real_end_day = timeline.days_in_month(end_cursor.month, end_cursor.year).d        
+        real_end_day = timeline.days_in_month(end_cursor.month, end_cursor.year).d
         end_of_month = d(end_cursor.year, end_cursor.month, real_end_day)
         if end_of_month > end_cursor:
             end_of_month = end_cursor
@@ -1484,13 +1552,20 @@ def _find_last_subunit_in_scope(subunit, range_start, end_cursor):
             return None
         return (start_s, end_s)
     return None
-   
+
+
+def _find_this_subunit_in_scope(subunit, range_start, range_end):
+    """Return the requested subunit containing, or nearest to, the reference date."""
+    if subunit in resolver.Days:
+        return _compute_specific_weekday_in_range("this", subunit, range_start, range_end)
+    return _compute_specific_timeunit_in_range("this", subunit, range_start, range_end)
+
 def _first_last_middle_n_subunits_in_range(ordinal_pos, qty, subunit, r_start, r_end):
     if subunit == "half":
         mid = r_start + (r_end - r_start) // 2
         halves = [
-            (r_start, mid),              
-            (mid + td(days=1), r_end)  
+            (r_start, mid),
+            (mid + td(days=1), r_end)
         ]
         idx = 0 if ordinal_pos in (1, 0) else 1
         if qty > 1 or idx >= len(halves):
@@ -1528,7 +1603,7 @@ def _first_last_middle_n_subunits_in_range(ordinal_pos, qty, subunit, r_start, r
 
     slice_ = bucket[start_idx:end_idx]
     return slice_[0] if qty == 1 else slice_
-   
+
 def _range_position_within_scope(position, subunit, r_start, r_end):
     bucket = []
     cursor = r_start
@@ -1551,7 +1626,7 @@ def _range_position_within_scope(position, subunit, r_start, r_end):
         return bucket[mid]
 
     return None
-   
+
 def _compute_ordinal_expression(quantity, subunit, direction, scope):
     big_expr = [direction, scope]
     big_result = resolver.compute(big_expr)
@@ -1579,6 +1654,30 @@ def _compute_nth_subunit_in_range(n, subunit, range_start, range_end):
         return _get_nth_quarter_in_range(n, range_start, range_end)
     return None
 
+
+def _get_nth_period_in_range(n, period, range_start, range_end):
+    if n < 1:
+        return None
+    cursor = range_start
+    count = 0
+    while cursor <= range_end:
+        item = _find_next_subunit_in_scope(period, cursor, range_end)
+        if not item:
+            return None
+        count += 1
+        if count == n:
+            return item
+        cursor = item[1] + td(days=1)
+    return None
+
+
+def _get_nth_season_in_range(n, range_start, range_end):
+    return _get_nth_period_in_range(n, "season", range_start, range_end)
+
+
+def _get_nth_quarter_in_range(n, range_start, range_end):
+    return _get_nth_period_in_range(n, "quarter", range_start, range_end)
+
 def _get_nth_weekday_in_range(n, weekday_token, range_start, range_end):
     if range_start > range_end:
         return None
@@ -1592,20 +1691,20 @@ def _get_nth_weekday_in_range(n, weekday_token, range_start, range_end):
                 return cursor
         cursor += td(days=1)
     return None
-   
+
 def _get_nth_day_in_range(n, range_start, range_end):
     total_days = (range_end - range_start).days + 1
     if n > total_days:
         return None
     return range_start + td(days=(n - 1))
-   
+
 def _get_nth_week_in_range(n, range_start, range_end):
     start_of_nth = range_start + td(weeks=(n - 1))
     end_of_nth = start_of_nth + td(days=6)
     if end_of_nth > range_end:
         return None
     return (start_of_nth, end_of_nth)
-   
+
 def _get_nth_month_in_range(n, range_start, range_end):
     months = []
     cursor = d(range_start.year, range_start.month, 1)
@@ -1633,7 +1732,7 @@ def _get_nth_month_in_range(n, range_start, range_end):
     if n > len(months):
         return None
     return months[n - 1]
-   
+
 def _compute_subunit_of_namedperiod(direction, subunit, scope_direction, named_period):
     if scope_direction:
         big_range = resolver.compute([scope_direction, named_period])
@@ -1665,7 +1764,7 @@ def _compute_final_subunit_in_range(subunit, range_start, range_end):
 
     elif subunit == "week":
         end = range_end
-        start = end - timedelta(days=6)
+        start = end - td(days=6)
         if start >= range_start:
             return (start, end)
         else:
@@ -1677,11 +1776,11 @@ def _compute_final_subunit_in_range(subunit, range_start, range_end):
             month_info = timeline.adj_months(m=calendar.month_name[current.month].lower(), year=current.year)
             start_mm, start_dd = map(int, month_info["start"].split("/"))
             end_mm, end_dd = map(int, month_info["end"].split("/"))
-            sub_start = date(current.year, start_mm, start_dd)
-            sub_end = date(current.year, end_mm, end_dd)
+            sub_start = d(current.year, start_mm, start_dd)
+            sub_end = d(current.year, end_mm, end_dd)
             if sub_start >= range_start and sub_end <= range_end:
                 return (sub_start, sub_end)
-            current -= timedelta(days=1)
+            current -= td(days=1)
         return None
 
     elif subunit == "quarter":
@@ -1691,8 +1790,8 @@ def _compute_final_subunit_in_range(subunit, range_start, range_end):
                 info = timeline.adj_quarters()[quarter]
                 sm, sd = map(int, info["start"].split("/"))
                 em, ed = map(int, info["end"].split("/"))
-                q_start = date(year, sm, sd)
-                q_end = date(year, em, ed)
+                q_start = d(year, sm, sd)
+                q_end = d(year, em, ed)
                 if q_start >= range_start and q_end <= range_end:
                     return (q_start, q_end)
         return None
@@ -1702,8 +1801,8 @@ def _compute_final_subunit_in_range(subunit, range_start, range_end):
             year = range_end.year - offset
             for season in reversed(resolver.SeasonsOrdered):
                 info = timeline.adj_seasons(season=season, year=year, include_year=True)
-                s_start = datetime.strptime(info["start"], "%m/%d/%Y").date()
-                s_end = datetime.strptime(info["end"], "%m/%d/%Y").date()
+                s_start = dt.strptime(info["start"], "%m/%d/%Y").date()
+                s_end = dt.strptime(info["end"], "%m/%d/%Y").date()
                 if s_start >= range_start and s_end <= range_end:
                     return (s_start, s_end)
         return None
@@ -1721,9 +1820,9 @@ def _compute_specific_weekday(direction, weekday):
 
     elif direction == "last":
         delta = (current_idx - target_idx)
-        if delta < 0:
+        if delta <= 0:
             delta += 7
-        return base - td(days=(delta + 7))
+        return base - td(days=delta)
 
     elif direction == "previous":
         start_of_last_week = resolver._add_weeks(base, -1) # Step 1: Get the start of *previous calendar week*
@@ -1734,7 +1833,7 @@ def _compute_specific_weekday(direction, weekday):
         delta = (target_idx - current_idx)
         if delta <= 0:
             delta += 7
-        return base + td(days=delta + 7)
+        return base + td(days=delta)
     return None
 
 def _compute_specific_year(direction):
@@ -1745,11 +1844,11 @@ def _compute_specific_year(direction):
     elif direction == "last":
         year -= 1
     return (d(year, 1, 1), d(year, 12, 31))
-   
+
 def _compute_specific_weekend(direction, base_date=None):
     if not base_date:
         base_date = resolver.reference_date
-    weekend_start_idx = 5        
+    weekend_start_idx = 5
     if direction == "this":
         candidate = base_date + td((weekend_start_idx - base_date.weekday()) % 7)
         if base_date <= candidate + td(days=1):
@@ -1758,10 +1857,13 @@ def _compute_specific_weekend(direction, base_date=None):
         candidate = base_date + td((weekend_start_idx - base_date.weekday()) % 7) + td(weeks=1)
         return (candidate, candidate + td(days=1))
     elif direction == "last":
-        candidate = base_date - td(days=((base_date.weekday() - weekend_start_idx) % 7 + 7))
+        days_back = (base_date.weekday() - weekend_start_idx) % 7
+        if days_back == 0:
+            days_back = 7
+        candidate = base_date - td(days=days_back)
         return (candidate, candidate + td(days=1))
     return None
-   
+
 def _compute_specific_month(direction, month_name):
     base = resolver.reference_date
     current_year = base.year
@@ -1816,12 +1918,12 @@ def _compute_specific_season(direction, season_name):
             last_start = resolver._parse_date(info_last["start"])
             last_end   = resolver._parse_date(info_last["end"])
             return (last_start, last_end)
-    return None 
+    return None
 
 def _compute_specific_quarter(direction, quarter_key):
     base = resolver.reference_date
     current_year = base.year
-    quarter_info = timeline.adj_quarters()[quarter_key]  
+    quarter_info = timeline.adj_quarters()[quarter_key]
     start_mm, start_dd = map(int, quarter_info["start"].split("/"))
     end_mm,   end_dd   = map(int, quarter_info["end"].split("/"))
     this_start = d(current_year, start_mm, start_dd)
@@ -1833,10 +1935,10 @@ def _compute_specific_quarter(direction, quarter_key):
             return (this_start, this_end)
         else:
             info_next = timeline.adj_quarters()[quarter_key]  # same key, next year
-            next_start = d(current_year + 1, 
+            next_start = d(current_year + 1,
                            int(info_next["start"].split("/")[0]),
                            int(info_next["start"].split("/")[1]))
-            next_end = d(current_year + 1, 
+            next_end = d(current_year + 1,
                          int(info_next["end"].split("/")[0]),
                          int(info_next["end"].split("/")[1]))
             return (next_start, next_end)
@@ -1845,15 +1947,15 @@ def _compute_specific_quarter(direction, quarter_key):
             return (this_start, this_end)
         else:
             info_last = timeline.adj_quarters()[quarter_key]
-            last_start = d(current_year - 1, 
+            last_start = d(current_year - 1,
                            int(info_last["start"].split("/")[0]),
                            int(info_last["start"].split("/")[1]))
-            last_end = d(current_year - 1, 
+            last_end = d(current_year - 1,
                          int(info_last["end"].split("/")[0]),
                          int(info_last["end"].split("/")[1]))
             return (last_start, last_end)
     return None
-   
+
 def _compute_range_position(position, direction, time_unit_str):
     range_expr = [direction, time_unit_str]
     result = resolver.compute(range_expr)
@@ -1871,13 +1973,12 @@ def _compute_range_position(position, direction, time_unit_str):
     elif position == "middle":
         delta = (range_end - range_start) // 2
         return range_start + delta
-    return None       
- 
+    return None
+
 def _compute_specific_weekday_in_range(direction, weekday_token, range_start, range_end):
     if range_start > range_end:
         return None
     w_idx = timeline.days.index[weekday_token.lower()]
-    base = range_start if direction != "last" else range_end
     if direction == "next":
         cursor = range_start
         while cursor <= range_end:
@@ -1903,7 +2004,7 @@ def _compute_specific_weekday_in_range(direction, weekday_token, range_start, ra
 def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range_end):
     if range_start > range_end:
         return None
-       
+
     if time_unit == "week":
         if direction == "next":
             start = range_start
@@ -1920,7 +2021,7 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
             end = start + td(days=6)
             if end <= range_end:
                 return (start, end)
-               
+
     elif time_unit == "day":
         if direction == "next":
             if range_start <= range_end:
@@ -1932,12 +2033,12 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
             ref = resolver.reference_date
             if range_start <= ref <= range_end:
                 return ref
-               
+
     elif time_unit == "month":
         for month_offset in range(12):
             test_date = resolver._add_months(range_start, month_offset)
             start = d(test_date.year, test_date.month, 1)
-            last_day = timeline.days_in_month(start.month, start.year).d            
+            last_day = timeline.days_in_month(start.month, start.year).d
             end = d(start.year, start.month, last_day)
             if end > range_end:
                 break
@@ -1949,7 +2050,7 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
                 last = (start, end)
         if direction == "last":
             return last if 'last' in locals() else None
-           
+
     elif time_unit == "season":
         for year_offset in range(2):  # scan 2 years forward max
             year = range_start.year + year_offset
@@ -1967,7 +2068,7 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
                     last = (start, end)
         if direction == "last":
             return last if 'last' in locals() else None
-           
+
     elif time_unit == "quarter":
         for y_offset in range(2):  # scan across 2 years
             year = range_start.year + y_offset
@@ -1987,15 +2088,15 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
                     last = (start, end)
         if direction == "last":
             return last if 'last' in locals() else None
-           
+
     elif time_unit == "weekend":
         if direction == "next":
             return _compute_specific_weekend("next", range_start)
         elif direction == "last":
             return _compute_specific_weekend("last", range_end)
         elif direction == "this":
-            return _compute_specific_weekend("this", resolver.reference_date)               
-           
+            return _compute_specific_weekend("this", resolver.reference_date)
+
     elif time_unit == "year":
         ref_year = resolver.reference_date.year
         if direction == "this":
@@ -2011,32 +2112,32 @@ def _compute_specific_timeunit_in_range(direction, time_unit, range_start, range
         if range_start <= start and end <= range_end:
             return (start, end)
     return None
-   
+
 def _find_last_weekday_in_range(weekday_token, start, end):
     w_idx = timeline.days.index[weekday_token.lower()]
     cursor = end
     while cursor >= start:
         if cursor.weekday() == w_idx:
             return cursor
-        cursor -= timedelta(days=1)
-    return None   
-   
+        cursor -= td(days=1)
+    return None
+
 def _compute_ago_expression(quantity, subunit):
     base = resolver.reference_date
     if subunit in {"day", "week", "month", "year"}:
         return _compute_ago_timeunit(base, quantity, subunit)
     if subunit == "quarter":
-        return _compute_ago_quarter(base, quantity)  
+        return _compute_ago_quarter(base, quantity)
     if subunit == "season":
-        return _compute_ago_season([quantity, subunit, "ago"])         
+        return _compute_ago_season([quantity, subunit, "ago"])
     if subunit in resolver.Days:
         return _compute_ago_namedweekday(base, quantity, subunit)
     if subunit in resolver.Seasons:
-        return _compute_ago_namedseason(base, quantity, subunit)                
+        return _compute_ago_namedseason(base, quantity, subunit)
     if subunit.startswith("weekend"):
         return _compute_ago_weekend(base, quantity)
     return None
-   
+
 def _compute_ago_timeunit(base, quantity, time_unit):
     if time_unit == "day":
         return base - td(days=quantity)
@@ -2047,7 +2148,7 @@ def _compute_ago_timeunit(base, quantity, time_unit):
     elif time_unit == "year":
         return resolver._add_years(base, -quantity)
     return None
-   
+
 def _compute_ago_namedweekday(base, quantity, weekday_token):
     if weekday_token.lower() not in timeline.days.index:
         return None
@@ -2060,10 +2161,10 @@ def _compute_ago_namedweekday(base, quantity, weekday_token):
             if found == quantity:
                 return cursor
         cursor -= td(days=1)
-    return None    
-   
+    return None
+
 def _compute_ago_season(token, rnge=False):
-    current_season, current_year = resolver._determine_current_season(resolver.reference_date, include_year=True) # Added
+    current_season, current_year = resolver._determine_current_season(resolver.reference_date, include_year=True)
     num_seasons_ago = int(token[0])
     current_index = resolver.SeasonsOrdered.index(current_season)
     cycles = num_seasons_ago // 4
@@ -2078,17 +2179,15 @@ def _compute_ago_season(token, rnge=False):
         parsed_info = {k: dt.strptime(v, '%m/%d/%Y').date() for k, v in season_info.items()}
         return parsed_info
     else:
-        return dt.strptime(season_info['start'], '%m/%d/%Y').date()         
+        return dt.strptime(season_info['start'], '%m/%d/%Y').date()
 
 def _compute_ago_namedseason(base, quantity, season_token):
     season_token = season_token.lower()
-    current_season, current_year = resolver._determine_current_season(base, include_year=True) # Added    
-    current_idx = resolver.SeasonsOrdered.index(current_season)
-    target_idx = resolver.SeasonsOrdered.index(season_token)
-    extra = 0 # compute how many extra years we step back due to misalignment
+    _, current_year = resolver._determine_current_season(base, include_year=True)
+    extra = 0 # Account for year boundaries introduced by season-index misalignment.
     target_year = current_year - (quantity + extra)
     season_info = timeline.adj_seasons(season=season_token, year=target_year, include_year=True)
-    return dt.strptime(season_info["start"], "%m/%d/%Y").date()       
+    return dt.strptime(season_info["start"], "%m/%d/%Y").date()
 
 def _compute_ago_weekend(base, quantity):
     offset =  (base.weekday() - 5) % 7
@@ -2114,7 +2213,7 @@ def _compute_ago_quarter(base, quantity):
     q_key = resolver.QuartersOrdered[current_idx]
     mm, dd = map(int, timeline.adj_quarters()[q_key]["start"].split("/"))
     return d(current_year, mm, dd)
-   
+
 def _compute_sub_month_in_range(month_token, range_start, range_end):
     month_name = timeline.months[month_token]
     target_year = range_start.year
@@ -2128,17 +2227,16 @@ def _compute_sub_month_in_range(month_token, range_start, range_end):
     if sub_start < range_start or sub_end > range_end:
         return None
     return (sub_start, sub_end)
-   
+
 def _compute_sub_weekday_in_range(weekday_token, range_start, range_end):
-    day_name = resolver.Days[weekday_token] 
-    target_idx = timeline.days.index[weekday_token] 
+    target_idx = timeline.days.index[weekday_token]
     temp = range_start
     while temp <= range_end:
         if temp.weekday() == target_idx:
             return temp
         temp += td(days=1)
     return None
-   
+
 def _compute_sub_season_in_range(season_token, range_start, range_end):
     season_name = resolver.Seasons[season_token]
     target_year = range_start.year
@@ -2150,13 +2248,13 @@ def _compute_sub_season_in_range(season_token, range_start, range_end):
     if sub_start < range_start or sub_end > range_end:
         return None
     return (sub_start, sub_end)
-   
-def _compute_sub_day_in_range(self, day_token, range_start, range_end):
+
+def _compute_sub_day_in_range(day_token, range_start, range_end):
     parsed_date = resolver._parse_date(day_token)
     if not parsed_date:
         return None
-    if range_start <= parsed <= range_end: # Check if inside the range
-        return parsed # Return either a single date or a 1-day range
+    if range_start <= parsed_date <= range_end: # Check if inside the range
+        return parsed_date # Return either a single date or a 1-day range
     return None
 
 def _compute_starting_from_expression(tokens):
@@ -2164,7 +2262,7 @@ def _compute_starting_from_expression(tokens):
         start_idx = [i for i, t in enumerate(tokens) if t.lower() == "starting"][0]
         from_idx = [i for i, t in enumerate(tokens) if t.lower() == "from"][0]
     except IndexError:
-        return None 
+        return None
     left_part = tokens[:start_idx]  # e.g. ["next", "6", "month"]
     right_part = tokens[from_idx + 1:]  # e.g. ["january 1"]
     if not left_part or not right_part:
@@ -2192,7 +2290,7 @@ def _compute_outer_timeunit(tokens):
             return result  # fallback
 
     return result
-  
+
 def _compute_starting_point(tokens):
     if len(tokens) == 1:
         token = tokens[0].lower()
@@ -2234,7 +2332,7 @@ def _apply_starting_point(outer_result, start_date):
             new_start = start_date
             new_end = new_start + td(days=duration)
             return (new_start, new_end)
-        
+
     return outer_result
 
 
@@ -2346,6 +2444,7 @@ class _auditor:
         Returns:
             Dict[str, Any] or None: First valid analysis result found, or None if all fail.
         """
+        semantic_fallback = None
         for drop_of in (False, True):
             for drop_this in (False, True):
                 variant = self._token_proc(
@@ -2357,9 +2456,14 @@ class _auditor:
                     result = self._analysis(variant)
                     if result.get("valid") and result.get("semantically_valid"):
                         return result
+                    if result.get("semantically_valid") and semantic_fallback is None:
+                        # Some supported resolver forms are not represented in the
+                        # structural classifier yet. Preserve semantic bound checks
+                        # and let the vocabulary gate and resolver make the final call.
+                        semantic_fallback = result
                 except Exception:
                     continue
-        return None
+        return semantic_fallback
 
 def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens=True):
     """
@@ -2371,7 +2475,7 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
         The raw phrase to interpret (e.g. "last Friday of this month") or a list of already-tokenized strings.
         - If a string, it will be normalized and tokenized internally.
         - If a list, it is assumed to be pre-tokenized input.
-    
+
     skip_validation : bool, optional
         If True, bypasses structural and semantic validation checks (e.g., malformed expressions).
         Default is False.
@@ -2393,13 +2497,13 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
         If the input is a simple partial date or named month (e.g. "April").
     None
         If parsing fails or input is invalid.
-    """    
+    """
     try:
         if isinstance(phrase, list):
             tokens = [str(x).lower() for x in phrase]
-            phrase = ' '.join(str(x) for x in phrase)            
+            phrase = ' '.join(str(x) for x in phrase)
         elif isinstance(phrase, str):
-            phrase = ' '.join(str(phrase).split()).lower() 
+            phrase = ' '.join(str(phrase).split()).lower()
             tokens = phrase.lower().split()
         else:
             raise TypeError("Unsupported type for 'phrase'. Must be list or str.")
@@ -2451,7 +2555,7 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
             # - or exactly 3-token  "<unit> of <date-part>"  (rule 8)
             needs_of = (
                 (toks and toks[0] == "last") or
-                (len(toks) == 3 and toks[1] == "of")
+                ("of" in toks)
             )
             if needs_of:
                 result = resolver.compute(toks)
@@ -2475,296 +2579,3 @@ _audit = _auditor()
 
 
 __all__ = ["parse_temporal"]
-
-
-
-
-
-
-
-
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# ╭──────────────────────────────────────────────────────────────────────────────╮
-# │                              DEVELOPMENT NOTE                                 │
-# ├───────────────────────────────────────────────────────────────────────────────┤
-# │ This section is part of an upcoming feature:                                  │
-# │   → HOLIDAY DATA PROCESSING & NORMALIZATION                                   │
-# │                                                                               │
-# │ Description:                                                                  │
-# │   Logic here is intended to support integration of regional holiday data      │
-# │   into the temporal parsing pipeline (e.g. identifying "the week after        │
-# │   Thanksgiving", "next business day after a holiday", etc.).                  │
-# │                                                                               │
-# │ Status:                                                                       │
-# │   This code is currently inactive and COMMENTED OUT. It is safe to leave      │
-# │   in the codebase, as it has no runtime impact.                               │
-# │                                                                               │
-# │ Planned Activation: Q3 2025                                                   │
-# │                                                                               │
-# │ Action Items (when ready):                                                    │
-# │   [ ] Refactor or uncomment `HolidayDataProcessor` class                      │
-# │   [ ] Connect holiday normalization to main parser                            │
-# │   [ ] Add unit/integration tests                                              │
-# │   [ ] Remove this development note when stable                                │
-# │                                                                               │
-# │ Related Tickets/Docs:                                                         │
-# │   #247 – “Holiday-aware temporal parser”                                      │
-# │   internal/wiki/holiday-normalization-spec                                    │
-# ╰──────────────────────────────────────────────────────────────────────────────╯
-# 
-# 
-# 
-# import numbr # Third-Party Library
-# import time
-# import random
-# import calendar as cal
-# import unicodedata
-# import pandas as pd # Third-Party Library
-# 
-# try:
-#     # from ._datetime_scan import DateTimeScan as _d_Scan
-#     # from ._sysutils import DataImport
-#     # from ._holiday import HolidayManager
-#     # from ._connect import http_client    
-# except (ImportError, ModuleNotFoundError):
-#     try:
-#         # from _datetime_scan import DateTimeScan as _d_Scan
-#         # from _sysutils import DataImport
-#         # from _holiday import HolidayManager
-#         # from _connect import http_client         
-#     except (ImportError, ModuleNotFoundError):
-#         # from dately._datetime_scan import DateTimeScan as _d_Scan
-#         # from dately._sysutils import DataImport
-#         # from dately._holiday import HolidayManager
-#         # from dately._connect import http_client 
-#         
-# ## HOLIDAY LOGIC
-# ##─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-# # Retrieves and processes the holiday data for a specified country and year, returning it in various formats.
-# #  
-# # Args:
-# #     country_name (str): The name of the country.
-# #     year (int, optional): The year for which to get the holidays. Defaults to None.
-# #     format (str, optional): The format of the output ('list', 'dict', or 'df'). Defaults to 'list'.
-# #  
-# # Returns:
-# #     mixed: The processed holiday data in the requested format.
-# class HolidayDataProcessor:
-#     """
-#     A robust class for fetching and normalizing holiday data with in-memory caching 
-#     on top of the built-in requests_cache in http_client.
-# 
-#     Attributes:
-#         holiday_manager (HolidayManager): Manages fetching holiday data from remote.
-#         default_country (str): Default country to fetch holidays for if none provided.
-#         _cache (dict): In-memory cache keyed by (country, year, format) => final data.
-#     """
-#     def __init__(self, 
-#                  holiday_manager: HolidayManager = None, 
-#                  default_country: str = None,  # <-- now optional
-#                  # default_base_url: str = "dGltZS5pcy8="
-#                  ):
-#         """
-#         Initialize the HolidayDataProcessor.
-# 
-#         :param holiday_manager: If provided, use that manager. Otherwise, create one using `http_client`.
-#         :param default_country: Default country to fetch holiday data for.
-#         """
-#         self.default_country = default_country
-#         # self.default_base_url = default_base_url
-# 
-#         # If no manager is provided, instantiate one with the global http_client
-#         if holiday_manager is None:
-#             # # Optionally override the base URL on the global http_client:
-#             # http_client.update_base_url(self.default_base_url)
-#             http_client.update_base_url("dGltZS5pcy8=")            
-#             holiday_manager = HolidayManager(http_client)
-# 
-#         self.holiday_manager = holiday_manager
-# 
-#         # Our own in-memory cache: {(country, year, format): pd.DataFrame or list or dict}
-#         self._cache = {}
-# 
-#     def fetch_holiday_data(self, 
-#                            country_name: str = None, 
-#                            year: int = None):
-#         """
-#         Retrieve & process holiday data for a given country + year, returning 
-#         either a DataFrame, list, or dict, as requested.
-# 
-#         :param country_name: Country name. Defaults to self.default_country if None.
-#         :param year: Year to fetch. Defaults to the system's current year in `HolidayManager` if None.
-#         :return: The holiday data in the requested format (DataFrame, dict, or list), or None if no data.
-#         """
-#         if not country_name:
-#             country_name = self.default_country
-#             if not country_name:
-#                 return None  # Early exit if no country specified
-# 
-#         return_format = "df"
-#         
-#         # Check our in-memory cache first
-#         cache_key = (country_name, year, return_format)
-#         if cache_key in self._cache:
-#             return self._cache[cache_key]
-# 
-#         # Not in cache => fetch from the manager
-#         data = self.holiday_manager.Holiday(
-#             country_name=country_name,
-#             year=year,
-#             format=return_format
-#         )
-#         if data is None:
-#             return None  # The manager returned nothing (HTTP or other error)
-#         
-#         # If we asked for a DataFrame, remove duplicates, drop "Type", etc. 
-#         if return_format == 'df' and isinstance(data, pd.DataFrame):
-#             data = data.drop_duplicates(subset=["Name", "Date"]).drop(columns=["Type"]).copy()
-# 
-#         # Store the final result in our in-memory cache
-#         self._cache[cache_key] = data
-#         return data
-# 
-#     def set_default_country(self, name: str):
-#         if not isinstance(name, str) or not name.strip():
-#             return None
-#         self.default_country = name.strip()
-# 
-#     def normalize_holiday_names(self, df: pd.DataFrame, to_dict: bool = False):
-#         """
-#         Cleans/normalizes the 'Name' column of a holiday DataFrame and optionally 
-#         returns a dict of normalized -> original values.
-# 
-#         :param df: A DataFrame with 'Name' and 'Date' columns.
-#         :param to_dict: If True, returns a dict instead of a DataFrame.
-#         :return: A modified DataFrame with extra normalization columns, or a dict if to_dict=True.
-#         """
-#         def strip_accents(text):
-#             return ''.join(
-#                 c for c in unicodedata.normalize('NFD', text)
-#                 if unicodedata.category(c) != 'Mn'
-#             )
-# 
-#         def basic_normalize(name: str) -> str:
-#             # Remove parentheses & contents
-#             name = re.sub(r"\(.*?\)", "", name)
-#             # Remove punctuation
-#             name = re.sub(r"[^\w\s]", "", name)
-#             return name.strip()
-# 
-#         def remove_common_suffixes(name: str) -> str:
-#             return re.sub(
-#                 r"\b(Day|Eve|Festival|Celebration|Holiday)\b$",
-#                 "",
-#                 name,
-#                 flags=re.IGNORECASE
-#             ).strip()
-# 
-#         def remove_stopwords(name: str) -> str:
-#             stopwords = {'of', 'the', 'and', 'a'}
-#             return ' '.join(
-#                 word for word in name.split()
-#                 if word.lower() not in stopwords
-#             )
-# 
-#         def collapse_spaces(name: str) -> str:
-#             return re.sub(r"\s+", " ", name).strip()
-# 
-#         # Copy to avoid mutating user’s data
-#         dataframe = df.copy()
-# 
-#         # Step-by-step normalization
-#         dataframe['Normalized_Original'] = dataframe['Name']
-#         dataframe['Normalized_1_Basic'] = dataframe['Name'].apply(basic_normalize)
-#         dataframe['Normalized_2_Lowercase'] = dataframe['Normalized_1_Basic'].str.lower()
-# 
-#         # Branch A: Full normalization (suffixes removed)
-#         dataframe['Normalized_3_NoSuffix'] = dataframe['Normalized_2_Lowercase'].apply(remove_common_suffixes)
-#         dataframe['Normalized_4_NoStopwords'] = dataframe['Normalized_3_NoSuffix'].apply(remove_stopwords)
-#         dataframe['Normalized_5_NoAccents'] = dataframe['Normalized_4_NoStopwords'].apply(strip_accents)
-#         dataframe['Normalized_6_Collapsed'] = dataframe['Normalized_5_NoAccents'].apply(collapse_spaces)
-# 
-#         # Branch B: Keep suffixes (less aggressive)
-#         dataframe['Normalized_4B_NoStopwords_WithSuffix'] = dataframe['Normalized_2_Lowercase'].apply(remove_stopwords)
-#         dataframe['Normalized_5B_NoAccents_WithSuffix'] = dataframe['Normalized_4B_NoStopwords_WithSuffix'].apply(strip_accents)
-#         dataframe['Normalized_6B_Collapsed_WithSuffix'] = dataframe['Normalized_5B_NoAccents_WithSuffix'].apply(collapse_spaces)
-# 
-#         if to_dict:
-#             return self._generate_holiday_lookup_dict(dataframe)
-#         return dataframe
-# 
-#     def _generate_holiday_lookup_dict(self, dataframe: pd.DataFrame):
-#         """
-#         Internal helper to build a dict from the final normalized columns.
-#         e.g. { 'presidents day': { 'holiday': 'Presidents Day', 'year': '2023', ... }, ... }
-#         """
-#         holiday_lookup = {}
-#         # Identify columns that have normalized data (and not the original)
-#         norm_cols = [
-#             col for col in dataframe.columns
-#             if col.startswith("Normalized_") and col != "Normalized_Original"
-#         ]
-# 
-#         for col in norm_cols:
-#             for norm_val, original_val, date_val in zip(
-#                 dataframe[col], 
-#                 dataframe['Name'], 
-#                 dataframe['Date']
-#             ):
-#                 if isinstance(norm_val, str):
-#                     key = norm_val.strip().lower()
-#                     if key and key not in holiday_lookup:
-#                         # Build a dict of details
-#                         year, month, day = date_val.split("-")
-#                         holiday_lookup[key] = {
-#                             # "name": original_val,
-#                             # "date": date_val,                               
-#                             "holiday": original_val,
-#                             "year": year,
-#                             "month": month,
-#                             "day": day,
-#                         }
-#         return holiday_lookup if holiday_lookup else None
-# 
-# 
-# # # Create an instance (by default pointing to the base64-decoded URL in http_client)
-# # holidayLookup = HolidayDataProcessor()
-# 
-# # # First call: data is fetched from remote (or from requests_cache if previously fetched)
-# # holiday_data = holidayLookup.fetch_holiday_data(country_name="United States", year=2023)
-# # 
-# # # # Update Country
-# # # holidayLookup.set_default_country("Canada")
-# # # holiday_data = holidayLookup.fetch_holiday_data()
-# # 
-# # # Normalize
-# # normalized_holiday_data = holidayLookup.normalize_holiday_names(holiday_data, to_dict=True)
-# # normalized_holiday_data.get("new years")
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 
 #
-# doydl's Temporal Format & Transformation Utilities — dately
+# doydl's Temporal Parsing & Normalization Engine — dately
 #
-# The `dately` module provides foundational utilities for parsing, detecting, modifying,
-# and vectorizing datetime strings and objects across a wide range of input types.
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed as infrastructure for robust and platform-agnostic date handling,
-# it includes logic for format inference, ISO/non-ISO validation, timezone patching,
-# and safe transformation of individual date/time components. It supports batch
-# processing over lists, NumPy arrays, Pandas Series, and dictionaries — with
-# consistent shape preservation and error handling.
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
 #
-# Core capabilities include:
-# - Flexible strptime-format detection (`DateFormatFinder`)
-# - Datetime component extraction (e.g., extract hour or weekday)
-# - In-place modification of time and date fields
-# - Uniform application of datetime logic to scalars and collections
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
 #
-# This logic is format-centric and independent of any language-level semantics.
-# It serves as a reliable backend for preprocessing, standardization, and
-# cross-platform datetime normalization workflows.
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
 #
@@ -41,16 +41,14 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#  
+#
 
 import re
 from datetime import datetime as dt
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import numpy as num
 import pandas as panda
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from .mold.pyd.time_zones import time_zones_dict as tz_dict
 from .dt_nlp.arithmetic import timeline
 
@@ -129,12 +127,12 @@ _TIME_DETECTION_RE = re.compile(
 #────────────────────────────────────────────────────────────────────────────
 # REGEX FOR DETECTING WEEKDAY NAMES IN STRINGS
 #────────────────────────────────────────────────────────────────────────────
-# This regex pattern is designed to detect and extract weekday names (e.g., "Monday", "Tue") 
-# from a given string. It supports both full names (e.g., "Wednesday") and abbreviations 
+# This regex pattern is designed to detect and extract weekday names (e.g., "Monday", "Tue")
+# from a given string. It supports both full names (e.g., "Wednesday") and abbreviations
 # (e.g., "Wed").
-# 
+#
 # ### Pattern Breakdown:
-# - Capturing Group `(?P<weekday>...)`  
+# - Capturing Group `(?P<weekday>...)`
 #   - Detects both full and abbreviated weekday names:
 #     - `"Monday"`, `"Mon"`
 #     - `"Tuesday"`, `"Tue"`
@@ -144,13 +142,13 @@ _TIME_DETECTION_RE = re.compile(
 #     - `"Saturday"`, `"Sat"`
 #     - `"Sunday"`, `"Sun"`
 #   - The `(?:day)?` part ensures that both full and short forms match.
-# 
-# - Capturing Group `(?P<sep>...)`  
+#
+# - Capturing Group `(?P<sep>...)`
 #   - Detects an optional separator (`", "` or `" "`) after the weekday:
 #     - Matches a comma followed by a space (`, `)
 #     - Matches a single space
 #     - Useful for cases like: `"Monday, January 1st"` or `"Tue 14:30"`
-# 
+#
 # ### Use Case:
 # - Used in date format detection to identify weekdays within datetime strings.
 # - Works alongside DateFormatFinder to help parse natural language dates.
@@ -209,8 +207,8 @@ _STRICT_TIME_RE = re.compile(
 # HELPER FUNCTION FOR DATEFORMATFINDER: DETECT TIME COMPONENTS IN STRINGS
 #────────────────────────────────────────────────────────────────────────────
 
-# This function is used by the `DateFormatFinder` class, which is the primary 
-# logic in this module. It checks if a given string contains **time components** 
+# This function is used by the `DateFormatFinder` class, which is the primary
+# logic in this module. It checks if a given string contains **time components**
 # while filtering out ISO 8601 formats (handled separately by `iso8601strptime`).
 #
 # Purpose:
@@ -219,16 +217,16 @@ _STRICT_TIME_RE = re.compile(
 # - Helps `DateFormatFinder` determine whether a string includes a time component.
 #
 # Exclusion Rule:
-# - If the string is a **valid ISO 8601 datetime**, this function **returns False** 
+# - If the string is a **valid ISO 8601 datetime**, this function **returns False**
 #   because ISO formats are handled by separate logic.
 def _get_time_components(datetime_string):
     """
-    Determines if the input string contains time components, excluding valid 
+    Determines if the input string contains time components, excluding valid
     ISO 8601 datetime formats.
 
     ### Logic:
     - Step 1: Cleans input by stripping unnecessary spaces.
-    - Step 2: Checks if the string is a valid ISO 8601 datetime.  
+    - Step 2: Checks if the string is a valid ISO 8601 datetime.
       - If yes → Returns `False` (ISO formats are handled elsewhere).
     - Step 3: Searches for time components using:
       - `_STRICT_TIME_RE`: Detects standalone times.
@@ -255,7 +253,7 @@ def _get_time_components(datetime_string):
 
 
 
- 
+
 # =================================
 # BASIC ISO FORMAT
 # =================================
@@ -341,7 +339,7 @@ def __is_valid_basic_time(time_str: str) -> bool:
     i = 0
     n = len(time_str)
 
-    # We need at least 2 digits for hour
+    # An hour requires two digits.
     if n < 2:
         return False
 
@@ -363,7 +361,7 @@ def __is_valid_basic_time(time_str: str) -> bool:
     if next_char in ('Z', '+', '-'):
         return __validate_time_zone_basic(time_str[i:])
 
-    # Otherwise, we expect 2 more digits for minutes (00–59)
+    # A longer value must provide two minute digits.
     if n - i < 2 or not time_str[i:i+2].isdigit():
         return False
     minute_val = int(time_str[i:i+2])
@@ -371,7 +369,7 @@ def __is_valid_basic_time(time_str: str) -> bool:
         return False
     i += 2  # consumed minutes
 
-    # If we used up all characters, we are done (T1430)
+    # A value ending here represents hours and minutes.
     if i == n:
         return True
 
@@ -393,7 +391,7 @@ def __is_valid_basic_time(time_str: str) -> bool:
     if i == n:
         return True
 
-    # Next, we could have fractional seconds, timezone, or 'Z'
+    # Seconds may be followed by a fraction or timezone designator.
     next_char = time_str[i]
     if next_char in ('Z', '+', '-'):
         return __validate_time_zone_basic(time_str[i:])
@@ -568,8 +566,7 @@ def __is_valid_extended_date(date_str: str) -> bool:
     if not day_part.isdigit():
         return False
 
-    # If we wanted to check actual month/day ranges, we'd do it here,
-    # but for now, I assume any "##-##" is okay.
+    # This stage validates shape only; calendar-range validation occurs later.
     return True
 
 def __is_valid_extended_time(time_str: str) -> bool:
@@ -585,7 +582,7 @@ def __is_valid_extended_time(time_str: str) -> bool:
       5) optional timezone => 'Z' or (+|-)hh(:mm)
 
     Examples of valid times:
-      "14"                -> hour only (unusual in extended, but let's allow "14" if no colon).
+      "14"                -> hour only (valid when no colon follows).
       "14:00"             -> hour, minute
       "14:30:59"          -> hour, minute, second
       "14:30:59.123"      -> fractional seconds
@@ -599,13 +596,12 @@ def __is_valid_extended_time(time_str: str) -> bool:
     n = len(time_str)
 
     # 1) Parse hour (2 digits => 00..23).
-    #    But watch out: in extended format, we typically expect 'hh:' if more is coming.
+    # Extended values normally use a colon after the hour when more fields follow.
     if not __parse_two_digits_in_range_extended(time_str, i, 0, 23):
         return False
-    hour_val = int(time_str[i:i+2])
     i += 2
 
-    # If we're done => e.g. "14" with no minutes => let's accept that as minimal extended time
+    # An hour-only value such as "14" is a valid minimal extended time.
     if i == n:
         return True
 
@@ -615,7 +611,6 @@ def __is_valid_extended_time(time_str: str) -> bool:
         # Must have at least 2 digits for minutes
         if not __parse_two_digits_in_range_extended(time_str, i, 0, 59):
             return False
-        minute_val = int(time_str[i:i+2])
         i += 2
 
         if i == n:
@@ -626,7 +621,6 @@ def __is_valid_extended_time(time_str: str) -> bool:
             i += 1
             if not __parse_two_digits_in_range_extended(time_str, i, 0, 59):
                 return False
-            second_val = int(time_str[i:i+2])
             i += 2
 
             if i == n:
@@ -646,7 +640,7 @@ def __is_valid_extended_time(time_str: str) -> bool:
             # No fraction => next must be timezone or done
             return __parse_time_zone_if_any_extended(time_str, i)
 
-        # We have minutes only => next might be fraction or timezone
+        # Minutes may be followed by a fraction or timezone.
         if i < n and time_str[i] in ('.', ','):
             i = __parse_fractional_seconds_extended(time_str, i)
             if i < 0:
@@ -660,7 +654,7 @@ def __is_valid_extended_time(time_str: str) -> bool:
     # If next char isn't ':', it might be fractional or timezone or 'Z' or offset
     if time_str[i] in ('.', ','):
         # Means: "14.123Z" (no minutes). It's unusual in fully extended format,
-        # but let's allow it since the standard doesn't forbid "hh.frac" by itself.
+        # ISO 8601 permits a fractional hour without a minute field.
         i = __parse_fractional_seconds_extended(time_str, i)
         if i < 0:
             return False
@@ -668,7 +662,7 @@ def __is_valid_extended_time(time_str: str) -> bool:
             return True
         return __parse_time_zone_if_any_extended(time_str, i)
 
-    # If it's not a colon nor fraction, we check timezone
+    # Any remaining suffix must be a timezone designator.
     return __parse_time_zone_if_any_extended(time_str, i)
 
 def __parse_two_digits_in_range_extended(s: str, idx: int, low: int, high: int) -> bool:
@@ -739,7 +733,7 @@ def __validate_time_zone_extended(tz_str: str) -> bool:
     if not body:
         return False
 
-    # We expect at least "hh"
+    # The offset body requires at least an hour.
     # Could be "05" or "05:30"
     # 1) parse 2 digits for hours
     if len(body) < 2:
@@ -839,14 +833,14 @@ def validate_iso8601(iso_string, split=True):
 # This function is a key component of the `DateFormatFinder` class.
 #
 # Why It's Important:
-# - First-step check for ISO 8601 formats. If detected, we can skip expensive heuristics.
+# - Detect ISO 8601 first to avoid the more expensive heuristic path.
 # - ISO 8601 is common in machine-generated timestamps (e.g., logs, APIs, databases).
 # - Regex-based matching is significantly faster than attempting to infer a format.
 #
 # How It Works:
-# - If the string matches a known ISO 8601 format, we immediately return the format.
+# - Return immediately when a known ISO 8601 format matches.
 # - The result is cached for efficiency, avoiding redundant analysis.
-# - If no match is found, we proceed to heuristic-based format detection.
+# - Fall back to heuristic format detection when no ISO format matches.
 def iso8601strptime(iso_string, return_patched=False):
     """
     Given an ISO 8601 date-time string with 'T' as the separator (e.g. '2025-03-05T14:30:00+05:30'),
@@ -859,10 +853,10 @@ def iso8601strptime(iso_string, return_patched=False):
       1) Offsets (like '+05:30') are handled as literal text in the format string.
          The resulting datetime is naive (ignores the offset).
       2) Fractional seconds are forced to 6 digits (padding or truncating).
-      3) We only handle these date forms for the left side:
+      3) Supported date forms for the left side are:
            - 'YYYY-MM-DD' (extended date)
            - 'YYYYMMDD'   (basic date)
-      4) We only handle these time forms for the right side:
+      4) Supported time forms for the right side are:
            - basic: HH, HHMM, HHMMSS (optional fraction)
            - extended: HH[:MM[:SS]] (optional fraction)
       5) Timezone offset can be:
@@ -873,7 +867,7 @@ def iso8601strptime(iso_string, return_patched=False):
     #--------------------------------------------------------------------
     # 1) Split the string at 'T' => [date_part, time_part_with_offset]
     #--------------------------------------------------------------------
-    # We'll find the T that has digits on both sides (like the validate_iso8601 approach).
+    # Locate a `T` bounded by digits, matching the ISO validator.
     match_t = re.search(r"(?<=\d)T(?=\d)", iso_string)
     if not match_t:
         raise ValueError("String does not contain a valid 'T' between digits.")
@@ -887,8 +881,6 @@ def iso8601strptime(iso_string, return_patched=False):
     #    - basic => 'YYYYMMDD' (8 digits, no dashes)
     #--------------------------------------------------------------------
     date_format = None
-    patched_iso = iso_string  # we'll build a "patched" version as needed
-
     if len(date_part) == 10 and date_part[4] == "-" and date_part[7] == "-":
         # extended date => '%Y-%m-%d'
         date_format = "%Y-%m-%d"
@@ -898,7 +890,7 @@ def iso8601strptime(iso_string, return_patched=False):
     else:
         raise ValueError(f"Unrecognized date format in '{date_part}'.")
 
-    # We'll build the final format in pieces
+    # Build the final format from its date, time, fraction, and offset components.
     final_format = date_format + "T"
 
     #--------------------------------------------------------------------
@@ -923,7 +915,7 @@ def iso8601strptime(iso_string, return_patched=False):
     if frac_match:
         fraction_digits = len(frac_match.group(1))
 
-    # We'll store a patched version of pure_time that has exactly 6 digits if there's fraction
+    # Normalize fractional seconds to the six digits accepted by `strptime`.
     patched_pure_time = pure_time
 
     #--------------------------------------------------------------------
@@ -933,7 +925,7 @@ def iso8601strptime(iso_string, return_patched=False):
     #--------------------------------------------------------------------
     colon_count = pure_time.count(":")
 
-    # We'll figure out a base_time_format
+    # Determine the base time format before adding fractions and offsets.
     # Cases:
     #   extended, 2 colons => '%H:%M:%S'
     #   extended, 1 colon => '%H:%M'
@@ -943,7 +935,7 @@ def iso8601strptime(iso_string, return_patched=False):
 
     # A helper that gives the length ignoring fraction
     # e.g. '14:30:00.123' -> ignoring fraction => '14:30:00' => length=8
-    # but let's do it more simply: remove fraction portion:
+    # Remove the fractional portion before determining the base format.
     if fraction_digits > 0:
         # remove the fraction part from pure_time
         frac_sep_pos = re.search(r"[.,]", pure_time).start()
@@ -975,9 +967,9 @@ def iso8601strptime(iso_string, return_patched=False):
 
     #--------------------------------------------------------------------
     # 6) If fraction is present => add ".%f" to the format
-    #    But we must also patch the iso_string to have exactly 6 fraction digits
+    # Patch the input to the six fractional digits represented by `%f`.
     #--------------------------------------------------------------------
-    
+
     # Snippet: "Shoe-horn" approach if fraction > 6 digits
     if fraction_digits > 0:
         frac_format = ".%f"
@@ -1008,7 +1000,7 @@ def iso8601strptime(iso_string, return_patched=False):
     final_format += time_format
 
     #--------------------------------------------------------------------
-    # 7) If offset_str is non-empty, we handle it as literal text
+    # Preserve non-empty offsets as literal text.
     #    e.g. +05:30 => add '+05:30' to the format
     #    e.g. 'Z' => add 'Z' to the format
     #
@@ -1016,13 +1008,10 @@ def iso8601strptime(iso_string, return_patched=False):
     #       It just matches it as literal text
     #--------------------------------------------------------------------
     if offset_str:
-        # If offset is something like '+05', '+05:30', we cannot do '+%H:%M',
-        # because we'd get "redefinition of group name 'H'."
-        # So we must add it as literal text in the format string.
+        # Offsets remain literal because using `%H` and `%M` again would redefine
+        # `strptime` fields already present in the time portion.
         final_format += offset_str  # e.g. '+05:30'
-        # We'll also ensure the patched time has the same offset text
-        # i.e. time_part_and_offset -> (pure_time + offset_str)
-        # so let's build the final patched time portion
+        # Preserve the original offset text in the patched time.
         patched_time_part = patched_pure_time + offset_str
     else:
         patched_time_part = patched_pure_time
@@ -1031,15 +1020,15 @@ def iso8601strptime(iso_string, return_patched=False):
     # 8) Build the patched iso_string => date_part + "T" + patched_time_part
     #--------------------------------------------------------------------
     patched_iso_string = date_part + "T" + patched_time_part
-    result = (patched_iso_string, final_format) if return_patched else final_format  
+    result = (patched_iso_string, final_format) if return_patched else final_format
 
     # Test Format before returning
     try:
-        _test_format = dt.strptime(iso_string, final_format)        
+        _test_format = dt.strptime(iso_string, final_format)
         if _test_format:
             return result
-    except:
-        pass 
+    except (TypeError, ValueError):
+        pass
 
 
 
@@ -1048,7 +1037,7 @@ def iso8601strptime(iso_string, return_patched=False):
 #────────────────────────────────────────────────────────────────────────────
 # PREDEFINED DATE & TIME FORMATS FOR DETECTION
 #────────────────────────────────────────────────────────────────────────────
-# This class provides a collection of commonly used date and time formats 
+# This class provides a collection of commonly used date and time formats
 # for use in DateFormatFinder. The formats are structured into:
 #
 # Dates - Standard date formats (YYYY-MM-DD, MM/DD/YY, etc.).
@@ -1073,13 +1062,13 @@ class DateFormatLibrary:
     - Supports **multiple locales and variations** of date and time notation.
 
     ---
-    
+
     ### **Usage in `DateFormatFinder`**
     - `DateFormatFinder` calls `self.formats.Dates()` to retrieve standard date formats.
     - During detection, `DateFormatFinder` iterates through `self.formats.Precomputed()`
       to check for multiple format variations.
     - Used to **match** and **parse** date-time strings more effectively.
-    """	
+    """
     def __init__(self):
         """Initializes predefined date, time, and special formats for `DateFormatFinder`."""
         #--------------------------------------------------------------------
@@ -1092,7 +1081,7 @@ class DateFormatLibrary:
             '%Y/%b/%d', '%b/%d/%Y', '%Y/%m/%d', '%Y%m%d', '%d/%m/%y', '%d/%b/%Y', '%a, %b %d, %Y',
             '%A, %B %d, %Y', '%d/%B/%y', '%B %d, %y', '%d %B %y',
         ]
-        
+
         #--------------------------------------------------------------------
         # Common Time Formats
         # - Includes 24-hour and 12-hour (AM/PM) formats.
@@ -1101,7 +1090,7 @@ class DateFormatLibrary:
         self.times = [
             '%H', '%I', '%H:%M', '%H:%M:%S', '%H:%M:%S:%f', '%H:%M %p', '%H:%M:%S %p', '%H:%M:%S:%f %p', '%I:%M', '%I:%M %p', '%I:%M:%S', '%I:%M:%S %p',
             '%I:%M:%S:%f', '%I:%M:%S:%f %p', '%H:%M:%S %z', '%H:%M:%S %Z', '%I:%M %p %z', '%I:%M %p %Z', '%H:%M:%S:%f %z', '%H:%M:%S:%f %Z', '%I:%M:%S %p %z', '%I:%M:%S %p %Z', '%H %p', '%I %p',
-            '%H:%M:%S:%f %p %z', '%H:%M:%S:%f %p %Z', '%I:%M:%S:%f %p %z', '%I:%M:%S:%f %p %Z', '%H%M%S', '%H:%M:%S%z', '%H:%M:%SZ', '%H:%M:%S.%f', '%H:%M:%S.%f%z', '%H:%M:%S', '%z', '%Z',            
+            '%H:%M:%S:%f %p %z', '%H:%M:%S:%f %p %Z', '%I:%M:%S:%f %p %z', '%I:%M:%S:%f %p %Z', '%H%M%S', '%H:%M:%S%z', '%H:%M:%SZ', '%H:%M:%S.%f', '%H:%M:%S.%f%z', '%H:%M:%S', '%z', '%Z',
         ]
 
         #--------------------------------------------------------------------
@@ -1116,15 +1105,15 @@ class DateFormatLibrary:
             '%b-%d-%y', '%b-%Y-%d', '%b.%Y-%d', '%d %b, %Y', '%d %B, %y', '%d-%Y.%m', '%d-%Y/%m', '%d.%Y-%m', '%d/%Y-%m', '%d/%Y.%m', '%m.%Y-%d', '%m.%Y/%d', '%m/%Y-%d', 'on %B %d, %Y',
             '%B %dth, %Y', '%d-%b-%Y %Z',
         ]
-        
+
         #--------------------------------------------------------------------
         # 4 Precomputed Formats with Alternative Separators
-        #--------------------------------------------------------------------        
+        #--------------------------------------------------------------------
         self.all_formats = self.dates + self.times + self.unique
         self.precomputed = self._precompute_with_separators()
 
     def _precompute_with_separators(self):
-        """Generates format variations using different separators (`/`, `.`, `-`, ` `, `""`)."""    	
+        """Generates format variations using different separators (`/`, `.`, `-`, ` `, `""`)."""
         separators = ['/', '.', '-', ' ', '']
         result = set(self.all_formats)
         for fmt in self.all_formats:
@@ -1154,27 +1143,27 @@ class DateFormatLibrary:
 ##━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ## MAIN: DATE FORMAT FINDER CLASS
 ##━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-## 
+##
 ## Purpose:
-##   The `DateFormatFinder` class is designed to intelligently detect and 
-##   construct `strptime`-compatible format strings for a wide range of 
+##   The `DateFormatFinder` class is designed to intelligently detect and
+##   construct `strptime`-compatible format strings for a wide range of
 ##   date-time inputs.
-## 
+##
 ## Core Features:
-##   ISO 8601 Detection:							Quickly identifies machine-generated timestamps.  
-##   Time Component Recognition:			Separates and detects time values.  
-##   Timezone Handling: 							Supports named and offset-based time zones (`UTC`, `EST`, `+05:30`).  
-##   Ordinal Suffix Removal:					Cleans formats like `"5th"` → `"5"`.  
-##   Weekday Preservation:						Recognizes and maintains weekdays (`Monday, Jan 1, 2023`).  
-##   Caching for Performance: 				Previously successful formats are stored to optimize future lookups.  
-## 
+##   ISO 8601 Detection:							Quickly identifies machine-generated timestamps.
+##   Time Component Recognition:			Separates and detects time values.
+##   Timezone Handling: 							Supports named and offset-based time zones (`UTC`, `EST`, `+05:30`).
+##   Ordinal Suffix Removal:					Cleans formats like `"5th"` → `"5"`.
+##   Weekday Preservation:						Recognizes and maintains weekdays (`Monday, Jan 1, 2023`).
+##   Caching for Performance: Successful formats are stored to optimize future lookups.
+##
 ## How It Works:
-##   1 -->  Cleans and normalizes input.  
-##   2 -->  Checks for ISO 8601 format first (fastest detection method).  
-##   3 -->  ️Identifies and removes timezones for separate parsing.  
-##   4 -->  ️Matches against known format patterns using regex and heuristics.  
-##   5 -->  ️Caches successful detections to improve performance.  
-## 
+##   1 -->  Cleans and normalizes input.
+##   2 -->  Checks for ISO 8601 format first (fastest detection method).
+##   3 -->  ️Identifies and removes timezones for separate parsing.
+##   4 -->  ️Matches against known format patterns using regex and heuristics.
+##   5 -->  ️Caches successful detections to improve performance.
+##
 ##━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 class DateFormatFinder:
     """
@@ -1182,14 +1171,14 @@ class DateFormatFinder:
 
     This class attempts to infer the correct `strptime`-compatible format string
     for a given date-time input. It intelligently handles:
-    """	
-    successful_formats = {} 
-    historical_formats = set() 
+    """
+    successful_formats = {}
+    historical_formats = set()
 
     def __init__(self, old_sep='/'):
         self.formats = DateFormatLibrary()
         self.old_sep = old_sep
-        self.day_suffix = None        
+        self.day_suffix = None
 
     #──── GENERATING FORMAT VARIANTS ────────────────────────────────────────────────────────────────────────────────
     def _format_candidates(self, fmt):
@@ -1207,12 +1196,12 @@ class DateFormatFinder:
         for spec, alt in alternate_map.items():
             new_candidates = set()
             for candidate in candidates:
-                if spec in candidate and alt not in candidate: # If candidate contains the specifier but not its alternative, create a new candidate.
+                if spec in candidate and alt not in candidate:
                     new_candidates.add(candidate.replace(spec, alt))
             candidates |= new_candidates
         return list(candidates)
-       
-    #──── CLEANING DATE STRING INPUT ────────────────────────────────────────────────────────────────────────────────       
+
+    #──── CLEANING DATE STRING INPUT ────────────────────────────────────────────────────────────────────────────────
     def _remove_ordinal_suffixes(self, date_string):
         """
         Remove ordinal suffixes (st, nd, rd, th) from day numbers,
@@ -1229,9 +1218,9 @@ class DateFormatFinder:
 
         # Regex captures a numeric day plus one of (st|nd|rd|th).
         pattern = re.compile(r'(\d+)(st|nd|rd|th)', re.IGNORECASE)
-        return pattern.sub(_replacer, date_string)       
-       
-    #──── FORMAT DETECTION AND SEARCH ────────────────────────────────────────────────────────────────────────────────       
+        return pattern.sub(_replacer, date_string)
+
+    #──── FORMAT DETECTION AND SEARCH ────────────────────────────────────────────────────────────────────────────────
     def generate_formats(self, date_str, datetime_formats):
         """
         Try to parse the date_str using each format candidate.
@@ -1250,7 +1239,7 @@ class DateFormatFinder:
         """
         Iterates through given formats and attempts to match `substring`.
         Also checks precomputed formats to maximize detection accuracy.
-        """    	
+        """
         for fmt in formats:
             if (fmt, substring) in local_seen:
                 continue
@@ -1266,7 +1255,7 @@ class DateFormatFinder:
             if result:
                 return result
         return None
-      
+
     #──── CORE DETECTION LOGIC ────────────────────────────────────────────────────────────────────────────────
     def _search_scalar(self, date_string):
         """
@@ -1278,7 +1267,7 @@ class DateFormatFinder:
         """
         # Store the exact original input for caching
         raw_input = date_string
-        
+
         # ───────────────────────────────────────────────────────────────
         # Special Case: Abbreviated Month Names (e.g., "Apr", "Feb", "Jun")
         # ───────────────────────────────────────────────────────────────
@@ -1300,18 +1289,18 @@ class DateFormatFinder:
         #   just a month name with strptime is fragile.
         #
         # * Design Choice:
-        # - We short-circuit here for inputs of length 3 (could be month abbrevs).
+        # - Three-character inputs may be month abbreviations and take a fast path.
         # - This avoids unnecessary format searching and provides a clean escape.
-        # - We trust that if the user is passing only "Apr", they *intend* it
+        # - A standalone abbreviation such as "Apr" is treated as a month.
         #   to refer to the month — not an ambiguous term.
         #
         # * Future-Proofing:
         # - This avoids accidental matches to unrelated precomputed formats.
-        # - If we want to extend support later (e.g., to numeric months like "01"),
+        # - Numeric standalone months require separate validation and are not handled here.
         #   this pattern gives us a clean place to hook in that logic.
-        
+
         ## if len(raw_input) == 3:
-        if len(" ".join(raw_input.split())) == 3:        
+        if len(" ".join(raw_input.split())) == 3:
             try:
                 # Build a lowercase map of month abbreviations
                 month_abbr_to_full = {
@@ -1322,55 +1311,54 @@ class DateFormatFinder:
                     ]
                 }
                 # If the input matches a known 3-letter abbreviation, return %b
-                ## full_month = month_abbr_to_full[raw_input.lower()]
-                full_month = month_abbr_to_full[" ".join(raw_input.split()).lower()]                
-                return '%b'  # This directly maps to abbreviated month format in strptime
-            except KeyError:
+                normalized_month = " ".join(raw_input.split()).lower()
+                if normalized_month in month_abbr_to_full:
+                    return '%b'  # This directly maps to abbreviated month format in strptime
+            except (AttributeError, TypeError):
                 pass  # If it doesn't match, continue with the rest of the pipeline
 
         # Reset the suffix for each new call
-        self.day_suffix = None            
-        
+        self.day_suffix = None
+
         #--------------------------------------------------------------------
         # Step 0: Normalize the date string.
         # - Remove extra spaces (double spaces, leading/trailing, etc.)
         # - Remove ordinal suffixes like 'st', 'nd', 'rd', 'th' (e.g., '5th' → '5')
         # This ensures cleaner input for all downstream parsing.
-        #--------------------------------------------------------------------    
+        #--------------------------------------------------------------------
         date_string = " ".join(date_string.split())
-        date_string = self._remove_ordinal_suffixes(date_string)        
+        date_string = self._remove_ordinal_suffixes(date_string)
 
         #--------------------------------------------------------------------
         # Step 1: Fast path - check for ISO 8601 format.
-        # 
+        #
         # ISO 8601 (like "2025-03-05T14:30:00") is a **well-defined standard**.
-        # If we detect this upfront, we can avoid expensive heuristics later.
-        # 
+        # Early detection avoids the more expensive heuristic path.
+        #
         # This is particularly useful because:
         # - ISO 8601 is common in machine-generated data.
         # - It's faster to match against a known regex than trying to infer.
-        # 
-        # If `iso8601strptime` recognizes the format, we cache it immediately
+        #
+        # Cache formats recognized by `iso8601strptime` immediately
         # and return — no further analysis needed.
-        # 
-        # If the string doesn't match, we silently move on to regular heuristics.
+        #
+        # A non-match falls through to the regular heuristics.
         #--------------------------------------------------------------------
         try:
             _is_iso = iso8601strptime(date_string)
             if _is_iso:
-                DateFormatFinder.successful_formats[raw_input] = (_is_iso, None, None)            	
+                DateFormatFinder.successful_formats[raw_input] = (_is_iso, None, None)
                 return _is_iso # Done if it's ISO.
-        except:
-            # We gracefully ignore exceptions here, assuming non-ISO input.        	
+        except (TypeError, ValueError):
+            # Parsing errors indicate non-ISO input and fall through to heuristics.
             pass
 
         #--------------------------------------------------------------------
         # Step 2: Timezone Detection.
-        # 
+        #
         # If the string ends with a known timezone abbreviation (like 'UTC' or 'EST'),
-        # we temporarily remove that part to simplify format detection.
-        # Later, we append it back into the final format.
-        #--------------------------------------------------------------------        
+        # remove it temporarily for format detection and restore it afterward.
+        #--------------------------------------------------------------------
         tz_pattern = r'\b(' + '|'.join(re.escape(tz) for tz in tz_dict.keys()) + r')\b\s*$'
         tz_match = re.search(tz_pattern, date_string, re.IGNORECASE)
         tz_literal = None
@@ -1381,20 +1369,20 @@ class DateFormatFinder:
 
         #--------------------------------------------------------------------
         # Step 3: Check Cache.
-        # 
-        # If we previously saw this exact date string and successfully parsed it,
+        #
+        # Reuse a format cached for this exact input.
         # reuse the cached format to save processing time.
-        # 
+        #
         # Note: Since ISO 8601 formats are cached directly in Step 1,
         # they won't reach this point.
-        #--------------------------------------------------------------------     
+        #--------------------------------------------------------------------
         if raw_input in DateFormatFinder.successful_formats:
             cached_format, cached_date, cached_time = DateFormatFinder.successful_formats[raw_input]
             # Verify that cached_format still works
             if self.generate_formats(date_string, [cached_format]):
                 final_format = None
                 final_format = cached_format
-                
+
                 if tz_literal:
                     # Replace or append the timezone literal if needed
                     if '%Z' in final_format:
@@ -1403,29 +1391,29 @@ class DateFormatFinder:
                         final_format = final_format.replace('%z', tz_literal)
                     else:
                         final_format += " " + tz_literal
-                        
+
                     if final_format:
-                        final_format = " ".join(final_format.split()) 
-                    
+                        final_format = " ".join(final_format.split())
+
                 # Reapply ordinal suffix if one was found.
                 if self.day_suffix:
                     suffix_lower = self.day_suffix.lower()
                     if "%d" in final_format:
-                        final_format = final_format.replace("%d", f"%d{suffix_lower}")                    
-                    
-                # Cache back under the **original input** (with suffixes), not the cleaned string.                    
-                DateFormatFinder.successful_formats[raw_input] = (final_format, cached_date, cached_time)                         
+                        final_format = final_format.replace("%d", f"%d{suffix_lower}")
+
+                # Cache back under the **original input** (with suffixes), not the cleaned string.
+                DateFormatFinder.successful_formats[raw_input] = (final_format, cached_date, cached_time)
                 return final_format
-               
+
             # If it no longer works, remove from cache and record it
             del DateFormatFinder.successful_formats[raw_input]
             DateFormatFinder.historical_formats.add(cached_format)
 
         #--------------------------------------------------------------------
         # Step 4: Check for Leading Weekday.
-        # 
+        #
         # If the string starts with a weekday name (like 'Mon' or 'Monday'),
-        # we detect it, figure out whether it should be `%a` or `%A`,
+        # determine whether it uses `%a` or `%A`,
         # and remove it from the string so the core date-time detection
         # doesn't get confused.
         #--------------------------------------------------------------------
@@ -1453,21 +1441,14 @@ class DateFormatFinder:
             if matched_sep:
                 weekday_format_str += matched_sep
 
-            # Usually we also put a space if the user wrote something like "Fri, 23-Aug-2024"
+            # Preserve the space in inputs such as "Fri, 23-Aug-2024"
             # That implies the final pattern looks like "%a, %d-%b-%Y"
-            # or if it was "Friday 05-Feb-2024", we get "%A %d-%b-%Y"
+            # so "Friday 05-Feb-2024" becomes "%A %d-%b-%Y".
             if matched_sep:
                 weekday_format_str += " "
 
-        #--------------------------------------------------------------------
-        # Step 5: Time Detection.
-        # 
-        # If the string contains a time portion, we split the string into
-        # 'date part' and 'time part' and handle them separately.
-        # Otherwise, we treat it as date-only.
-        #--------------------------------------------------------------------        
+        # Split inputs with a time portion; otherwise process them as date-only.
         if _get_time_components(date_string):
-            # Split into date and time components
             date_only = _TIME_DETECTION_RE.sub("", date_string).strip()  # leftover is "pure date"
             time_matches = [m.group(0) for m in _TIME_DETECTION_RE.finditer(date_string)]
             time_string = " ".join(time_matches).strip()
@@ -1483,7 +1464,7 @@ class DateFormatFinder:
             # Try time formats on time_string
             ampm_match = re.search(r'(?i)\b(?:AM|PM)\b', time_string)
             if ampm_match:
-                # If there's an hour we can see (1-12 vs 13-23), choose time formats accordingly
+                # Restrict candidates according to whether the visible hour requires 24-hour time.
                 hour_match = re.match(r'\s*(\d{1,2})', time_string)
                 if hour_match:
                     hour_val = int(hour_match.group(1))
@@ -1506,8 +1487,8 @@ class DateFormatFinder:
                 if result:
                     time_format = result
                     break
-                   
-            # Fallback: we try all precomputed formats that contain %p and %I if there's an AM/PM
+
+            # For AM/PM input, fall back to precomputed 12-hour candidates.
             #------------------------------------------------------------------------------------
             if not time_format:
                 fallback_formats = (
@@ -1526,13 +1507,13 @@ class DateFormatFinder:
                 raise ValueError("No matching time format found for the time part.")
 
             # Combine date + time
-            combined_format = None                 
+            combined_format = None
             combined_format = f"{date_format} {time_format}"
-            # If we had a weekday, prepend it: e.g. "%a, %d-%b-%Y %H:%M:%S"
+            # Prepend the weekday format when present.
             if matched_weekday:
                 combined_format = weekday_format_str + combined_format
 
-                # Validate we can parse the original text with weekday
+                # Validate the original text with its weekday.
                 test_string = matched_weekday + matched_sep
                 if matched_sep:
                     test_string += " "
@@ -1546,7 +1527,7 @@ class DateFormatFinder:
                 self.generate_formats(test_string.strip(), [combined_format])
 
             # 5.01) TIMEZONE LITERAL
-            #--------------------------------------------------------------------------------------             
+            #--------------------------------------------------------------------------------------
             if tz_literal:
                 if '%Z' in combined_format:
                     combined_format = combined_format.replace('%Z', tz_literal)
@@ -1555,23 +1536,23 @@ class DateFormatFinder:
                 else:
                     combined_format += " " + tz_literal
                 if combined_format:
-                    combined_format = " ".join(combined_format.split())                     
+                    combined_format = " ".join(combined_format.split())
 
             # 5.02) Cache and return
-            #--------------------------------------------------------------------------------------              
-            # Reapply ordinal suffix if we captured one (like '5th')
+            #--------------------------------------------------------------------------------------
+            # Restore a captured ordinal suffix such as `5th`.
             if self.day_suffix:
                 suffix_lower = self.day_suffix.lower()
                 if "%d" in combined_format:
                     combined_format = combined_format.replace("%d", f"%d{suffix_lower}")
-            DateFormatFinder.successful_formats[raw_input] = (combined_format, date_only, time_string)                             
-            return combined_format            
-            
+            DateFormatFinder.successful_formats[raw_input] = (combined_format, date_only, time_string)
+            return combined_format
+
         #--------------------------------------------------------------------
         # Step 6: Date-Only Handling.
-        # 
-        # No time component means we just try date formats directly.
-        #--------------------------------------------------------------------          
+        #
+        # Date-only input uses the date candidates directly.
+        #--------------------------------------------------------------------
         else:
             # No time portion → just parse as date
             local_seen = set()
@@ -1604,20 +1585,20 @@ class DateFormatFinder:
                     final_format = final_format.replace('%z', tz_literal)
                 else:
                     final_format += " " + tz_literal
-                    
+
                 if final_format:
-                    final_format = " ".join(final_format.split()) 
-            
-            # Reapply ordinal suffix if we captured one (like '5th')
+                    final_format = " ".join(final_format.split())
+
+            # Restore a captured ordinal suffix such as `5th`.
             if self.day_suffix:
                 suffix_lower = self.day_suffix.lower()
                 if "%d" in final_format:
                     final_format = final_format.replace("%d", f"%d{suffix_lower}")
-                    
-            # Cache result                    
-            DateFormatFinder.successful_formats[raw_input] = (final_format, date_string, None)                                
+
+            # Cache result
+            DateFormatFinder.successful_formats[raw_input] = (final_format, date_string, None)
             return final_format
-    
+
     def search(self, date_input):
         """
         A single entry point for:
@@ -1625,7 +1606,7 @@ class DateFormatFinder:
 	        - Lists, sets, tuples
 	        - Pandas Series
 	        - Dictionaries (per key)
-        
+
         The output is converted back into the same type as the input.
         """
         # 1) If it's a scalar string, handle normally.
@@ -1667,7 +1648,7 @@ class DateFormatFinder:
                 return original_type(results)
             except Exception:
                 return results
-    
+
     @staticmethod
     def clear_cache():
         DateFormatFinder.successful_formats.clear()
@@ -1681,4 +1662,3 @@ DateTimeScan = DateFormatFinder()
 
 
 __all__ = ['DateTimeScan']
-

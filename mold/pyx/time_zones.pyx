@@ -1,4 +1,3 @@
-# time_zones.pyx
 cdef extern from "time_zones.h":
     ctypedef struct TimeZoneInfo:
         char full_name[50]
@@ -31,11 +30,9 @@ cdef dict get_time_zones_impl():
 
 cpdef dict get_time_zones():
     return get_time_zones_impl()
-   
-# Assign dict
+
 time_zones_dict = get_time_zones()
 
-# Define public interface
 __all__ = [
     'time_zones_dict'
 ]

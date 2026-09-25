@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -78,16 +78,9 @@ This module is strictly concerned with **lexical membership**.
 It does not attempt to correct spelling, infer structure, or resolve semantics.
 For fuzzy matching and recovery, use the companion module `string_similarity.spell_correction`.
 """
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from ..string_similarity.spell_correction import LexicalFuzzer
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 def vocab_validate(expression):
     """
     Validates that every token in the input expression exists in
@@ -98,22 +91,22 @@ def vocab_validate(expression):
     """
     def _is_cardinal(keyword):
         return keyword.isdigit()
-    
-    # Convert expression to keywords if it's a string.        
+
+    # Convert expression to keywords if it's a string.
     if isinstance(expression, str):
         keywords = expression.split()
     elif isinstance(expression, list):
         keywords = expression
     else:
         raise TypeError("Input must be a string or a list of keywords.")
-    
+
     # Iterate through keywords, skipping whole numbers.
     for keyword in keywords:
         if _is_cardinal(keyword):
             if keyword == "0":  # Explicitly reject "0"
                 return False
             continue
-           
+
         # If the keyword (in lowercase) is not in the canonical vocabulary, return False.
         if keyword.lower() not in LexicalFuzzer.vocabulary:
             return False

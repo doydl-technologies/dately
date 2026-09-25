@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,28 +41,28 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
 ────────────────────────────────────────────────────
-This module handles structural normalization, grammatical rewriting, and 
-morphological harmonization for temporal expressions. It acts as a bridge 
-between raw, user-generated language and the stricter requirements of 
+This module handles structural normalization, grammatical rewriting, and
+morphological harmonization for temporal expressions. It acts as a bridge
+between raw, user-generated language and the stricter requirements of
 downstream parsing and classification systems.
 
-Rather than just correcting spelling, it focuses on shaping temporal phrases 
-into canonical, well-formed forms — suitable for syntactic structure validation, 
+Rather than just correcting spelling, it focuses on shaping temporal phrases
+into canonical, well-formed forms — suitable for syntactic structure validation,
 semantic resolution, and execution in calendrical or timeline systems.
 
 Role in the NLP Pipeline
 ────────────────────────────────────────────────────
-This module sits between surface-level fuzzy correction and the structural 
-parsing layer. It receives cleaned-up user input and prepares it by enforcing 
+This module sits between surface-level fuzzy correction and the structural
+parsing layer. It receives cleaned-up user input and prepares it by enforcing
 consistency in modifiers, number forms, and syntactic patterns.
 
-It is typically invoked before structure validation, enabling 
-higher-confidence recognition of containment, anchoring, intersection, 
+It is typically invoked before structure validation, enabling
+higher-confidence recognition of containment, anchoring, intersection,
 and relative forms.
 
 Core Focus
@@ -79,8 +79,8 @@ Note
 ────────────────────────────────────────────────────
 This module does not classify or validate structural patterns.
 It enables them by standardizing expressions for later processing.
-It is tightly coupled with `LexicalFuzzer` (for spelling correction) 
-and `numbers` (for numeric normalization), and acts as a foundation 
+It is tightly coupled with `LexicalFuzzer` (for spelling correction)
+and `numbers` (for numeric normalization), and acts as a foundation
 for structure recognition and semantic evaluation downstream.
 """
 import re
@@ -88,26 +88,18 @@ import random
 import inspect
 import functools
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import numbr
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from .string_similarity.spell_correction import LexicalFuzzer
 from .arithmetic import timeline, numbers
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 
 
 # CONVERT WORDS BETWEEN SINGULAR AND PLURAL FORMS
 #────────────────────────────────────────────────────────────────────────────
-# The TemporalInflection class provides methods for handling pluralization and singularization of 
+# The TemporalInflection class provides methods for handling pluralization and singularization of
 # time-related words such as months, seasons, quarters, and days of the week.
 class TemporalInflection:
     """
@@ -139,9 +131,9 @@ class TemporalInflection:
             "weekdays": "weekday",
             "seasons": "season",
         }
-        
+
     def _load_canonical_plural_map(self, mapping):
-        """For each canonical time term, generate expected plural variants like "s"/"ies"."""    	
+        """For each canonical time term, generate expected plural variants like "s"/"ies"."""
         for k, v in mapping.items():
             canonical = v.lower()
             plural_s = canonical + "s"
@@ -149,10 +141,10 @@ class TemporalInflection:
             self.plural_to_singular[plural_s] = canonical
             if plural_ies:
                 self.plural_to_singular[plural_ies] = canonical
-            
+
     def _pluralize_word(self, word):
         """Converts a word to its plural form based on common English rules."""
-        word = self.remove_possessive_ownership(word)        
+        word = self.remove_possessive_ownership(word)
         if word.lower() in set(timeline.days.index.keys()):
             return word + "s"
         elif word.endswith('y') and word.lower() not in {"may"}:
@@ -160,7 +152,7 @@ class TemporalInflection:
         elif word == 'weekend':
             return word + 's'
         elif word == 'weekday':
-            return word + 's'           
+            return word + 's'
         elif word == 'month':
             return 'Months'
         elif word == 'year':
@@ -198,41 +190,41 @@ class TemporalInflection:
 
     def _singularize_word(self, word):
         """
-        Converts a plural form of a word into its singular form using a series of checks:        
-            - Remove common possessive suffixes            
-            - Check against known time unit mappings.            
+        Converts a plural form of a word into its singular form using a series of checks:
+            - Remove common possessive suffixes
+            - Check against known time unit mappings.
             - Check preloaded canonical plural mappings.
             - Define exceptions: words that end in "s" but should not be singularized.
             - Fallback rule: handle words ending in "ies" (e.g., "cities" -> "city")
-            - Fallback rule: remove the trailing "s" if it exists and isn't part of a double "ss"        
-        
+            - Fallback rule: remove the trailing "s" if it exists and isn't part of a double "ss"
+
         """
         original_word = word
         word = word.strip().lower()
-        
+
         if word.endswith("’s") or word.endswith("'s"):
             word = word[:-2]
         elif word.endswith("s’") or word.endswith("s'"):
             word = word[:-1]
-        
+
         if word in self.time_units_plural_to_singular:
             return self.time_units_plural_to_singular[word]
-        
+
         if word in self.plural_to_singular:
             return self.plural_to_singular[word]
-        
+
         exceptions = {"this", "previous"}
         if word in exceptions:
             return original_word
-        
+
         if word.endswith("ies"):
             return word[:-3] + "y"
-        
+
         elif word.endswith("s") and not word.endswith("ss"):
             return word[:-1]
-        
-        return original_word   
-    
+
+        return original_word
+
     def remove_possessive_ownership(self, word):
         """
         Removes possessive endings from a word to normalize it for further processing.
@@ -241,10 +233,10 @@ class TemporalInflection:
             return word[:-2]
         elif word.endswith("s’") or word.endswith("s'"):
             return word[:-2]
-        return word   
-       
+        return word
+
     # Singularization Interfaces
-    # -----------------------------   
+    # -----------------------------
     def singularize(self, valid_input):
         if isinstance(valid_input, str): # Case 1: String input
             singular = self._singularize_word(valid_input)
@@ -257,22 +249,22 @@ class TemporalInflection:
                 singular = self._singularize_word(value)
                 result[key.lower()] = singular
             return result
-        elif isinstance(valid_input, list): # Case 4: List input   
+        elif isinstance(valid_input, list): # Case 4: List input
             return [self._singularize_word(item) for item in valid_input]
         else:
             raise TypeError("Input must be a string, dictionary, or set")
-       
+
     def singularize_phrase(self, phrase):
         """Converts all plural words in a phrase to their singular forms using the generic singularize()."""
         if isinstance(phrase, str):
             words = phrase.split()
         elif isinstance(phrase, list):
-            words = phrase        
+            words = phrase
         singular_words = self.singularize(words)
-        return ' '.join(singular_words)       
+        return ' '.join(singular_words)
 
     # Pluralization Interfaces
-    # -----------------------------   
+    # -----------------------------
     def pluralize(self, valid_input):
         if isinstance(valid_input, str): # Case 1: String input
             plural = self._pluralize_word(valid_input)
@@ -303,7 +295,7 @@ class TemporalInflection:
             return plural_list
         else:
             raise TypeError("Input must be a string, dictionary, or set")
-       
+
     def pluralize_phrase(self, phrase):
         """ Converts all singular words in a phrase to their plural forms."""
         if isinstance(phrase, str):
@@ -311,8 +303,8 @@ class TemporalInflection:
         elif isinstance(phrase, list):
             words = phrase
         plural_words = [self.pluralize(word) for word in words]
-        return ' '.join(plural_words)        
-       
+        return ' '.join(plural_words)
+
     def __dir__(self):
         return ['singularize_phrase', 'pluralize', 'singularize', 'pluralize_phrase', 'remove_possessive_ownership']
 
@@ -322,9 +314,9 @@ class TemporalInflection:
 # EXPRESSION TOKENIZATION FOR TEMPORAL PHRASES
 #────────────────────────────────────────────────────────────────────────────
 # The Expression class provides flexible parsing for temporal expressions that
-# may be passed as strings or lists. It normalizes input, applies custom 
-# tokenization logic for partial dates (e.g., "july 4 2022"), and supports 
-# optional merging of year tokens. 
+# may be passed as strings or lists. It normalizes input, applies custom
+# tokenization logic for partial dates (e.g., "july 4 2022"), and supports
+# optional merging of year tokens.
 #
 # The accompanying @expr decorator automatically wraps function arguments
 # so that downstream logic can always assume a consistent Expression interface.
@@ -335,11 +327,11 @@ class Expression:
     that applies custom date-aware tokenization logic.
     """
     def __init__(self, value):
-        self.original_type = type(value)  # Store the original type    	
+        self.original_type = type(value)  # Store the original type
         if isinstance(value, list):
             self.raw = ' '.join(str(x) for x in value) # Convert list input to a single string.
         elif isinstance(value, str):
-            self.raw = " ".join(value.split())             
+            self.raw = " ".join(value.split())
         else:
             raise TypeError("Expression only supports str or list input.")
 
@@ -351,7 +343,7 @@ class Expression:
             tokenize_date (bool): If True, performs simple whitespace splitting.
                                   If False (default), applies custom date-aware merging.
             include_year (bool): If True, attempts to merge a year token when present.
-        
+
         Returns:
             list of str: A list of normalized tokens.
         """
@@ -363,7 +355,7 @@ class Expression:
         tokens = self._merge_date_tokens(tokens, include_year=include_year, numeric_plausibility=numeric_plausibility)
         tokens = self._merge_month_year(tokens)
         return tokens
-       
+
     def _merge_date_tokens(self, tokens, include_year=True, numeric_plausibility=False):
         """
         Merges tokens representing date expressions into single tokens,
@@ -389,7 +381,7 @@ class Expression:
                     try:
                         day_value = int(numbers.to_type(day_token, 'cardinalNumber', as_str=True))
                         max_days = timeline.days_in_month(token).d
-                    
+
                         if (not numeric_plausibility and day_value) or (numeric_plausibility and day_value <= max_days):
                             if include_year and i + 2 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 2]):
                                 merged.append(f"{token} {day_value} {tokens[i + 2]}")
@@ -407,8 +399,8 @@ class Expression:
             else:
                 merged.append(token)
                 i += 1
-        return merged     
-      
+        return merged
+
     def _merge_day_of_month(self, tokens, numeric_plausibility=False):
         """
         Detects and merges date-like patterns:
@@ -482,8 +474,8 @@ class Expression:
                 pass
             merged.append(tokens[i])
             i += 1
-        return merged      
-      
+        return merged
+
     def _merge_month_year(self, tokens):
         """
         Detects and merges patterns like:
@@ -532,13 +524,13 @@ def expr(func):
 
 
 
-       
-   
+
+
 # NORMALIZE TEMPORAL PHRASES AND TOKEN SEQUENCES
 #────────────────────────────────────────────────────────────────────────────
 # The TemporalPhraseEngine class provides methods for cleaning, standardizing,
-# and transforming temporal expressions prior to parsing. It includes support 
-# for article removal, token correction, prefix replacement, and structural 
+# and transforming temporal expressions prior to parsing. It includes support
+# for article removal, token correction, prefix replacement, and structural
 # normalization of phrases involving quarters, modifiers, and ambiguous patterns.
 class TemporalPhraseEngine:
     """
@@ -554,33 +546,32 @@ class TemporalPhraseEngine:
     """
     def __init__(self):
         self.temporal_inflect = TemporalInflection()
-        # self.numbers = numbers.__class__()        
-        self.numbers = numbers()   
+        self.numbers = numbers()
         self.quantifier_ranges = {
             "couple": (2, 2), 	# Always 2
             "few": (3, 5),      # Randomly choose between 3 and 5
             "several": (6, 9),  # Randomly choose between 6 and 9
-            "many": (10, 15)  	# Randomly choose between 10 and 15 
-        }      
-        self.ordinal_words_set = self._ordinal_set(vocab=list(LexicalFuzzer.vocabulary))        
-        self.ordinal_numbers_set = {word for word in LexicalFuzzer.vocabulary if re.compile(r'^\d+(st|nd|rd|th)$').match(word)}         
+            "many": (10, 15)  	# Randomly choose between 10 and 15
+        }
+        self.ordinal_words_set = self._ordinal_set(vocab=list(LexicalFuzzer.vocabulary))
+        self.ordinal_numbers_set = {word for word in LexicalFuzzer.vocabulary if re.compile(r'^\d+(st|nd|rd|th)$').match(word)}
         self.drop = self.DropClass()
         self.sub = self.SubstituteClass(parent=self)
-        self.match = self.MatchClass()  
-        self.insert = self.InsertClass()      
+        self.match = self.MatchClass()
+        self.insert = self.InsertClass()
 
-    # ========= Substitute =================================================================================================== 
+    # ========= Substitute ===================================================================================================
     class SubstituteClass:
         def __init__(self, parent):
-            self.parent = parent  
-            
-        @expr     	
+            self.parent = parent
+
+        @expr
         def past(self, expression, return_tokens=True):
             """
             Converts ["this", "past"] or ["the", "past"] sequences into ["last"].
             Ensures past modifiers are consistent across temporal expressions.
             """
-            tokens = expression.tokenize()  
+            tokens = expression.tokenize()
             i = 0
             while i < len(tokens) - 1:
                 if tokens[i] in {"this", "the"} and tokens[i + 1] == "past":
@@ -589,20 +580,20 @@ class TemporalPhraseEngine:
                 else:
                     i += 1
             return tokens if return_tokens else ' '.join(tokens)
-           
+
         @expr
         def In(self, expression, return_tokens=True):
             """
             Replaces 'in' with 'of' in hierarchical time expressions.
             For example: ["first", "Monday", "in", "January"] becomes ["first", "Monday", "of", "January"].
             """
-            tokens = expression.tokenize()  
+            tokens = expression.tokenize()
             i = 0
             while i < len(tokens) - 1:
                 if tokens[i] == "in" and (
-                    tokens[i + 1] in timeline.months or  
+                    tokens[i + 1] in timeline.months or
                     tokens[i + 1] in timeline.seasons or
-                    tokens[i + 1] in timeline.quarters or 
+                    tokens[i + 1] in timeline.quarters or
                     tokens[i + 1] in {"week", "month", "year", "quarter", "season"}
                 ):
                     tokens[i] = "of"
@@ -618,7 +609,7 @@ class TemporalPhraseEngine:
             - Replacing specific prefixes (e.g., "the beginning" → "start") when `prefix=True`.
             - Replacing individual tokens or compound phrases using a flat replacement dictionary when `prefix=False`.
 
-            Supports both raw text (string) and pre-tokenized input (list of strings). 
+            Supports both raw text (string) and pre-tokenized input (list of strings).
             Can return either a modified string or a token list.
 
             Args:
@@ -632,7 +623,7 @@ class TemporalPhraseEngine:
                 str | list: The normalized expression, either as a string or token list depending on `return_tokens`.
                             Returns the original input if no replacements apply.
             """
-            tokens = expression.tokenize()            
+            tokens = expression.tokenize()
             if prefix:
                 text_lower = " ".join(tokens).lower()
                 for prefix, replacement in replacements.items():
@@ -657,8 +648,8 @@ class TemporalPhraseEngine:
             if return_tokens:
                 return self.parent.clean_gaps(tokens)
             return self.parent.clean_gaps(" ".join(tokens))
-           
-        @expr           
+
+        @expr
         def approximate_words(self, expression, token_index=None, return_tokens=True):
             """
             Replaces an approximate number word with a randomly chosen numeral string.
@@ -670,7 +661,7 @@ class TemporalPhraseEngine:
               - "many" becomes a random integer between 10 and 15
 
             This method accepts either a string or a list of tokens. If a string is provided,
-            it will be split into tokens. If a token_index is given, the token at that index 
+            it will be split into tokens. If a token_index is given, the token at that index
             is inspected and replaced if it matches an approximate number. If no token_index is provided,
             the method will modify the first token that is found in the mapping.
 
@@ -684,9 +675,9 @@ class TemporalPhraseEngine:
             Returns:
                 str or list: The updated expression in the requested format.
             """
-            tokens = expression.tokenize()            
+            tokens = expression.tokenize()
             if token_index is not None:
-                token_index = int(str(token_index))            	
+                token_index = int(str(token_index))
                 if token_index < 0 or token_index >= len(tokens):
                     raise IndexError("Token index out of range.")
                 indices = [token_index]
@@ -700,17 +691,17 @@ class TemporalPhraseEngine:
                     tokens[idx] = str(random.randint(low, high))
                     break  # Only replace the first matching token
             return tokens if return_tokens else " ".join(tokens)
-        
+
         @expr
         def ordinal_cardinal(self, expression):
             """
             Converts ordinal and cardinal expressions into their numeric string equivalents.
 
-            This method processes a temporal phrase or token list and replaces any ordinal or 
-            spelled-out number (e.g., "first", "twenty-second", "four") with its corresponding 
+            This method processes a temporal phrase or token list and replaces any ordinal or
+            spelled-out number (e.g., "first", "twenty-second", "four") with its corresponding
             integer string form (e.g., "1", "22", "4").
 
-            This normalization helps standardize numeric expressions across phrases 
+            This normalization helps standardize numeric expressions across phrases
             before resolution or interpretation.
 
             Args:
@@ -718,8 +709,8 @@ class TemporalPhraseEngine:
 
             Returns:
                 list: A list of tokens with ordinal/cardinal values replaced by their numeric strings.
-            """            
-            tokens = expression.tokenize() 
+            """
+            tokens = expression.tokenize()
             tokenized = []
             for token in tokens:
                 if self.parent.is_partial_date(token):
@@ -742,13 +733,13 @@ class TemporalPhraseEngine:
                 try:
                     if self.parent.numbers.num_type(token) == 'ordinalWord':
                         converted = self.parent.numbers.to_type(token, 'ordinalNumber')
-                        tokenized.append(converted)                             
+                        tokenized.append(converted)
                     elif self.parent.numbers.num_type(token) == 'cardinalWord':
                         converted = self.parent.numbers.to_type(token, 'cardinalNumber', as_str=True)
                         tokenized.append(converted)
                     else:
-                        tokenized.append(token)                        
-                except:            
+                        tokenized.append(token)
+                except (TypeError, ValueError):
                     tokenized.append(token)
             return tokenized
 
@@ -817,18 +808,17 @@ class TemporalPhraseEngine:
                 else:
                     merged.append(token)
                 i += 1
-            return merged        
-        
+            return merged
+
         def __dir__(self):
             default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
             public_attrs = ['In', 'any', 'approximate_words', 'past', 'ordinal_cardinal', 'partial_date']
-            return sorted(set(default_attrs + public_attrs))                
-           
-           
-    # ========= Drop ===================================================================================================           
+            return sorted(set(default_attrs + public_attrs))
+
+
+    # ========= Drop ===================================================================================================
     class DropClass:
         def __init__(self):
-            # nothing to configure yet — keeping it clean for now
             pass
 
         @expr
@@ -852,8 +842,8 @@ class TemporalPhraseEngine:
             valid_units = {"week", "weeks", "month", "months", "year", "years", "quarter", "quarters"}
 
             # Detect original type
-            input_is_str = isinstance(expression, str)            
-            tokens = expression.tokenize()             
+            input_is_str = isinstance(expression, str)
+            tokens = expression.tokenize()
 
             cleaned = []
             i = 0
@@ -873,7 +863,7 @@ class TemporalPhraseEngine:
             if return_tokens:
                 return cleaned
             return ' '.join(cleaned) if input_is_str else cleaned
-           
+
         @expr
         def useless_of(self, expression, return_tokens=True):
             """
@@ -896,8 +886,7 @@ class TemporalPhraseEngine:
                        | set(timeline.seasons.keys())           \
                        | set(timeline.quarters.keys())
 
-            # “day” must NOT be in this set, otherwise we’d strip the ‘of’ that
-            # rule #6 depends on.
+            # Excluding `day` preserves the `of` required by resolver rule 6.
             TIME_UNITS = {"week", "month", "quarter", "season", "year"}
             DIRECTIONS = {"this", "next", "last", "previous"}
             DAYS = set(timeline.days.index.keys())
@@ -918,22 +907,20 @@ class TemporalPhraseEngine:
                     if prev_tok in TIME_UNITS and next_tok in DIRECTIONS:
                         i += 1
                         continue
-                       
-                    # 3)  
+
+                    # 3)
                     if prev_tok in DAYS and next_tok in DIRECTIONS:
                         i += 1
-                        continue                       
+                        continue
 
-                    # note: we no longer strip “of” when prev_tok == "day"
-                    # so patterns like ["last","day","of","april"] are preserved
-                    # for the resolver’s rule #6.
+                    # Preserve `of` after `day` for resolver rule 6.
                 # default – keep token
                 keep.append(tokens[i])
                 i += 1
             return keep if return_tokens else " ".join(keep)
 
         @expr
-        def of(self, expression, return_tokens=True):            
+        def of(self, expression, return_tokens=True):
             """
             Removes any occurrence of the word 'of' from tokens.
 
@@ -941,7 +928,7 @@ class TemporalPhraseEngine:
                 expression (str or list): A phrase or token list.
                 return_tokens (bool): If True, returns a list of tokens; otherwise returns a string.
             """
-            tokens = expression.tokenize()              
+            tokens = expression.tokenize()
             result = []
             for token in tokens:
                 parts = token.split()
@@ -951,12 +938,12 @@ class TemporalPhraseEngine:
             return result if return_tokens else ' '.join(result)
 
         @expr
-        def one(self, expression, return_tokens=True):            
+        def one(self, expression, return_tokens=True):
             """
             Removes the token '1' if it immediately follows 'next', 'last', or 'this'.
             This prevents redundant numeric markers in temporal expressions.
             """
-            tokens = expression.tokenize()              
+            tokens = expression.tokenize()
             i = 0
             while i < len(tokens) - 1:
                 if tokens[i] in {'next', 'last', 'this', 'previous'} and tokens[i+1] == '1':
@@ -999,16 +986,16 @@ class TemporalPhraseEngine:
                 modified_expression = expression  # Return original if article_type does not match any known types
             if return_tokens:
                 return modified_expression.split()  # Return as list of tokens
-            return modified_expression  # Return as a single string           
-       
-        @expr       
+            return modified_expression  # Return as a single string
+
+        @expr
         def partial_date_year(self, expression, return_tokens=False):
             if return_tokens:
                 pass
-            
-            tokens = expression.tokenize()              
+
+            tokens = expression.tokenize()
             month_regex = r'(?:' + '|'.join(timeline.months) + r')'
-            pattern = rf'\b({month_regex})(?:\s(0?[1-9]|[12][0-9]|3[01]))?\s(?:\d{{2}}|\d{{4}})\b'            
+            pattern = rf'\b({month_regex})(?:\s(0?[1-9]|[12][0-9]|3[01]))?\s(?:\d{{2}}|\d{{4}})\b'
             updated_tokens = []
             for token in tokens:
                 match = re.match(pattern, token, flags=re.IGNORECASE)
@@ -1022,30 +1009,29 @@ class TemporalPhraseEngine:
                 else:
                     updated_tokens.append(token)
             return updated_tokens
-       
+
         def __dir__(self):
             default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
             public_attrs = ['of', 'one', 'this', 'article', 'partial_date_year', 'useless_of']
-            return sorted(set(default_attrs + public_attrs)) 
-           
-           
-    # ========= Match ===================================================================================================               
+            return sorted(set(default_attrs + public_attrs))
+
+
+    # ========= Match ===================================================================================================
     class MatchClass:
         def __init__(self):
-            # nothing to configure yet — keeping it clean for now
-            pass        
+            pass
 
-        @expr  
+        @expr
         def lexical(self, expression, lexical_match, token_index=None, exact=False):
             """
             Checks whether a token or sequence of tokens matches one or more expected lexical units.
 
-            When exact is False (default), this method checks if any token (or a specific token 
+            When exact is False (default), this method checks if any token (or a specific token
             if token_index is provided) matches one of the target lexical units.
 
             When exact is True, the method requires an exact sequence match:
               - If token_index is provided as an int, the token at that position must match.
-              - If token_index is provided as a list or tuple (start, end), the contiguous subsequence 
+              - If token_index is provided as a list or tuple (start, end), the contiguous subsequence
                 (interpreted as inclusive) must exactly match the target sequence.
               - If no token_index is provided and exact is True, the entire token list must exactly match
                 one of the candidate sequences if lexical_match is a list of sequences; otherwise, it is compared
@@ -1053,7 +1039,7 @@ class TemporalPhraseEngine:
 
             Args:
                 expression (str or list of str): The input, either as a string (which will be tokenized) or a list of tokens.
-                lexical_match (str, list of str, or list of list/tuple of str): 
+                lexical_match (str, list of str, or list of list/tuple of str):
                     The target lexical unit(s) to check against. This can be:
                       - A single string (e.g., "ago"),
                       - A list of strings (e.g., ["today", "tomorrow"]),
@@ -1066,7 +1052,7 @@ class TemporalPhraseEngine:
             Returns:
                 bool: True if a match is found under the specified conditions, False otherwise.
             """
-            tokens = expression.tokenize()              
+            tokens = expression.tokenize()
             if isinstance(lexical_match, str):
                 target = [lexical_match.lower()]
                 candidate_sequences = None
@@ -1117,39 +1103,38 @@ class TemporalPhraseEngine:
                 return check_subsequence(tokens)
 
 
-    # ========= Insert ===================================================================================================    
+    # ========= Insert ===================================================================================================
     class InsertClass:
         def __init__(self):
-            # nothing to configure yet — keeping it clean for now
             pass
 
-        @expr  
+        @expr
         def this(self, expression, return_tokens=True):
             """
             Inserts an implicit temporal direction ('this') into a list of tokens if none exists.
 
-            - If a single-token exception like 'today', 'tomorrow', 'yesterday',
-              we skip insertion.
-            - Otherwise, we look for any named period (month, weekday, season, quarter)
-              that is not already preceded by 'this', 'next', 'last', or an ordinal/number 
+            - Single-token exceptions such as 'today', 'tomorrow', and 'yesterday'
+              skip insertion.
+            - Otherwise, the method looks for a named period (month, weekday, season, quarter)
+              that is not already preceded by 'this', 'next', 'last', or an ordinal/number
               that merges it into an ordinal expression (e.g., "first Monday").
             - If found, insert 'this' before it and return immediately.
             """
             def _remove_redundant_this(tokens):
-                month_names = set(list(timeline.adj_months().keys()))    
+                month_names = set(list(timeline.adj_months().keys()))
                 result = []
                 i = 0
                 while i < len(tokens):
                     if i <= len(tokens) - 3:
-                        if (tokens[i].lower() == "this" and 
-                            tokens[i+1].lower() in month_names and 
+                        if (tokens[i].lower() == "this" and
+                            tokens[i+1].lower() in month_names and
                             tokens[i+2].isdigit()):
                             i += 1
                             continue
                     result.append(tokens[i])
                     i += 1
                 return result
-            
+
             DIRECTION = {"this", "next", "last", 'previous'}
             EXCEPTIONS = {"today", "yesterday", "tomorrow"}
             NAMED_PERIODS = set(
@@ -1160,7 +1145,7 @@ class TemporalPhraseEngine:
                     + list(timeline.seasons.keys())
                 )
             )
-            tokens = expression.tokenize()              
+            tokens = expression.tokenize()
             if len(tokens) == 1 and tokens[0].lower() in EXCEPTIONS:
                 return tokens
             for i, token in enumerate(tokens):
@@ -1169,7 +1154,7 @@ class TemporalPhraseEngine:
                 if tok in NAMED_PERIODS:
                     if i > 0:
                         prev = tokens[i-1].lower()
-                        if prev.isdigit() or numbers.num_type(prev) in {'ordinalNumber', 'ordinalWord'}:                          
+                        if prev.isdigit() or numbers.num_type(prev) in {'ordinalNumber', 'ordinalWord'}:
                             continue
 
                     j = i - 1
@@ -1177,7 +1162,7 @@ class TemporalPhraseEngine:
                         p = tokens[j].lower()
                         if p in DIRECTION:
                             return tokens
-                        if not (p.isdigit() or numbers.num_type(p) in {'ordinalNumber', 'ordinalWord'}):                             
+                        if not (p.isdigit() or numbers.num_type(p) in {'ordinalNumber', 'ordinalWord'}):
                             break
                         j -= 1
                     return tokens[:i] + ['this'] + tokens[i:]
@@ -1189,16 +1174,16 @@ class TemporalPhraseEngine:
         Cleans up gaps or empty elements in a string or list.
 
         Args:
-            expression (str or list): The input to be cleaned. 
-                - If a string, extra whitespace (spaces, tabs, newlines) is removed and 
+            expression (str or list): The input to be cleaned.
+                - If a string, extra whitespace (spaces, tabs, newlines) is removed and
                   words are separated by a single space.
                 - If a list, all falsy values (e.g., empty strings, None, 0) are removed.
-        """    
+        """
         if expression.original_type is str:
             return " ".join(expression.raw.split())
         else:
             return expression.tokenize()
-       
+
     def _ordinal_set(self, vocab):
         ordinal_word_pattern = re.compile(
             r'\b(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|'
@@ -1219,16 +1204,16 @@ class TemporalPhraseEngine:
         full_ordinal_set = set(words + compound_no_hyphens)
         return sorted(full_ordinal_set)
 
-    @expr         
+    @expr
     def _hyphenate_word_numbers(self, expression):
         """
         Adds hyphens to spelled-out compound numbers like 'twenty two' -> 'twenty-two'.
         """
-        expr = expression.tokenize()        
+        expr = expression.tokenize()
         pattern = r"\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\s(one|two|three|four|five|six|seven|eight|nine)\b"
         return re.sub(pattern, r"\1-\2", expr, flags=re.IGNORECASE)
 
-    @expr         
+    @expr
     def is_partial_date(self, expression, include_year=False, return_val=False):
         """
         Checks if a string matches any of the following patterns:
@@ -1237,7 +1222,7 @@ class TemporalPhraseEngine:
         - Check 3: "<Month> <OrdinalWord>"
         - Check 5: "<Month> <NumericDay> <Year>"
         - Check 6: "<Month> <OrdinalNumber> <Year>"
-        - Check 7: "<Month> <OrdinalWord> <Year>"        
+        - Check 7: "<Month> <OrdinalWord> <Year>"
 
         Args:
             expression (str): The input string to check.
@@ -1251,10 +1236,10 @@ class TemporalPhraseEngine:
         tokens = expression.tokenize()
         if len(tokens) == 1 and len(tokens[0].split()) > 1:
             tokens = ' '.join([str(t) for t in tokens]).split()
-            
+
         if len(tokens) < 2 or len(tokens) > 3:
             return False
-           
+
         month = tokens[0]
         value = tokens[1]
         year = tokens[2] if len(tokens) == 3 else None
@@ -1267,7 +1252,7 @@ class TemporalPhraseEngine:
             if return_val:
                 return {"month": month, "day": None, "year": value}
             return True
-        
+
         checks = [
             len(tokens) == 2 and self.numbers.num_type(value) == 'cardinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
             len(tokens) == 2 and self.numbers.num_type(value) == 'ordinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
@@ -1309,7 +1294,7 @@ class TemporalPhraseEngine:
             str or list: Inflected version of the input in the requested form.
         """
         if mode not in {"singular", "plural"}:
-            return expression 
+            return expression
         if isinstance(expression, str):
             result = (
                 self.temporal_inflect.singularize_phrase(expression)
@@ -1328,7 +1313,7 @@ class TemporalPhraseEngine:
     def normalize(self, phrase, prefix_replace=None, remove_article=None, singularize=False, replacements=None):
         """
         Standardizes and tokenizes a temporal phrase through several preprocessing steps.
-        
+
         This method:
         - Corrects spelling using LexicalFuzzer.hybrid_correction.
         - Canonicalizes quarter references (e.g., "first quarter" → "q1").
@@ -1337,30 +1322,30 @@ class TemporalPhraseEngine:
         - Optionally converts plural words to singular.
         - Applies custom token replacements.
         - Returns a list of normalized tokens, or None if the expression is too short.
-        
+
         Args:
             phrase (str): The raw temporal phrase.
             prefix_replace (dict): Mapping for prefix replacements.
             remove_article (list or str): Articles to remove, can be 'indefinite', 'definite', or both.
             singularize (bool): Flag to convert plural words to singular.
             replacements (dict): Additional token replacements.
-        
+
         Returns:
             list of str or None: The tokenized and standardized phrase.
-        """    
+        """
         # Clean extra spaces.
         phrase = " ".join(phrase.split())
-        
+
         # Spell-correct tokens using LexicalFuzzer's hybrid approach.
         phrase_tokens = LexicalFuzzer.hybrid_correction(phrase)
         if not phrase_tokens:
             return None
-        
+
         phrase = ' '.join(phrase_tokens)
-        
+
         # Normalize quarter references.
-        phrase = self.sub.any(phrase, replacements={k: v for k, v in timeline.quarters.items() if k != v}, prefix=False, return_tokens=False)  
-        
+        phrase = self.sub.any(phrase, replacements={k: v for k, v in timeline.quarters.items() if k != v}, prefix=False, return_tokens=False)
+
         # Handle article removal.
         if remove_article:
             if isinstance(remove_article, str):
@@ -1370,22 +1355,22 @@ class TemporalPhraseEngine:
                 phrase = self.drop.article(phrase, article_type='definite', only_ordinal=False, return_tokens=False)
             if 'indefinite' in remove_article or 'a' in remove_article:
                 phrase = self.drop.article(phrase, article_type='indefinite', only_ordinal=False, return_tokens=False)
-        
+
         if prefix_replace:
-            phrase = self.sub.any(phrase, replacements=prefix_replace, prefix=True, return_tokens=False) 
-        
+            phrase = self.sub.any(phrase, replacements=prefix_replace, prefix=True, return_tokens=False)
+
         if replacements:
-            phrase = self.sub.any(phrase, replacements=replacements, prefix=False, return_tokens=False)  
-        
+            phrase = self.sub.any(phrase, replacements=replacements, prefix=False, return_tokens=False)
+
         if singularize:
-            phrase = self.inflect(phrase, mode="singular", return_tokens=False)  
+            phrase = self.inflect(phrase, mode="singular", return_tokens=False)
         phrase = phrase.lower().strip()
 
-        tokens = Expression(phrase).tokenize()       
+        tokens = Expression(phrase).tokenize()
         if not tokens:
-            return None 
+            return None
         return tokens
-       
+
     def __dir__(self):
         default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
         public_attrs = [
@@ -1393,14 +1378,12 @@ class TemporalPhraseEngine:
             'sub', 'inflect', 'match', 'insert', 'extract', 'is_partial_date', 'ordinal_number',
             'ordinal_words_set', 'ordinal_numbers_set', 'temporal_inflect', 'numbers', 'clean_gaps'
             ]
-        return sorted(set(default_attrs + public_attrs))  
+        return sorted(set(default_attrs + public_attrs))
 
-  
+
 # Instantiate the TemporalPhraseEngine class.
 PhraseEngine = TemporalPhraseEngine()
 
 
 
 __all__ = ["PhraseEngine"]
-
-
