@@ -135,7 +135,7 @@ setup(
     python_requires=">=3.8,<3.15",
     platforms=["Windows"],
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "Operating System :: Microsoft :: Windows",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
