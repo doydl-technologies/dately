@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -76,9 +76,7 @@ Those checks are delegated to the `semantic_validation` layer.
 """
 from itertools import permutations
 from collections import Counter
-from typing import List
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from ..temporal_preprocessing import PhraseEngine
 from ..temporal_core.temporal_units import (
     remove_unnecessary_this,
@@ -102,18 +100,12 @@ from .temporal_structure_rules import (
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 structure_checkers = {
     "compound": is_compound_structure,
     "anchoring": is_anchoring_structure,
     "containment": is_containment_structure,
     "intersection": is_intersection_structure,
-    "relative": is_relative_structure,    
+    "relative": is_relative_structure,
 }
 
 structure_permutations = list(permutations(structure_checkers.keys()))
@@ -174,20 +166,20 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
       "reason": <str>,
       "parts": {...}  # if available
     }
-    """    
+    """
     deictic_tokens = {
         "today": {"unit": "day", "offset": 0},
         "yesterday": {"unit": "day", "offset": -1},
         "tomorrow": {"unit": "day", "offset": 1},
         "tommorrow": {"unit": "day", "offset": 1},  # common misspelling
     }
-    
+
     if auto_add_prepositions:
         tokens = insert_prepositions(tokens)
-        
+
     if this_anchor_removal:
         tokens = remove_unnecessary_this(tokens)
-        
+
     # Deictic expression shortcut
     if len(tokens) == 1:
         t = tokens[0].lower()
@@ -201,7 +193,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
                 "valid": True,
                 "reason": f"Recognized deictic term → '{t}'",
                 "parts": deictic_tokens[t]
-            }    
+            }
 
     # Early check: if this is a standalone partial date, it's automatically an intersection
     if (
@@ -223,7 +215,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
             "reason": "Valid partial date → intersection structure",
             "parts": parts
         }
-        
+
     votes = structural_majority_vote(tokens)
     total = sum(votes.values())
 
@@ -268,11 +260,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
                 valid = is_valid_anchor(modifier, anchor)
                 reason = "Valid anchoring" if valid else "Invalid anchoring modifier or unit"
                 parts = {"modifier": modifier, "anchor": anchor}
-                
-        # elif top_structure == "containment":
-        #     valid = is_containment_structure(tokens)
-        #     reason = "Valid containment" if valid else "Invalid containment relationship"
-        
+
         elif top_structure == "containment":
             extracted = extract_containment_parts(tokens)
             if extracted:
@@ -283,11 +271,11 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
                     normalize_named_unit(container)
                 )
                 reason = "Valid containment" if valid else "Invalid containment relationship"
-            
+
         elif top_structure == "intersection":
             valid = is_intersection_structure(tokens)
             reason = "Valid intersection" if valid else "Invalid intersection"
-            
+
         elif top_structure == "relative":
             extracted = parse_relative_structure(tokens)
             if extracted:
@@ -311,7 +299,6 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
         "reason": reason,
         "parts": parts
     }
-
 
 
 

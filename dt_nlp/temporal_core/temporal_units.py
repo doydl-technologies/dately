@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -73,18 +73,11 @@ It only enables higher-level logic through normalization, mapping, and rank cont
 """
 import re
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from ..arithmetic import numbers, timeline
 from ..temporal_preprocessing import PhraseEngine
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 
 # Dictionary for all literal → unit mappings
 named_units = {
@@ -104,10 +97,10 @@ named_units = {
     "fri":    ("day_of_week", 5),
     "sat":    ("day_of_week", 6),
     "sun":    ("day_of_week", 7),
-    
+
     "weekend": ("day_range", None),
-    # "week end": ("day_range", None),    
-    
+    # "week end": ("day_range", None),
+
     # months
     "january":   ("month", 1),
     "february":  ("month", 2),
@@ -126,7 +119,6 @@ named_units = {
     "feb":   ("month", 2),
     "mar":   ("month", 3),
     "apr":   ("month", 4),
-    "may":   ("month", 5),
     "jun":   ("month", 6),
     "jul":   ("month", 7),
     "aug":   ("month", 8),
@@ -155,7 +147,7 @@ for i in range(1, 32):
     ordinal = numbers.to_type(i, 'ordinalNumber', as_str=True)
     named_units[cardinal] = ("day_of_month", i)
     named_units[ordinal] = ("day_of_month", i)
-    
+
 named_units.update({
     **{str(i): ("day_of_month", i) for i in range(1, 32)},
     **{numbers.to_type(i, 'ordinalNumber', as_str=True): ("day_of_month", i) for i in range(1, 32)},
@@ -175,7 +167,7 @@ base_unit_map = {
     "season":        "quarter",   # treat season like a “quarter”
     "half_year":     "year",      # treat half‐year as same level as year
     "year":          "year",
-    "day_range":		 "day",    
+    "day_range":		 "day",
 }
 
 # Containment and hierarchy checking i.e. smaller → larger
@@ -195,7 +187,7 @@ _unit_map = {
     "month": "month", "months": "month",
     "quarter": "quarter", "quarters": "quarter",
     "year": "year", "years": "year",
-    "weekend": "day",    
+    "weekend": "day",
 }
 
 def _norm_ordinals(token):
@@ -227,7 +219,7 @@ def normalize_named_unit(token):
     t = token.strip().lower()
     t = _norm_ordinals(t)
 
-    # NEW: Handle partial dates like 'april 2025'
+    # Partial dates such as `april 2025` resolve to their narrowest base unit.
     if PhraseEngine.is_partial_date([t], include_year=True, return_val=False):
         parts = PhraseEngine.is_partial_date([t], include_year=True, return_val=True)
         return "day" if parts.get("day") else "month"
@@ -242,8 +234,8 @@ def normalize_named_unit(token):
         return t
 
     raise ValueError(f"Unknown temporal token: {token!r}")
-   
-   
+
+
 def is_valid_containment_with_partial(container_tokens):
     if PhraseEngine.is_partial_date(container_tokens, include_year=True):
         # Accept this as a container — valid containment
@@ -252,7 +244,7 @@ def is_valid_containment_with_partial(container_tokens):
         # Must be a broader unit like 'month', 'year', etc.
         normalized = normalize_named_unit(container_tokens[-1])
         return normalized in {"month", "quarter", "year"}
-   
+
 def remove_unnecessary_this(tokens):
     """
     Remove the word "this" when it precedes a named temporal unit
@@ -284,7 +276,7 @@ def remove_unnecessary_this(tokens):
             if next_word in NAMED_UNITS:
                 # Skip "this" (do not append it)
                 i += 1  # Move to next token (the named unit)
-                continue  # We'll append the next one below
+                continue  # The named unit is appended by the next iteration.
         output.append(tokens[i])
         i += 1
 
@@ -344,4 +336,4 @@ def insert_prepositions(tokens):
         if idx+1 < len(tokens) and tokens[idx+1].lower() not in {"of", "starting"}:
             return tokens[:idx+1] + ["of"] + tokens[idx+1:]
     return tokens
-   
+

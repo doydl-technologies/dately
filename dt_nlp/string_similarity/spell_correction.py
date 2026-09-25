@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding The Module
@@ -65,22 +65,15 @@ Core Components:
 """
 import re
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import numbr
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 
 
 # ──────────────────────────────────────────────────────────────────────────────────────
 # CANONICAL TEMPORAL TERMS
 # These are the raw temporal surface forms expected in natural language expressions.
-# The goal is to ensure we have a strong lexical base for fuzzy string matching,
+# The vocabulary provides a stable lexical base for fuzzy matching,
 # token normalization, and spelling correction across various temporal concepts.
 # This includes singular/plural forms, possessive variants, and alternate inflections.
 # ──────────────────────────────────────────────────────────────────────────────────────
@@ -152,7 +145,7 @@ CANONICAL_TEMPORAL_TERMS = {
 def _to_ordinal_words(day):
     """
     Converts a numeric day value into its corresponding ordinal word form (e.g., 1 -> "first").
-    """    
+    """
     try:
         day_int = int(day)
     except (ValueError, TypeError):
@@ -163,11 +156,11 @@ def _to_ordinal_words(day):
         return None
 
     return word
-   
+
 def _to_ordinal_number(day):
     """
     Converts a numeric day value into its ordinal number form (e.g., 1 -> "1st").
-    """    
+    """
     try:
         day_int = int(day)
     except (ValueError, TypeError):
@@ -182,7 +175,7 @@ def _to_ordinal_number(day):
 def _hyphenate_word_numbers(text):
     """
     Converts compound cardinal number phrases into hyphenated form.
-    """	
+    """
     # NLP pre-processing trick:
     # Turns "twenty three" into "twenty-three", which helps match things like "twenty-third"
     # Useful for aligning fuzzy tokens with ordinal patterns.
@@ -195,14 +188,14 @@ def _is_cardinal(token):
 
     Used to identify tokens like "1", "12", or "365"
     that represent whole numeric quantities in temporal expressions.
-    """	
+    """
     return token.isdigit()
 
 def expand_dates(monthnames, terms):
     """
-    Expands date expressions in the form of "<month> <day>" (e.g., "apr 05") into 
+    Expands date expressions in the form of "<month> <day>" (e.g., "apr 05") into
     both ordinal number (e.g., "apr 5th") and ordinal word (e.g., "apr fifth") forms.
-    """	
+    """
     def _extract_mmdd(terms):
         # Build a regex pattern using the keys of _MONTH_DAYS
         month_pattern = r'\b(' + '|'.join(monthnames.keys()) + r')\s0*(\d{1,2})\b'
@@ -214,7 +207,7 @@ def expand_dates(monthnames, terms):
             if re.fullmatch(month_pattern, term, re.IGNORECASE)
         ])
         return raw_date_terms
-    
+
     date_terms = _extract_mmdd(terms)
     transformed_dates = []
 
@@ -263,11 +256,11 @@ _MONTH_DAYS = {
 PARTIAL_DATES = set()
 for month, days in _MONTH_DAYS.items():
     for day in range(1, days + 1):
-        PARTIAL_DATES.add(f"{month} {day}")      	
+        PARTIAL_DATES.add(f"{month} {day}")
         PARTIAL_DATES.add(f"{month} {day:02}")
-        
+
 # Augment the canonical terms with partial dates
-CANONICAL_TEMPORAL_TERMS.update(PARTIAL_DATES)   
+CANONICAL_TEMPORAL_TERMS.update(PARTIAL_DATES)
 ORDINAL_DATE_TERMS = expand_dates(_MONTH_DAYS, CANONICAL_TEMPORAL_TERMS)
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -318,8 +311,8 @@ if not _SKIP_ORDINAL_CORRECTION:
     CANONICAL_TEMPORAL_TERMS.update(LEXICAL_ORDINALS)
     CANONICAL_TEMPORAL_TERMS.update(COMPOUND_ORDINAL_WORDS)
     CANONICAL_TEMPORAL_TERMS.update(NUMERIC_ORDINALS)
-    CANONICAL_TEMPORAL_TERMS.update(ORDINAL_DATE_TERMS)    
-   
+    CANONICAL_TEMPORAL_TERMS.update(ORDINAL_DATE_TERMS)
+
 # ────────────────────────────────────────────────────────────────────────────────
 # STRING SIMILARITY FUNCTIONS
 # Includes Levenshtein edit distance and Jaro-Winkler similarity.
@@ -336,19 +329,18 @@ class Levenshtein:
 
     This quantifies the difference between two strings by computing the minimum number
     of operations (insertion, deletion, substitution) needed to transform one into the other.
-    
+
     Why this matters in NLP:
     - Useful for surface-level fuzzy matching (e.g. typo correction, OCR cleanup).
     - Doesn't assume any phonetic similarity — this is purely character-based.
     - Well-suited for token normalization pipelines where small typos are likely.
-    
+
     Note:
     - Equal cost for all operations (1 per op).
     - No support for transpositions (that’s Damerau-Levenshtein).
     - Could be memoized if needed for speed in large vocab lookups.
-    """	
+    """
     def __init__(self):
-        # nothing to configure yet — keeping it clean for now
         pass
 
     def distance(self, a, b):
@@ -398,7 +390,7 @@ class JaroWinkler:
     - Lexical normalization
 
     Note: This does *not* consider phonetics — just character order and overlap.
-    """	
+    """
     def __init__(self, scaling=0.1):
         # This scaling factor determines the strength of the Winkler prefix bonus.
         # Empirically, 0.1 performs well for most linguistic applications.
@@ -518,7 +510,7 @@ class LexicalFuzzyMatcher:
 
         # Whether to skip correcting ordinal expressions.
         self.ignore_ordinals = ignore_ordinals
-        self.ignore_numerals = ignore_numerals        
+        self.ignore_numerals = ignore_numerals
 
         # Max edit distance allowed for Levenshtein-based correction.
         self.levenshtein_threshold = levenshtein_threshold
@@ -526,7 +518,7 @@ class LexicalFuzzyMatcher:
         # Minimum similarity score required for Jaro-Winkler to consider a candidate a match.
         self.jaro_winkler_threshold = jaro_winkler_threshold
 
-        # Instantiate similarity metric objects. These are stateless utilities we’ll use per token.
+        # Similarity metrics are stateless and reused across tokens.
         self.lev = Levenshtein()
         self.jw = JaroWinkler(scaling=jaro_winkler_scaling)
 
@@ -555,10 +547,10 @@ class LexicalFuzzyMatcher:
         Dynamically updates the configuration of the LexicalFuzzyMatcher instance.
 
         This method allows runtime adjustments of matching behavior by selectively
-        overriding internal parameters without reinstantiating the matcher. Useful 
+        overriding internal parameters without reinstantiating the matcher. Useful
         for fine-tuning fuzzy matching sensitivity or switching vocabularies on the fly.
 
-        Only parameters explicitly provided will be changed; others will retain 
+        Only parameters explicitly provided will be changed; others will retain
         their current values.
 
         Args:
@@ -588,11 +580,11 @@ class LexicalFuzzyMatcher:
         """
         Restores the LexicalFuzzyMatcher's configuration to its original default values.
 
-        This is useful for reverting any customizations made via `configure()` 
-        and returning the matcher to a clean, stable state — especially during 
+        This is useful for reverting any customizations made via `configure()`
+        and returning the matcher to a clean, stable state — especially during
         iterative experimentation or when reusing the matcher across contexts.
 
-        All tunable attributes including vocabulary, thresholds, and ignore flags 
+        All tunable attributes including vocabulary, thresholds, and ignore flags
         are restored to their original values defined at initialization.
         """
         defaults = self._default_config
@@ -603,61 +595,10 @@ class LexicalFuzzyMatcher:
         self.jaro_winkler_threshold = defaults["jaro_winkler_threshold"]
         self.jaro_winkler_scaling = defaults["jaro_winkler_scaling"]
         self.jw.scaling = defaults["jaro_winkler_scaling"]
-        
-    # Algorithm Helpers
-    # ─────────────────────────────────────        
-    # def _levenshtein(self, token, vocabulary=None):
-    #     token = token.lower()
-    #     vocab = vocabulary if vocabulary is not None else self.vocabulary         
-    # 
-    #     # Skip correction if ordinals are off and the token *is* one
-    #     if self.ignore_ordinals and token in ALL_ORDINALS:
-    #         return token
-    # 
-    #     # Skip bare numerals
-    #     if self.ignore_numerals and _is_cardinal(token):
-    #         return token
-    #        
-    #     # Already valid? Return as-is
-    #     if token in vocab:
-    #         return token
-    # 
-    #     # Compute Levenshtein distance to all known words and pick the closest match
-    #     closest = min(vocab, key=lambda w: self.lev.distance(token, w))
-    #     if self.lev.distance(token, closest) <= self.levenshtein_threshold:
-    #         return closest  # Accept if below threshold
-    #     return token  # Otherwise, don’t force a match
-
-    # def _jaro_winkler(self, token, vocabulary=None):
-    #     token = token.lower()
-    #     vocab = vocabulary if vocabulary is not None else self.vocabulary         
-    #     
-    #     # Skip correction if ordinals are off and the token *is* one        
-    #     if self.ignore_ordinals and token in ALL_ORDINALS:
-    #         return token
-    #        
-    #     # Skip bare numerals
-    #     if self.ignore_numerals and _is_cardinal(token):
-    #         return token  
-    #        
-    #     # Already valid? Return as-is           
-    #     if token in vocab:
-    #         return token
-    #        
-    #     best_match = None
-    #     best_score = 0
-    #     # Iterate through known words, scoring each by similarity
-    #     for word in vocab:
-    #         score = self.jw.jaro_winkler_distance(token, word)
-    #         if score > best_score:
-    #             best_score = score
-    #             best_match = word
-    #     # If best score is above threshold, return it — otherwise no match.
-    #     return best_match if best_score >= self.jaro_winkler_threshold else token
 
     def _levenshtein(self, token, vocabulary=None):
         token = token.lower()
-        vocab = vocabulary if vocabulary is not None else self.vocabulary         
+        vocab = vocabulary if vocabulary is not None else self.vocabulary
 
         # Skip correction if ordinals are off and the token *is* one
         if self.ignore_ordinals and token in ALL_ORDINALS:
@@ -666,11 +607,11 @@ class LexicalFuzzyMatcher:
         # Skip bare numerals
         if self.ignore_numerals and _is_cardinal(token):
             return token
-        
+
         # Set
         #-----------------------------------------
-        # Already valid? Return as-is  
-        if isinstance(vocab, set):                           
+        # Already valid? Return as-is
+        if isinstance(vocab, set):
             if token in vocab:
                 return token
 
@@ -682,7 +623,7 @@ class LexicalFuzzyMatcher:
 
         # Dict
         # -----------------------------------------
-        # Already valid? Return as-is  
+        # Already valid? Return as-is
         elif isinstance(vocab, dict):
             # Already valid? Return mapped value
             if token in vocab:
@@ -693,23 +634,23 @@ class LexicalFuzzyMatcher:
             if self.lev.distance(token, closest) <= self.levenshtein_threshold:
                 return vocab[closest]  # Return canonical form
             return token  # Otherwise, don’t force a match
-           
+
     def _jaro_winkler(self, token, vocabulary=None):
         token = token.lower()
-        vocab = vocabulary if vocabulary is not None else self.vocabulary         
+        vocab = vocabulary if vocabulary is not None else self.vocabulary
 
-        # Skip correction if ordinals are off and the token *is* one        
+        # Skip correction if ordinals are off and the token *is* one
         if self.ignore_ordinals and token in ALL_ORDINALS:
             return token
-           
+
         # Skip bare numerals
         if self.ignore_numerals and _is_cardinal(token):
-            return token    
+            return token
 
         # Set
         #-----------------------------------------
-        # Already valid? Return as-is  
-        if isinstance(vocab, set):                           
+        # Already valid? Return as-is
+        if isinstance(vocab, set):
             if token in vocab:
                 return token
 
@@ -726,11 +667,11 @@ class LexicalFuzzyMatcher:
 
         # Dict
         #-----------------------------------------
-        # Already valid? Return as-is  
-        elif isinstance(vocab, dict):                   
+        # Already valid? Return as-is
+        elif isinstance(vocab, dict):
             if token in vocab:
                 return vocab[token]
-        
+
             best_match = None
             best_score = 0
             # Iterate through known words, scoring each by similarity
@@ -743,37 +684,6 @@ class LexicalFuzzyMatcher:
             return best_match if best_score >= self.jaro_winkler_threshold else token
 
 
-    # def match_token(self, token, vocabulary=None):
-    #     # Combine both metrics into a hybrid strategy.
-    #     # First try Levenshtein — precise, character-edit-based
-    #     # Then fall back on Jaro-Winkler — broader, prefix-weighted phonetic similarity
-    #     token = token.lower()
-    #     vocab = vocabulary if vocabulary is not None else self.vocabulary
-    # 
-    #     # Skip correction if ordinals are off and the token *is* one
-    #     if self.ignore_ordinals and token in ALL_ORDINALS:
-    #         return token
-    #        
-    #     # Skip bare numerals
-    #     if self.ignore_numerals and _is_cardinal(token):
-    #         return token      
-    # 
-    #     # First: try Levenshtein match
-    #     closest_lev = min(vocab, key=lambda w: self.lev.distance(token, w))
-    #     if self.lev.distance(token, closest_lev) <= self.levenshtein_threshold:
-    #         return closest_lev
-    # 
-    #     # Second: fallback to Jaro-Winkler
-    #     best_match = None
-    #     best_score = 0
-    #     for word in vocab:
-    #         score = self.jw.jaro_winkler_distance(token, word)
-    #         if score > best_score:
-    #             best_score = score
-    #             best_match = word
-    # 
-    #     return best_match if best_score >= self.jaro_winkler_threshold else token
-    
     def match_token(self, token, vocabulary=None):
         # Combine both metrics into a hybrid strategy.
         # First try Levenshtein — precise, character-edit-based
@@ -784,14 +694,14 @@ class LexicalFuzzyMatcher:
         # Skip correction if ordinals are off and the token *is* one
         if self.ignore_ordinals and token in ALL_ORDINALS:
             return token
-           
+
         # Skip bare numerals
         if self.ignore_numerals and _is_cardinal(token):
-            return token      
+            return token
 
         # Set
         #-----------------------------------------
-        # Already valid? Return as-is 
+        # Already valid? Return as-is
         if isinstance(vocab, set):
             if token in vocab:
                 return token
@@ -813,7 +723,7 @@ class LexicalFuzzyMatcher:
 
         # Dict
         #-----------------------------------------
-        # Already valid? Return as-is  
+        # Already valid? Return as-is
         elif isinstance(vocab, dict):
             if token in vocab:
                 return vocab[token]
@@ -832,7 +742,7 @@ class LexicalFuzzyMatcher:
                     best_score = score
                     best_match = word
             return vocab[best_match] if best_score >= self.jaro_winkler_threshold else token
-           
+
 
     # Fuzzy Logic
     # ─────────────────────────────────────
@@ -870,15 +780,14 @@ class LexicalFuzzyMatcher:
     def __dir__(self):
         default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
         public_attrs = ['hybrid_correction', 'levenshtein_correction', 'jaro_winkler_correction', 'vocabulary', 'configure', 'reset_configuration', 'match_token']
-        return sorted(set(default_attrs + public_attrs)) 
+        return sorted(set(default_attrs + public_attrs))
 
 
 
-# Instantiate the LexicalFuzzyMatcher that will act as our main fuzzy-correction engine.
-# This is our front-line filter for cleaning up user-provided temporal phrases.
+# Shared fuzzy matcher for normalizing user-provided temporal phrases.
 LexicalFuzzer = LexicalFuzzyMatcher(
     vocabulary=CANONICAL_TEMPORAL_TERMS,             # Canonical lexicon of valid temporal terms (months, days, seasons, ordinals, etc.)
-    ignore_ordinals=_SKIP_ORDINAL_CORRECTION,   		 # Whether to skip fuzzy-matching ordinals (we usually want to keep these untouched).
+    ignore_ordinals=_SKIP_ORDINAL_CORRECTION,   		 # Preserve ordinals instead of fuzzy-matching them.
     ignore_numerals=True,                            # Whether to skip correction for bare numerals (e.g., "1", "30", "2023") — valid as-is.
     levenshtein_threshold=1,                         # Allow a max edit distance of 1 — tight bound, good for simple typos like "dy" → "day".
     jaro_winkler_threshold=0.88,                     # Require a high phonetic similarity to trigger Jaro-Winkler correction (0.88+ is conservative).

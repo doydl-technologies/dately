@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 
 #
-# doydl's Temporal Format & Transformation Utilities — dately
+# doydl's Temporal Parsing & Normalization Engine — dately
 #
-# The `dately` module provides foundational utilities for parsing, detecting, modifying,
-# and vectorizing datetime strings and objects across a wide range of input types.
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed as infrastructure for robust and platform-agnostic date handling,
-# it includes logic for format inference, ISO/non-ISO validation, timezone patching,
-# and safe transformation of individual date/time components. It supports batch
-# processing over lists, NumPy arrays, Pandas Series, and dictionaries — with
-# consistent shape preservation and error handling.
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
 #
-# Core capabilities include:
-# - Flexible strptime-format detection (`DateFormatFinder`)
-# - Datetime component extraction (e.g., extract hour or weekday)
-# - In-place modification of time and date fields
-# - Uniform application of datetime logic to scalars and collections
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
 #
-# This logic is format-centric and independent of any language-level semantics.
-# It serves as a reliable backend for preprocessing, standardization, and
-# cross-platform datetime normalization workflows.
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
 #
@@ -41,18 +41,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-#  
+#
 
 import time
 import re
 from html.parser import HTMLParser
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import pandas as pd
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
-from ._log import logger         
-# from ._mskutils import Shift
+from ._log import logger
 from ._sysutils import DataImport
 from ._connect import http_client
 from ._webutils import absolute_url
@@ -61,17 +58,11 @@ from .dt_nlp.string_similarity.spell_correction import LexicalFuzzer
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 def get_holiday_urls():
     return DataImport.load_holiday_urls()
-   
+
 def get_country_variants():
-    return DataImport.load_country_variants()   
+    return DataImport.load_country_variants()
 
 class parse_href_calendar(HTMLParser):
     """
@@ -96,13 +87,13 @@ class parse_href_calendar(HTMLParser):
         """
         super().__init__()
         self.in_table = False
-        self.in_data_tag = False 
+        self.in_data_tag = False
         self.capture_data = False
         self.data = []
         self.row = []
-        self.html_content = None 
-        self.current_year = time.localtime().tm_year 
-        self.current_year_found = None 
+        self.html_content = None
+        self.current_year = time.localtime().tm_year
+        self.current_year_found = None
 
     def set_html_content(self, html_content):
         """
@@ -113,8 +104,8 @@ class parse_href_calendar(HTMLParser):
         """
         self.html_content = html_content
         self.feed(html_content)
-        self.extract_year_from_title() 
-        
+        self.extract_year_from_title()
+
     def handle_starttag(self, tag, attrs):
         """
         Handles the start tag of an HTML element. Sets flags and initializes structures
@@ -133,7 +124,7 @@ class parse_href_calendar(HTMLParser):
                 self.row = []
             if tag in ['td', 'th']:
                 self.in_data_tag = True
-                self.capture_data = True 
+                self.capture_data = True
 
     def handle_endtag(self, tag):
         """
@@ -209,7 +200,7 @@ class parse_href_calendar(HTMLParser):
 
         def add_year_to_dates(data, year):
             date_pattern = re.compile(r'([A-Za-z]{3} \d{1,2})')
-            
+
             def process_item(item):
                 if isinstance(item, list):
                     return [process_item(sub_item) for sub_item in item]
@@ -237,7 +228,7 @@ class parse_href_calendar(HTMLParser):
         # Ensure the title row is included
         title_row = cleaned_list[0] if cleaned_list and cleaned_list[0] == ['Date', 'Name', 'Type'] else None
         data_rows = [row for row in cleaned_list if has_valid_date(row)]
-        
+
         if title_row:
             self.data = [title_row] + data_rows
         else:
@@ -251,7 +242,7 @@ class parse_href_calendar(HTMLParser):
             list: The cleaned data with date modifications applied.
         """
         self.clean_data()
-        return self.data 
+        return self.data
 
 
 
@@ -268,7 +259,7 @@ class HolidayManager:
     """
     def __init__(self, instance_http=None):
         self.__data = get_holiday_urls()
-        self.__country_variants = get_country_variants()        
+        self.__country_variants = get_country_variants()
         self.__countries = sorted([entry['Country'] for entry in self.__data])
         self.__current_year = time.localtime().tm_year
         self.__HTTP = instance_http
@@ -301,15 +292,15 @@ class HolidayManager:
         def raw_data(self):
             """Returns the original raw data without any transformation."""
             return self.data
-    
+
     def __get_link_by_country(self, country_name, year=None):
         """
         Get the URL for the holiday data for a specific country and year.
-        
+
         Args:
         - country_name (str): The name of the country.
         - year (int, optional): The year for which to get the holidays. Defaults to current year.
-        
+
         Returns:
         - str: The absolute URL or None if the country is not found.
         """
@@ -344,12 +335,11 @@ class HolidayManager:
         """
         if not self.__HTTP:
             return None
-        
+
         if country_name.lower() not in self.__country_variants:
-            LexicalFuzzer.configure(vocabulary=self.__country_variants, ignore_ordinals=True, ignore_numerals=True)        
+            LexicalFuzzer.configure(vocabulary=self.__country_variants, ignore_ordinals=True, ignore_numerals=True)
             try:
-                # match = LexicalFuzzer.match_token(country_name)
-                match = LexicalFuzzer.match_token(country_name.lower())                
+                match = LexicalFuzzer.match_token(country_name.lower())
                 if match and match in set(self.__countries):
                     country_name = match
                 else:
@@ -364,11 +354,14 @@ class HolidayManager:
         year = (lambda y: int(y) if str(y).isdigit() and len(str(y)) == 4 else None)(year)
 
         url = self.__get_link_by_country(country_name=country_name, year=year)
+        if not url:
+            raise ValueError(f"Country '{country_name}' does not have a holiday data URL.")
+        original_url = self.__HTTP.base_url
         self.__HTTP.update_base_url(url)
         try:
             result = self.__HTTP.make_request(params={'format': 'html'})
         finally:
-            self.__HTTP.update_base_url(None)
+            self.__HTTP.update_base_url(original_url)
 
         if any('response' in next(iter(item.values()), {}) for item in result or []):
             html_content = next(iter(result[0].values()), {}).get('response', None)
@@ -389,8 +382,7 @@ class HolidayManager:
 
 def get_Holidate():
     try:
-        http_client.update_base_url('dGltZS5pcy8=')
-        return HolidayManager(http_client)    
+        return HolidayManager(http_client)
     except Exception as e:
         logger.exception("Failed to initialize Holidate")
         raise ImportError(f"Failed to initialize Holidate: {e}")

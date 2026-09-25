@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,7 +41,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
 """
 Understanding the Module
@@ -72,18 +72,11 @@ This module is only triggered for containment or compound structures involving
 validation has already succeeded, and is designed for **post-syntactic enforcement**
 within the semantic_validation layer.
 """
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from ..arithmetic import numbers
 from ..temporal_preprocessing import PhraseEngine
 from ..temporal_core.temporal_units import normalize_named_unit
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 unitContextMaxBounds = {
     # Core units
     ('day', 'week'): 7,
@@ -124,7 +117,6 @@ unitContextMaxBounds = {
     ('day', 'feb'): 29,
     ('day', 'mar'): 31,
     ('day', 'apr'): 30,
-    ('day', 'may'): 31,
     ('day', 'jun'): 30,
     ('day', 'jul'): 31,
     ('day', 'aug'): 31,
@@ -314,14 +306,7 @@ def validate_bounds(structure_result, original_tokens):
     if ordinal_val is None:
         return True, "No ordinal index detected — bounds check not applicable"
 
-    # # Normalize units to base keys.
-    # try:
-    #     contained_unit = normalize_named_unit(contained)
-    #     container_unit = normalize_named_unit(container)
-    # except Exception as e:
-    #     return False, f"Normalization error: {e}"
-
-    # Normalise units to base keys.
+    # Partial dates require deriving the container from their parsed components.
     try:
         # 1) Handle partial‑date containers
         if PhraseEngine.is_partial_date([container], include_year=True, return_val=False):

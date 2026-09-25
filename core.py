@@ -3,20 +3,24 @@
 #
 # doydl's Temporal Parsing & Normalization Engine — dately
 #
-# `dately` is a precision-first library for parsing, interpreting, and normalizing time expressions
-# across both structured data and natural language. Built for developers and data teams working in
-# time-sensitive domains, it delivers deterministic behavior, high-performance parsing, and
-# transparent reasoning around temporal meaning.
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed for integration into NLP pipelines, ETL processes, scheduling engines, and cross-platform
-# applications, `dately` supports everything from ISO formats and user-generated timestamps to
-# phrases like “next Friday” or “Q2 2025.” Its symbolic parser bridges the gap between language and
-# logic, enabling interpretable, testable, and production-grade handling of ambiguous or implicit
-# time references.
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
 #
-# Features include format inference, batch-safe transformations, timezone normalization, and a
-# modular architecture for composable workflows. Whether you're resolving date strings in a chatbot
-# or aligning logs across systems, `dately` brings clarity, consistency, and control to temporal data.
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
 #
@@ -44,14 +48,13 @@ import pandas as pd
 from copy import deepcopy
 from datetime import datetime as dt, timedelta as td, date as d
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
-from ._log import logger   	
+from ._log import logger
 from ._datetime_scan import DateTimeScan
-from ._temporal_scan import parse_temporal    
+from ._temporal_scan import parse_temporal
 from ._timeutils import (
     strTime, validate_date, make_datetime_string, replace_time_by_position,
     remove_marker, exist_meridiem, validate_timezone,
-    datetime_offset, _stripTimeIndicator
+    coerce_timezone, _stripTimeIndicator
 )
 from .mold.pyd.cdatetime.UniversalDateFormatter import (
     zero_handling_date_formats, has_leading_zero,
@@ -59,27 +62,14 @@ from .mold.pyd.cdatetime.UniversalDateFormatter import (
 )
 from .mold.pyd.cdatetime.iso8601T import isISOT as is_iso_date
 from .mold.pyd.cdatetime.iso8601Z import replaceZ
-from .mold.pyd.clean_str import *
+from .mold.pyd.clean_str import cleanstr
 from .mold.pyd.Compiled import (
     datetime_regex as datetime_pattern_search,
     anytime_regex,
-    timemeridiem_regex,
-    timeboundary_regex,
-    time_only_regex,
-    iana_timezone_identifier_regex,
-    timezone_offset_regex,
-    timezone_abbreviation_regex,
-    full_timezone_name_regex
 )
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 
 # Debug mode toggle
 DEBUG_MODE = False
@@ -103,7 +93,7 @@ def _apply_to_data(data, func, vectorize_excluded=None, *func_args, **func_kwarg
 
     # 3) NUMPY ARRAY
     elif isinstance(data, np.ndarray):
-        # We create a vectorized version of `func`.
+        # Vectorize the scalar callback while preserving Python-object results.
         vec_func = np.vectorize(
             lambda x: func(x, *func_args, **func_kwargs),
             excluded=vectorize_excluded,
@@ -160,13 +150,13 @@ def _is_datetime(dt_input):
 
     # Check if it's a Pandas Series
     if isinstance(dt_input, pd.Series):
-        if dt_input.ndim == 1 and (pd.api.types.is_datetime64_any_dtype(dt_input) or 
+        if dt_input.ndim == 1 and (pd.api.types.is_datetime64_any_dtype(dt_input) or
                                    (pd.api.types.is_object_dtype(dt_input) and dt_input.apply(lambda x: isinstance(x, (dt, d))).all())):
             return True
 
     # Check if it's a NumPy array
     if isinstance(dt_input, np.ndarray):
-        if dt_input.ndim == 1 and (np.issubdtype(dt_input.dtype, np.datetime64) or 
+        if dt_input.ndim == 1 and (np.issubdtype(dt_input.dtype, np.datetime64) or
                                    (np.issubdtype(dt_input.dtype, np.object_) and np.all([isinstance(x, (dt, d)) for x in dt_input]))):
             return True
 
@@ -177,11 +167,11 @@ def _is_datetime(dt_input):
 #────────────────────────────────────────────────────────────────────────────
 def _repl_timestring(datetime_strings, hour=None, minute=None, second=None, microsecond=None, tzinfo=None, time_indicator=None):
     """
-    Handles non-ISO datetime strings. Applies changes to hour, minute, second, microsecond, tzinfo, 
+    Handles non-ISO datetime strings. Applies changes to hour, minute, second, microsecond, tzinfo,
     and optionally inserts an AM/PM indicator if not already present.
     """
     def process(dt_str):
-        # 1) If there's no recognized time, we add a default time
+        # Add a default time when the ISO input has no recognized time component.
         dt_str = make_datetime_string(dt_str)
 
         # 2) Replace each component if needed
@@ -223,23 +213,25 @@ def _repl_timestring(datetime_strings, hour=None, minute=None, second=None, micr
 #────────────────────────────────────────────────────────────────────────────
 def _repl_iso_timestring(datetime_strings, hour=None, minute=None, second=None, microsecond=None, tzinfo=None):
     """
-    Handles ISO8601-like strings using dt.fromisoformat, adjusting hour, minute, second, microsecond, 
+    Handles ISO8601-like strings using dt.fromisoformat, adjusting hour, minute, second, microsecond,
     tzinfo, then returning the new ISO8601 string.
     """
-    def process(dt_str, hour=None, minute=None, second=None, microsecond=None, tzinfo=None):
+    def process(dt_str):
         dt_str = replaceZ(dt_str)
         dt_obj = dt.fromisoformat(dt_str)
 
-        if isinstance(tzinfo, (int, float)):
-            tzinfo = datetime_offset(tzinfo)
-
-        new_dt = dt_obj.replace(
+        replacement_timezone = coerce_timezone(tzinfo) if tzinfo is not None else dt_obj.tzinfo
+        replacement_values = dict(
             hour=hour if hour is not None else dt_obj.hour,
             minute=minute if minute is not None else dt_obj.minute,
             second=second if second is not None else dt_obj.second,
             microsecond=microsecond if microsecond is not None else dt_obj.microsecond,
-            tzinfo=tzinfo if tzinfo is not None else dt_obj.tzinfo
         )
+        if hasattr(replacement_timezone, "localize"):
+            naive_dt = dt_obj.replace(tzinfo=None, **replacement_values)
+            new_dt = replacement_timezone.localize(naive_dt)
+        else:
+            new_dt = dt_obj.replace(tzinfo=replacement_timezone, **replacement_values)
         return new_dt.isoformat()
 
     return _apply_to_data(datetime_strings, process)
@@ -260,11 +252,11 @@ def extract_datetime_component(date_strings, component, ret_format=False):
     formatting across different platforms.
 
     Parameters:
-    ──────────────────────────    
-    - date_strings (*str | list | np.ndarray | pd.Series*):  
+    ──────────────────────────
+    - date_strings (*str | list | np.ndarray | pd.Series*):
       A single date string or a collection of date strings to extract components from.
-      
-    - component (*str*):  
+
+    - component (*str*):
       The component to extract. Options include:
       - `'year'` – Year component
       - `'month'` – Month component
@@ -276,18 +268,18 @@ def extract_datetime_component(date_strings, component, ret_format=False):
       - `'second'` – Second component
       - `'microsecond'` – Microsecond component
 
-    - ret_format (*bool, optional*):  
+    - ret_format (*bool, optional*):
       If `True`, returns a tuple (`format`, `value`).
 
     Returns:
-    ──────────────────────────    
-    - (*str | None*):  
-      - The extracted component as a string.  
+    ──────────────────────────
+    - (*str | None*):
+      - The extracted component as a string.
       - Returns `None` if no match is found.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
+    ──────────────────────────
+    - ValueError:
       If the input format is not recognized.
     """
     def process(date_string, comp, ret_fmt):
@@ -329,25 +321,25 @@ def detect_date_format(date_strings):
     This function detects and adjusts the date format based on the components of a single date string or a collection of date strings.
     It analyzes each date string to identify its format and makes adjustments to handle leading zeros in the date components.
     It ensures consistent date formatting across different platforms by replacing zero-padded specifiers with their non-zero-padded
-    counterparts where applicable.    
+    counterparts where applicable.
 
     Parameters:
-    ──────────────────────────    
-    - date_strings (*str | list | np.ndarray | pd.Series*):  
+    ──────────────────────────
+    - date_strings (*str | list | np.ndarray | pd.Series*):
       A single date string or a collection of date strings.
 
-    - detected_format (*str, optional*):  
+    - detected_format (*str, optional*):
       If you already know the format, pass it to skip automatic detection.
 
     Returns:
-    ──────────────────────────    
-    - (*str | list*):  
+    ──────────────────────────
+    - (*str | list*):
       - The detected or adjusted format string.
       - Returns a list if multiple date strings are provided.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
+    ──────────────────────────
+    - ValueError:
       If no valid format is found for the given date string.
     """
     def process(date_string):
@@ -372,48 +364,48 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
     """
     Convert date strings or datetime objects to a specified format or modify them by a time delta.
 
-    This function serves as a versatile converter for date and datetime inputs. It supports converting single or 
+    This function serves as a versatile converter for date and datetime inputs. It supports converting single or
     multiple date strings or datetime objects into a specified format or datetime objects, with the option to modify
     the date by a given delta of days. Additionally, it handles dictionaries containing date information by applying
     conversions recursively to specified keys.
 
     Parameters:
-    ──────────────────────────    
-    - dates (*str | list | np.ndarray | pd.Series | datetime | dict*):  
-      - A single date string, datetime object, or a collection of them.  
+    ──────────────────────────
+    - dates (*str | list | np.ndarray | pd.Series | datetime | dict*):
+      - A single date string, datetime object, or a collection of them.
       - Can also be a dictionary containing date strings or datetime objects.
 
-    - to_format (*str, optional*):  
+    - to_format (*str, optional*):
       - Desired output format according to `datetime.strftime`.
       - If `None`, returns datetime objects.
 
-    - delta (*int, default=0*):  
+    - delta (*int, default=0*):
       - Number of days to add (`+`) or subtract (`-`).
 
-    - dict_keys (*list, optional*):  
+    - dict_keys (*list, optional*):
       - When `dates` is a dictionary, specify which keys contain date information.
 
-    - dict_inplace (*bool, default=False*):  
+    - dict_inplace (*bool, default=False*):
       - If `True`, modifies the dictionary in place and returns `None`.
 
     Returns:
-    ──────────────────────────    
-    - (*str | datetime | list | dict*):  
+    ──────────────────────────
+    - (*str | datetime | list | dict*):
       - Formatted date string(s) or datetime object(s).
       - If input is a dictionary and `dict_inplace=False`, returns a modified dictionary.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
+    ──────────────────────────
+    - ValueError:
       - If `dates` is a dictionary but `dict_keys` is not provided.
       - If date format is unrecognized or invalid.
     """
     def process(date, to_format, delta):
-        try:        
+        try:
             if isinstance(date, (dt, d)):
                 parsed_date = date + td(days=int(delta))
             else:
-                input_format = detect_date_format(date)            
+                input_format = detect_date_format(date)
                 try:
                     parsed_date = dt.strptime(date, input_format) + td(days=int(delta))
                 except ValueError:
@@ -422,20 +414,20 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
 
             if to_format:
                 if isinstance(parsed_date, d) and not isinstance(parsed_date, dt):
-                    parsed_date = dt.combine(parsed_date, dt.min.time())  
+                    parsed_date = dt.combine(parsed_date, dt.min.time())
                 return date_format_leading_zero(parsed_date, to_format)
             else:
                 return parsed_date
         except Exception as e:
             raise ValueError(f"Error processing date: {date}. {str(e)}") from e
-           
+
     # Handle dictionary inputs separately using recursive conversion.
     def recursive_convert(data, keys):
         if isinstance(data, dict):
             for key, value in data.items():
                 if key in keys:
                     if isinstance(value, list):
-                        data[key] = [process(item, to_format, delta) if not isinstance(item, (dict, list)) 
+                        data[key] = [process(item, to_format, delta) if not isinstance(item, (dict, list))
                                      else recursive_convert(item, keys) for item in value]
                     else:
                         data[key] = process(value, to_format, delta)
@@ -461,10 +453,10 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
             return
         else:
             return processed_data
-            
+
     # handle single datetime/date directly
     elif isinstance(dates, (dt, d)):
-        return process(dates, to_format=to_format, delta=delta)             
+        return process(dates, to_format=to_format, delta=delta)
     else:
         # For all other types, use the helper to dispatch.
         return _apply_to_data(dates, process, to_format=to_format, delta=delta)
@@ -477,7 +469,7 @@ def replace_timestring(datetime_strings, *args, **kwargs):
     """
     Modifies various time components within a single datetime string or a collection of datetime strings,
     supporting both ISO and non-ISO formatted strings. This function is adaptable to handle updates to time
-    components including hours, minutes, seconds, microseconds, and time zones. It can also add a time indicator 
+    components including hours, minutes, seconds, microseconds, and time zones. It can also add a time indicator
     (AM/PM) for non-ISO formats.
 
     This utility is particularly useful in data processing workflows where datetime strings require uniform
@@ -486,52 +478,52 @@ def replace_timestring(datetime_strings, *args, **kwargs):
 
     Parameters:
     ──────────────────────────
-    - datetime_strings (*str | list | np.ndarray | pd.Series*):  
+    - datetime_strings (*str | list | np.ndarray | pd.Series*):
       A datetime string or a collection of datetime strings to be modified. Supports various formats:
       - Single string (e.g., `"2024-03-13T14:30:00"`)
       - List (`["2024-03-13T14:30:00", "2025-01-01T00:00:00"]`)
       - NumPy array (`np.array([...])`)
-      - Pandas Series (`pd.Series([...])`)  
+      - Pandas Series (`pd.Series([...])`)
 
-    - hour (*str | int, optional*):  
+    - hour (*str | int, optional*):
       The new hour value (`0-23`). If not provided, the hour remains unchanged.
 
-    - minute (*str | int, optional*):  
+    - minute (*str | int, optional*):
       The new minute value (`0-59`). If not provided, the minute remains unchanged.
 
-    - second (*str | int, optional*):  
+    - second (*str | int, optional*):
       The new second value (`0-59`). If not provided, the second remains unchanged.
 
-    - microsecond (*str | int, optional*):  
+    - microsecond (*str | int, optional*):
       The new microsecond value. If not provided, the microsecond remains unchanged.
 
-    - tzinfo (*str | timezone | int | float, optional*):  
-      Specifies the new timezone:  
-      - As a string (e.g., `"UTC"`, `"+0200"`)  
-      - As a timezone object (`pytz.timezone("Europe/London")`)  
-      - As an integer/float offset (e.g., `-5`, `5.5`)  
+    - tzinfo (*str | timezone | int | float, optional*):
+      Specifies the new timezone:
+      - As a string (e.g., `"UTC"`, `"+0200"`)
+      - As a timezone object (`pytz.timezone("Europe/London")`)
+      - As an integer/float offset (e.g., `-5`, `5.5`)
       If not provided, the timezone remains unchanged.
 
-    - time_indicator (*str, optional*):  
-      Appends a time indicator to the datetime string (`"AM"` or `"PM"`).  
+    - time_indicator (*str, optional*):
+      Appends a time indicator to the datetime string (`"AM"` or `"PM"`).
       Only applicable for non-ISO formatted strings. If not provided, no time indicator is added.
 
     Returns:
-    ──────────────────────────    
-    (*str | list | np.ndarray | pd.Series*):  
-    - If input is a single string, returns a single modified datetime string.  
-    - If input is a list, NumPy array, or Pandas Series, returns a modified collection of datetime strings  
+    ──────────────────────────
+    (*str | list | np.ndarray | pd.Series*):
+    - If input is a single string, returns a single modified datetime string.
+    - If input is a list, NumPy array, or Pandas Series, returns a modified collection of datetime strings
       while preserving the original structure.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
-      - If the input data type is unsupported.  
-      - If the datetime string format is invalid.  
-      - If an invalid `tzinfo` value is provided.  
+    ──────────────────────────
+    - ValueError:
+      - If the input data type is unsupported.
+      - If the datetime string format is invalid.
+      - If an invalid `tzinfo` value is provided.
       These safeguards ensure proper function usage within expected data types.
     """
-    # Filter out time_indicator from kwargs for ISO processing (if needed)        
+    # Filter out time_indicator from kwargs for ISO processing (if needed)
     filtered_kwargs = {k: v for k, v in kwargs.items() if k != 'time_indicator'}
 
     def transform(dt_str):
@@ -551,38 +543,42 @@ def replace_datestring(date_strings, year=None, month=None, day=None):
 
     This function parses a date string to identify existing components and replaces them with
     new values provided as arguments. It reconstructs the date string with the new values.
-    
+
     Parameters:
-    ──────────────────────────    
-    - date_strings (*str | list | np.ndarray | pd.Series*):  
+    ──────────────────────────
+    - date_strings (*str | list | np.ndarray | pd.Series*):
       - The date string(s) to modify.
 
-    - year (*str | int, optional*):  
+    - year (*str | int, optional*):
       - New year value to replace the existing one.
 
-    - month (*str | int, optional*):  
+    - month (*str | int, optional*):
       - New month value to replace the existing one.
 
-    - day (*str | int, optional*):  
+    - day (*str | int, optional*):
       - New day value to replace the existing one.
 
     Returns:
-    ──────────────────────────    
-    - (*str | list | np.ndarray | pd.Series*):  
+    ──────────────────────────
+    - (*str | list | np.ndarray | pd.Series*):
       - The modified date string(s) with the updated values.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
+    ──────────────────────────
+    - ValueError:
       - If the resulting date string is invalid after modifications.
     """
     def process(date_string):
         result = strTime(date_string)
         time_match = None
+        time_separator = ' '
         if result:
             time_match = result['full_time_details']['full_time_string']
             fulltime_start = result['full_time_details']['start']
             datestr = date_string[:fulltime_start]
+            if datestr.endswith('T'):
+                time_separator = 'T'
+                datestr = datestr[:-1]
             date_string = cleanstr(datestr)
         used_format = _get_detected_format(date_string)
         pattern = datetime_pattern_search(used_format)
@@ -597,14 +593,14 @@ def replace_datestring(date_strings, year=None, month=None, day=None):
             if new_value is not None and span:
                 start, end = span
                 date_string = date_string[:start] + str(new_value) + date_string[end:]
-        if time_match:
-            date_string += f' {time_match}'
         if not validate_date(date_string, date_format=used_format):
             raise ValueError("Invalid date string after replacement.")
+        if time_match:
+            date_string += f'{time_separator}{time_match}'
         return date_string
 
     return _apply_to_data(date_strings, process)
-       
+
 
 #────────────────────────────────────────────────────────────────────────────
 # 6) SEQUENCE
@@ -614,39 +610,39 @@ def sequence(start_date, end_date, to_format=None):
     Generate a sequence of formatted dates between two given dates.
 
     Parameters:
-    ──────────────────────────    
-    - start_date (*str | datetime*):  
+    ──────────────────────────
+    - start_date (*str | datetime*):
       - The start date of the sequence.
 
-    - end_date (*str | datetime*):  
+    - end_date (*str | datetime*):
       - The end date of the sequence.
 
-    - to_format (*str, optional*):  
+    - to_format (*str, optional*):
       - Desired format for the generated dates.
 
     Returns:
-    ──────────────────────────    
-    - (*list of str*):  
+    ──────────────────────────
+    - (*list of str*):
       - A list of formatted date strings from `start_date` to `end_date`, inclusive.
 
     Raises:
-    ──────────────────────────    
-    - ValueError:  
+    ──────────────────────────
+    - ValueError:
       - If the input dates are not valid datetime objects or convertible to one.
     """
     # Check if the start_date and end_date are valid datetime objects
     if not _is_datetime(start_date):
-        start_date = convert_date(start_date, to_format=to_format)
-    
+        start_date = convert_date(start_date)
+
     if not _is_datetime(end_date):
-        end_date = convert_date(end_date, to_format=to_format)
-    
+        end_date = convert_date(end_date)
+
     # Calculate the number of days between the start and end dates
     delta = end_date - start_date
-    
+
     # Generate the list of dates and format them
     date_list = [convert_date(start_date + td(days=i), to_format=to_format) for i in range(delta.days + 1)]
-    
+
     return date_list
 
 
@@ -672,7 +668,7 @@ def parse(input_str):
     ──────────────────────────
     - datetime.date
     - or (start_date, end_date) tuple
-    - or None if the input is invalid or unrecognized.    
+    - or None if the input is invalid or unrecognized.
     """
     try:
         temporal_result = parse_temporal(input_str, skip_validation=False, parse=True, clean_tokens=True)
@@ -690,7 +686,7 @@ def parse(input_str):
                 r.replace(year=current_year) if isinstance(r, dt) and r.year == 1900 else r
                 for r in result
             )
-        return result   
+        return result
 
     except Exception as e:
         msg = (
@@ -710,7 +706,6 @@ def parse(input_str):
             return None
 
 
-# Define public interface.
 __all__ = [
     "extract_datetime_component",
     "detect_date_format",
@@ -718,5 +713,5 @@ __all__ = [
     "replace_timestring",
     "replace_datestring",
     "sequence",
-    "parse",    
+    "parse",
 ]

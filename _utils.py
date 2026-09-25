@@ -1,12 +1,48 @@
 # -*- coding: utf-8 -*-
 
+#
+# doydl's Temporal Parsing & Normalization Engine — dately
+#
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
+#
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
+#
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
+#
+# Copyright (c) 2024 by doydl technologies. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the “Software”), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 def is_leap_year(year):
     """
     Determine whether a specified year is a leap year.
@@ -25,7 +61,7 @@ def is_leap_year(year):
         year = int(year)
     except ValueError:
         raise ValueError("Input should be a year in integer or string form that can be converted to an integer.")
-    
+
     if (year % 400 == 0):
         return True
     if (year % 100 == 0):
@@ -63,13 +99,13 @@ def hundred_thousandths_place(number_str, decimal=True):
     """
     # Ensure the input is a string
     number_str = str(number_str)
-    
+
     # Check if the string is a valid number
     try:
         float(number_str)  # Check for validity
     except ValueError:
         return '00000' if not decimal else '.00000'
-    
+
     if '.' in number_str:
         integer_part, decimal_part = number_str.split('.')
         if len(decimal_part) < 5:
@@ -93,11 +129,11 @@ def hundred_thousandths_place(number_str, decimal=True):
 def __dir__():
     return [
     'is_leap_year',
-    'hundred_thousandths_place'    
-	]	
-	
-	
+    'hundred_thousandths_place'
+	]
+
+
 __all__ = [
 	'is_leap_year',
-	'hundred_thousandths_place',        
-	]	
+	'hundred_thousandths_place',
+	]

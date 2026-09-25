@@ -1,0 +1,72 @@
+name: Build Python downloads
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  windows-wheels:
+    name: CPython ${{ matrix.python-version }} Windows wheel
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Verify release tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $packageVersion = python -c "from pathlib import Path; values = {}; exec(Path('_version.py').read_text(encoding='utf-8'), values); print(values['__version__'])"
+          $tagVersion = "${{ github.ref_name }}" -replace '^v', ''
+          if ($packageVersion -ne $tagVersion) {
+            throw "Tag version $tagVersion does not match package version $packageVersion."
+          }
+      - name: Install build tools
+        run: python -m pip install --upgrade build pytest twine
+      - name: Build wheel
+        run: python -m build --wheel
+      - name: Validate wheel metadata
+        run: python -m twine check dist/*.whl
+      - name: Install and test wheel
+        shell: pwsh
+        env:
+          DATELY_TEST_INSTALLED: "1"
+        run: |
+          $wheel = Get-ChildItem dist\*.whl | Select-Object -First 1
+          python -m pip install $wheel.FullName
+          python -m pytest -q
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dately-${{ matrix.python-version }}-windows-x64
+          path: dist/*.whl
+          if-no-files-found: error
+
+  source-archive:
+    name: Source archive
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install build tools
+        run: python -m pip install --upgrade build twine
+      - name: Build source archive
+        run: python -m build --sdist
+      - name: Validate source metadata
+        run: python -m twine check dist/*.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dately-source
+          path: dist/*.tar.gz
+          if-no-files-found: error

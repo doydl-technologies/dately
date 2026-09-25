@@ -1,26 +1,56 @@
 # -*- coding: utf-8 -*-
 
-import os
-import json
-import time
+#
+# doydl's Temporal Parsing & Normalization Engine — dately
+#
+# The `dately` module is a deterministic engine for parsing, resolving, and normalizing
+# temporal expressions across both natural and symbolic language contexts — built for NLP
+# workflows, cross-platform date handling, and fine-grained temporal reasoning.
+#
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
+# ambiguous or implicit references with linguistic sensitivity.
+#
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
+# and temporal normalization in noisy or informal text.
+#
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
+# temporal constructions.
+#
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
+# clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
+#
+# Copyright (c) 2024 by doydl technologies. All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the “Software”), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
 import re
 
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
-import pandas as pd
-
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
-from ._log import logger          
+from ._log import logger
 from ._mskutils import Shift
 from ._sysutils import DataImport, UnixTime
 from ._connect import http_client
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 def get_timezone_data():
     return DataImport.load_timezone_data()
 
@@ -126,12 +156,12 @@ class ZoneInfoManager:
     def CountryCodes(self):
         """Return a sorted list of unique country codes in the time zone data."""
         return sorted({entry['countryCode'] for entry in self.__data.values()})
-       
+
     @property
     def CountryNames(self):
         """Return a sorted list of unique country names in the time zone data."""
         return sorted({entry['countryName'] for entry in self.__data.values()})
-       
+
     @property
     def MyTimeZone(self):
         """ Get the current timezone details for users region. """
@@ -148,9 +178,9 @@ class ZoneInfoManager:
                 self.__HTTP.set_key_type(original_key_type)
             if original_url:
                 self.__HTTP.update_base_url(original_url)
-        return next(iter(result[0].values()), {}).get('response', None) if any('response' in next(iter(item.values()), {}) for item in result or []) else None        
-       
-    @property       
+        return next(iter(result[0].values()), {}).get('response', None) if any('response' in next(iter(item.values()), {}) for item in result or []) else None
+
+    @property
     def ObservesDST(self):
         """Return a dictionary categorizing time zones by their observance of daylight saving time (DST)."""
         zones_with_dst = []
@@ -162,7 +192,7 @@ class ZoneInfoManager:
             else:
                 zones_with_dst.append(zone_name)
         return {'observes_dst': zones_with_dst, 'does_not_observe_dst': zones_without_dst}
-       
+
     @property
     def Offsets(self):
         """Return a dictionary mapping offsets to a list of time zones with that offset."""
@@ -189,12 +219,12 @@ class ZoneInfoManager:
                 zones_by_country[country_code] = []
             zones_by_country[country_code].append(zone_name)
         return zones_by_country
-       
+
     def FilterZoneDetail(self, zone_name):
         """
         Retrieve detailed information for a specific time zone.
 
-        This method returns the timezone details associated with the specified zone name. 
+        This method returns the timezone details associated with the specified zone name.
         If the zone name does not exist in the dataset, it returns an empty dictionary.
 
         Parameters:
@@ -227,13 +257,18 @@ class ZoneInfoManager:
             'to': to_zone,
             'time': timestamp
         }
-        result = self.__HTTP.make_request(params)
-    
+        original_url = self.__HTTP.base_url
+        self.__HTTP.update_base_url('https://api.timezonedb.com/v2.1/convert-time-zone')
+        try:
+            result = self.__HTTP.make_request(params)
+        finally:
+            self.__HTTP.update_base_url(original_url)
+
         if any('response' in next(iter(item.values()), {}) for item in result or []):
             data = next(iter(result[0].values()), {}).get('response', None)
             return [zone for zone in data['zones'] if zone['zoneName'] in [from_zone, to_zone]]
         else:
-            return None        
+            return None
 
     def CurrentTimebyZone(self, zone_name):
         """
@@ -246,7 +281,7 @@ class ZoneInfoManager:
             return None
 
         original_url = self.__HTTP.base_url
-        temp = Shift.type.map('aHR0cDovL3dvcmxkdGltZWFwaS5vcmcvYXBpL3RpbWV6b25lLw==', zone_name, ret=True)
+        temp = f'https://worldtimeapi.org/api/timezone/{zone_name}'
         self.__HTTP.update_base_url(temp)
         try:
             result = self.__HTTP.make_request(params={})
@@ -256,7 +291,7 @@ class ZoneInfoManager:
         if any('response' in next(iter(item.values()), {}) for item in result or []):
             return next(iter(result[0].values()), {}).get('response', None)["datetime"]
         else:
-            return None        
+            return None
 
     def Object(self, zone_name=None, current=False, as_datetime=False):
         """
@@ -265,7 +300,7 @@ class ZoneInfoManager:
         :param zone_name: String representing the zone name, used if 'current' is False.
         :param current: Boolean, if True, fetches the timezone object for the current user timezone and ignores 'zone_name'.
         :param as_datetime: Boolean, if True, returns the current datetime in the fetched timezone.
-        :return: The timezone object associated with the zone name or current timezone, or None if not found. 
+        :return: The timezone object associated with the zone name or current timezone, or None if not found.
                  If as_datetime is True, returns the current datetime in that timezone.
         """
         if current:

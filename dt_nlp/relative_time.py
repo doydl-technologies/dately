@@ -7,19 +7,19 @@
 # temporal expressions across both natural and symbolic language contexts — built for NLP
 # workflows, cross-platform date handling, and fine-grained temporal reasoning.
 #
-# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,” 
-# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and 
+# Designed with formal grammatical rigor, `dately` interprets phrases like “first five days of next month,”
+# “Q3 of last year,” and “April 3” — handling cardinal/ordinal resolution, anchored structures, and
 # ambiguous or implicit references with linguistic sensitivity.
 #
-# The engine combines structured tokenization, symbolic transformation, and rule-based semantic 
-# composition to support precision across tasks such as entity recognition, information extraction, 
+# The engine combines structured tokenization, symbolic transformation, and rule-based semantic
+# composition to support precision across tasks such as entity recognition, information extraction,
 # and temporal normalization in noisy or informal text.
 #
-# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific 
-# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language 
+# It guarantees invertibility, transparency, and cross-platform consistency, resolving platform-specific
+# formatting differences (e.g. Windows vs. Unix) while maintaining NLP-grade flexibility for English-language
 # temporal constructions.
 #
-# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings 
+# Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
 # Copyright (c) 2024 by doydl technologies. All rights reserved.
@@ -41,26 +41,15 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-# 
+#
 
-import re
-import random
-
-#────────── Third-party library imports (from PyPI or other package sources) ─────────────────────────────────
 import numbr
 
-# ────────── Project-specific imports (directly from this project's source code) ─────────────────────────────
 from .temporal_preprocessing import PhraseEngine
 from .arithmetic import timeline
 
 
 
-# ━━━━━━━━━━━━━━ Core Module Implementation ━━━━━━━━━━━━━━━━━━━━━━━━━━
-# This segment delineates the functional backbone of the module.
-# It comprises the abstractions and behaviors essential for runtime
-# execution—if applicable—encapsulated in class and function constructs.
-# In minimal implementations, this may simply define constants, metadata,
-# or serve as an interface placeholder.
 def handle_time_boundaries(tokens):
     """
     Handle time boundary expressions like 'start of', 'middle of', or 'end of' followed by a time anchor.
@@ -69,17 +58,17 @@ def handle_time_boundaries(tokens):
     ensures that the anchor includes a directional modifier ('this', 'next', 'last').
     If none is present, it assumes 'this' by default. It then attempts to parse the anchor
     into a normalized form using `_parse_simple_relative_anchor`.
-    """	
-    # Step 1: Basic pattern check — only proceed if the structure is at least 3 tokens and 
+    """
+    # Step 1: Basic pattern check — only proceed if the structure is at least 3 tokens and
     # matches the canonical form: boundary preposition ("start/middle/end") + "of" + time anchor.
     if len(tokens) >= 3 and tokens[0] in {"start", "middle", "end"} and tokens[1] == "of":
-        
-        # Step 2: Extract everything after "of" — this represents the syntactic anchor 
+
+        # Step 2: Extract everything after "of" — this represents the syntactic anchor
         # (e.g., "next year", "last quarter", etc.).
         anchor_tokens = tokens[2:]
 
-        # Step 3: Ensure the anchor contains a temporal direction marker. 
-        # If none is present, insert "this" as a default determiner. This aligns with how 
+        # Step 3: Ensure the anchor contains a temporal direction marker.
+        # If none is present, insert "this" as a default determiner. This aligns with how
         # English temporal grammar implicitly assumes current period when unspecified.
         has_direction = any(word in {"next", "last", "this", "previous"} for word in anchor_tokens)
         if not has_direction and anchor_tokens:
@@ -88,7 +77,7 @@ def handle_time_boundaries(tokens):
         # Step 4: Normalize and validate the anchor using grammar-aware anchor parser.
         # This function checks if the anchor is a recognized relative structure (e.g., "last quarter").
         anchor_parse = _parse_simple_relative_anchor(" ".join(anchor_tokens))
-        
+
         # Step 5: If normalization fails (invalid grammar or unrecognized anchor), discard.
         if not anchor_parse:
             return None
@@ -99,7 +88,7 @@ def handle_time_boundaries(tokens):
 
     # Fallback: If the input doesn't match the expected boundary form, skip transformation.
     return None
-   
+
 
 def _parse_simple_relative_anchor(anchor_phrase):
     """
@@ -139,7 +128,7 @@ def _parse_simple_relative_anchor(anchor_phrase):
 
     # Handle expressions like "first quarter" or "third month",
     # which represent ordinal positions within a larger time period
-    ord_val = PhraseEngine.numbers.num_type(first) in ('ordinalWord', 'ordinalNumber') 
+    ord_val = PhraseEngine.numbers.num_type(first) in ('ordinalWord', 'ordinalNumber')
     if ord_val is not None and len(tokens) > 1:
         if tokens[1] in UNITS or tokens[1] in timeline.quarters:
             return tokens
@@ -165,7 +154,7 @@ def _parse_subexpression(sub_tokens):
     This logic recognizes ordinal-based segments (optionally with numeric scopes)
     applied to well-known temporal units or weekday names. Expressions that
     don’t match this structure are rejected as invalid.
-    
+
     Returns:
         A list of cleaned tokens if a valid temporal substructure is recognized,
         or None otherwise.
@@ -177,7 +166,7 @@ def _parse_subexpression(sub_tokens):
         "start": 1,   # Synonym for "first"
         "end": -1     # Used in parsing but does not imply ordinal ranking
     }
-    
+
     if not sub_tokens:
         return None
 
@@ -259,7 +248,7 @@ def _parse_named_relative_expression(phrase):
     # Helps unify indefinite article usage into a quantitative form
     if PhraseEngine.match.lexical(
         phrase,
-        lexical_match=[["a", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],        
+        lexical_match=[["a", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],
         token_index=[0, 1],
         exact=True
     ):
@@ -269,7 +258,7 @@ def _parse_named_relative_expression(phrase):
     # Strips out definite articles to match canonical units
     if PhraseEngine.match.lexical(
         phrase,
-        lexical_match=[["the", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],        
+        lexical_match=[["the", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],
         token_index=[0, 1],
         exact=True
     ):

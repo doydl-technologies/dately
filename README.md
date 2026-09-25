@@ -1,84 +1,131 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/dately/assets/py_dately_logo.png" alt="Dately Logo" width="700"/>
+  <img src="https://raw.githubusercontent.com/cedricmoorejr/dately/main/assets/dately-logo-lockup-1600.png" alt="dately" width="700">
 </p>
 
+<p align="center">
+  Deterministic date, time, timezone, holiday, and natural-language temporal processing for Python.
+</p>
 
----
+<p align="center">
+  <a href="https://pypi.org/project/dately/"><img src="https://img.shields.io/pypi/v/dately" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/dately/"><img src="https://img.shields.io/pypi/pyversions/dately" alt="Supported Python versions"></a>
+  <a href="https://pepy.tech/project/dately"><img src="https://static.pepy.tech/badge/dately" alt="Downloads"></a>
+  <a href="https://doydl.com"><img src="https://img.shields.io/badge/Powered%20by-DOYDL%20Technologies-blue" alt="Powered by DOYDL Technologies"></a>
+</p>
 
-<div align="center">
+## Overview
 
-# 📅 **dately** 📅
+`dately` parses, detects, converts, replaces, and normalizes date and time values. It accepts individual strings as well as lists, dictionaries, NumPy arrays, and pandas Series. Its rule-based NLP engine also resolves expressions such as:
 
-> **Comprehensive Date, Time **& Natural-Language** Handling in Python**
+- `first Monday of next month`
+- `last 5 weekends`
+- `Q3 of last year`
+- `3 days ago starting from April 10`
 
-</div>
+The library includes Cython extensions for frequently used parsing operations and compatibility handling for platform-specific date-format behavior.
 
+## Installation
 
-`dately` is an end-to-end date-and-time toolkit that now pairs its high-precision formatting utilities with a **mini natural-language-processing (NLP) engine**.  Whether you feed it an ISO-8601 timestamp, a plain month/day string, or a phrase like&nbsp;“second Tuesday of next quarter”, dately can turn it into an exact `datetime` object or `(start, end)` range.
+Install the latest published release from PyPI:
 
+```bash
+python -m pip install dately
+```
 
-[![Downloads](https://static.pepy.tech/badge/dately)](https://pepy.tech/project/dately)
-[![Downloads](https://static.pepy.tech/badge/dately/month)](https://pepy.tech/project/dately)
-[![Downloads](https://static.pepy.tech/badge/dately/week)](https://pepy.tech/project/dately)
-[![Python](https://img.shields.io/pypi/pyversions/dately)](https://pypi.org/project/dately/)
-[![PyPI](https://img.shields.io/pypi/v/dately)](https://pypi.org/project/dately/)
-[![NLP Ready](https://img.shields.io/badge/NLP-enabled-brightgreen)]()
-[![Powered by DOYDL Technologies](https://img.shields.io/badge/Powered%20by-DOYDL%20Technologies-blue)](https://doydl.com)
----
+To test a local checkout in an isolated environment:
 
-#### Table of Contents
-1. [Why Choose dately?](#why-choose-dately)
-2. [Key Features](#key-features)
-3. [Solving Windows Date Formatting Issues](#solving-windows-date-formatting-issues)
-4. [Usage Examples](#usage-examples)
-      
-#### Why Choose dately?
-- **Windows Optimized** – fixes `%‐m`/#zero-suppression inconsistencies on Windows.
-- **NLP Inside** – understands expressions such as “last 5 weekends”, “Q4 2026”, “3 days ago starting from April 10”.
-- **Comprehensive API** – parsing, detection, extraction and conversion for raw strings, `datetime` objects, pandas Series, NumPy arrays **and** free-text phrases.
-- **High Performance** – Python + Cython hot-paths for heavy string/date workloads.
+```bash
+python -m venv .venv-test
+source .venv-test/Scripts/activate
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -e .
+python -m pytest -q
+```
 
-#### Key Features
-1. **Date and Time Format Detection**:
-   - Automatically detect various date and time formats from strings, ensuring seamless parsing and conversion.
-   - Supports a wide range of date formats, including standard and unique custom formats.
-2. **Timezone Management**:
-   - Provides detailed information for specific time zones.
-   - Converts time from one time zone to another.
-   - Retrieves the current time for specific time zones.
-   - Categorizes time zones by country, offset, and daylight saving time observance.
-3. **String Manipulation and Validation**:
-   - Extract specific components (year, month, day, hour, minute, second, timezone) from datetime strings.
-   - Validate and replace parts of datetime strings to ensure accuracy and consistency.
-   - Strip time and timezone information from datetime strings when needed.
-4. **Performance Optimizations**:
-   - Utilizes Cython to enhance performance for computationally intensive tasks.
-   - Interfaces with underlying C code to perform high-speed string operations and date validations.
-5. **Natural-Language Parsing**  *(new!)*  
-   - _Relative phrases_ `"next 2 Fridays" → [date, date]`  
-   - _Range phrases_ `"first half of last year"`  
-   - _Anchored clauses_ `"start of Q3 2024"`  
-   - _Token normalisation_ (cardinal ↔︎ ordinal words, plural handling, etc.)  
-   - Rule-based NLP pipeline: tokenisation → normalisation → pattern matching → date algebra.
+Release downloads provide Windows x64 wheels for supported CPython versions and a source distribution. See [Distribution builds](docs/distribution-builds.md) for the artifact matrix and release procedure.
 
-#### Solving Windows Date Formatting Issues
-A key aspect of this module is addressing inconsistencies in Python's date formatting on the Windows operating system. The module specifically targets the handling of the hyphen-minus (-) in date format specifiers. This flag, used to remove leading zeros from formatted output (e.g., turning '01' into '1' for January), works reliably on Unix-like systems but does not function as intended on Windows.
+## Quick start
 
-To solve this problem on Windows, the `dately` module introduces a workaround using regular expressions. It utilizes a detection function to determine the format string and then examines each date component for leading zeros through an extract_date_component function and a subsequent has_leading_zero check. Depending on the presence of leading zeros, the module adjusts the format string-replacing `%m` with `%-m` where applicable-to emulate the behavior expected from the hyphen-minus on Unix-like systems.
+```python
+import dately as dtly
 
-This method ensures that users on Windows achieve consistent date formatting, effectively compensating for the lack of native support for the hyphen-minus in date specifiers on this system.
+dtly.detect_date_format("2024-03-13T14:30:00")
+# '%Y-%m-%dT%H:%M:%S'
 
-Overall, `dately` is a powerful utility for anyone needing precise and flexible date and time handling in their applications, making it easier to manage, format, and validate date and time data consistently and efficiently.
+dtly.replace_datestring(
+    "2024-03-13T14:30:00",
+    year=2025,
+    month=12,
+    day=25,
+)
+# '2025-12-25T14:30:00'
 
+dtly.replace_timestring(
+    "2024-03-13 T14:30:00",
+    hour=9,
+    minute=15,
+    tzinfo="Europe/London",
+)
+# '2024-03-13 T09:15:00 Europe/London'
 
-## Usage Examples - Working with Date Strings
-To keep this README focused, all full-length usage examples are now available in the [`examples/`](https://github.com/cedricmoorejr/dately/tree/main/examples) folder.
+dtly.parse("first Monday of next month")
+# datetime.date(...) relative to the current date
+```
 
-You can explore them here:
+## Capabilities
 
-- [Date Conversion & Formatting](examples/convert_dates.py)
-- [Replacing Date Parts](examples/replace_datestring.py)
-- [Time Zone Operations](examples/timezone_operations.py)
-- [Natural Language Parsing (NLP)](examples/nlp_parsing.py)
+### Format detection and conversion
 
-Each file contains runnable code with expected outputs.
+- Detect common and custom date/time formats.
+- Convert values to a requested output format.
+- Extract individual year, month, day, time, and timezone components.
+- Process scalar values and nested collections.
+
+### Date and time replacement
+
+- Replace selected date or time components without rebuilding the input manually.
+- Preserve the original date/time separator where supported.
+- Work with ISO-8601 and non-ISO strings.
+
+### Natural-language parsing
+
+- Resolve relative, ordinal, anchored, and range expressions.
+- Interpret quarters, weeks, weekends, weekdays, months, and years.
+- Configure the first day of the week with `set_week_start()`.
+- Return exact dates or date ranges through a deterministic rule-based pipeline.
+
+### Timezones and holidays
+
+`TimeZoner` and `Holidate` are exposed as lazy-loaded public objects:
+
+```python
+import dately as dtly
+
+country_codes = dtly.TimeZoner.CountryCodes
+zones = dtly.TimeZoner.Zones
+holidays = dtly.Holidate
+```
+
+Bundled timezone and holiday properties work with local data. Operations that request current remote information still depend on their respective external services being available. See the [issue and fix log](docs/issue-fix-log.md) for implementation details.
+
+### Cross-platform formatting
+
+Windows and Unix-like platforms differ in their support for flags that suppress leading zeros in `strftime` directives. `dately` detects and normalizes these cases so formatting behavior remains consistent across supported platforms.
+
+## Examples
+
+Runnable examples with expected output are available in the [`examples`](examples/) directory:
+
+- [Date conversion and formatting](examples/convert_dates.py)
+- [Replacing date and time components](examples/replace_datestring.py)
+- [Timezone operations](examples/timezone_operations.py)
+- [Natural-language parsing](examples/nlp_parsing.py)
+
+## Documentation
+
+- [Distribution builds](docs/distribution-builds.md)
+- [Issue and fix log](docs/issue-fix-log.md)
+
+## License
+
+`dately` is distributed under the MIT License. See [LICENSE](LICENSE) for details.
