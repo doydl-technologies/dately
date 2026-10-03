@@ -84,13 +84,22 @@ jobs:
           set -euo pipefail
           mapfile -t assets < <(find artifacts -type f \( -name '*.whl' -o -name '*.tar.gz' \) | sort)
           notes=$(cat <<'EOF'
-          ## Distribution validation
+          ## Release downloads
 
-          - 18 automated tests passed.
-          - Every wheel was installed and tested on its target Python version.
+          - Seven Windows x64 wheels for CPython 3.8 through 3.14.
+          - One source distribution for supported source-build environments.
+          - Requires Python 3.8 or newer and earlier than Python 3.15.
+
+          ## Validation
+
+          - All 18 automated tests passed on every supported CPython version.
+          - Every wheel was installed and tested with its target interpreter.
           - All wheel and source-distribution metadata passed `twine check`.
 
-          Package author: **DOYDL Technologies**
+          ## Package
+
+          - Author: **DOYDL Technologies**
+          - Install or upgrade with `python -m pip install --upgrade dately`.
           EOF
           )
 
