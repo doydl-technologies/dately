@@ -42,7 +42,7 @@ python -m pip install -e .
 python -m pytest -q
 ```
 
-Release downloads provide Windows x64 wheels for supported CPython versions and a source distribution. See [Distribution builds](docs/distribution-builds.md) for the artifact matrix and release procedure.
+Release downloads provide Windows x64 wheels for supported CPython versions and a source distribution.
 
 ## Quick start
 
@@ -106,7 +106,7 @@ zones = dtly.TimeZoner.Zones
 holidays = dtly.Holidate
 ```
 
-Bundled timezone and holiday properties work with local data. Operations that request current remote information still depend on their respective external services being available. See the [issue and fix log](docs/issue-fix-log.md) for implementation details.
+Bundled timezone and holiday properties work with local data. Operations that request current remote information still depend on their respective external services being available.
 
 ### Cross-platform formatting
 
@@ -120,11 +120,6 @@ Runnable examples with expected output are available in the [`examples`](example
 - [Replacing date and time components](examples/replace_datestring.py)
 - [Timezone operations](examples/timezone_operations.py)
 - [Natural-language parsing](examples/nlp_parsing.py)
-
-## Documentation
-
-- [Distribution builds](docs/distribution-builds.md)
-- [Issue and fix log](docs/issue-fix-log.md)
 
 ## License
 
