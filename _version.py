@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# doydl's Temporal Parsing & Normalization Engine — dately
+# DOYDL's Temporal Parsing & Normalization Engine — dately
 #
 # The `dately` module is a deterministic engine for parsing, resolving, and normalizing
 # temporal expressions across both natural and symbolic language contexts — built for NLP
@@ -22,7 +22,7 @@
 # Whether embedded in intelligent agents, ETL pipelines, or legal/medical NLP systems, `dately` brings
 # clarity and structure to temporal meaning — bridging symbolic logic with real-world language.
 #
-# Copyright (c) 2024 by doydl technologies. All rights reserved.
+# Copyright (c) 2024 by DOYDL Technologies. All rights reserved.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
