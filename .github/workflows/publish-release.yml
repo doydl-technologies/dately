@@ -90,12 +90,6 @@ jobs:
           - One source distribution for supported source-build environments.
           - Requires Python 3.8 or newer and earlier than Python 3.15.
 
-          ## Validation
-
-          - All 18 automated tests passed on every supported CPython version.
-          - Every wheel was installed and tested with its target interpreter.
-          - All wheel and source-distribution metadata passed `twine check`.
-
           ## Package
 
           - Author: **DOYDL Technologies**
