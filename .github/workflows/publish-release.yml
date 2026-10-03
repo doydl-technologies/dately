@@ -90,7 +90,7 @@ jobs:
           - Every wheel was installed and tested on its target Python version.
           - All wheel and source-distribution metadata passed `twine check`.
 
-          Package author: **cedricmoorejunior**
+          Package author: **DOYDL Technologies**
           EOF
           )
 
