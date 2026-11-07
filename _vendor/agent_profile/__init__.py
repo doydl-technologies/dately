@@ -1,5 +1,3 @@
-#! python3.8
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
