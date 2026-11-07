@@ -33,9 +33,9 @@ int is_digit(char c) {
 int check_basic_format(const char* date_string) {
     // Check basic date-time format: YYYYMMDDTHHMMSS
     if (strlen(date_string) < 15) return 0; // Minimum length check
-    
+
     char year_str[5], month_str[3], day_str[3], hour_str[3], minute_str[3], second_str[3];
-    
+
     // Extract date components
     strncpy(year_str, date_string, 4); year_str[4] = '\0';
     strncpy(month_str, date_string + 4, 2); month_str[2] = '\0';

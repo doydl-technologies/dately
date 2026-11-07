@@ -10,3 +10,4 @@ mold/pyx/*.c
 *.so
 *.dylib
 wheelhouse/
+Home.lnk

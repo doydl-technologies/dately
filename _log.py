@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -44,7 +42,6 @@
 #
 
 import logging
-
 
 # Dedicated logger (“dately”) so user can enable/disable it
 logger = logging.getLogger("dately")

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,11 +41,13 @@
 # SOFTWARE.
 #
 
+import logging
 import random
 import re
-from collections import OrderedDict
-import time
 import threading
+import time
+from collections import OrderedDict
+from typing import ClassVar
 
 import requests
 import requests_cache
@@ -60,8 +60,6 @@ from ._webutils import UserAgentRandomizer, find_os_in_user_agent, findhost
 
 class NoAPIKeysError(Exception):
     """Exception raised when no API keys are available."""
-
-    pass
 
 
 class HTTPLite:
@@ -77,14 +75,14 @@ class HTTPLite:
 
     _instance = None
     _lock = threading.Lock()
-    _API_KEY_HOSTS = {
+    _API_KEY_HOSTS: ClassVar[dict] = {
         "FullVersion": {"api.timezonedb.com"},
         "DependentVersion": {"api.ipgeolocation.io"},
     }
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
-            cls._instance = super(HTTPLite, cls).__new__(cls)
+            cls._instance = super().__new__(cls)
             cls._instance.initialized = False
         return cls._instance
 
@@ -164,6 +162,7 @@ class HTTPLite:
             decoded = Shift.format.chr(url_str, "format")
             return decoded
         except Exception:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             # Not valid base64, so just return original
             return url_str
 
@@ -188,9 +187,10 @@ class HTTPLite:
             # fetch the dict for current_key_type, fallback empty if missing
             keys = data.get(self.current_key_type, {})
             if not isinstance(keys, dict):
-                raise ValueError(f"Invalid API-key group: {self.current_key_type}")
+                raise ValueError(f"Invalid API-key group: {self.current_key_type}")  # noqa: TRY004 - Preserve the existing ValueError API.
             self.api_keys = keys
         except Exception as e:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             logger.warning(f"Error fetching API keys: {e}")
             self.api_keys = {}
 
@@ -267,11 +267,10 @@ class HTTPLite:
             time.sleep(delay)
         else:
             # non-concurrent => ensure 3s gap for the same host
-            if self.last_host and self.last_host == self.host:
-                if self.last_request_time is not None:
-                    elapsed_time = time.time() - self.last_request_time
-                    if elapsed_time < 3:
-                        time.sleep(3 - elapsed_time)
+            if self.last_host and self.last_host == self.host and self.last_request_time is not None:
+                elapsed_time = time.time() - self.last_request_time
+                if elapsed_time < 3:
+                    time.sleep(3 - elapsed_time)
             self.last_request_time = time.time()
             self.last_host = self.host
 
@@ -390,10 +389,11 @@ class HTTPLite:
                     return response_data
 
         except requests.exceptions.HTTPError as e:
-            error_message = {"error": f"HTTP Error {e.response.status_code}: {str(e)}"}
+            error_message = {"error": f"HTTP Error {e.response.status_code}: {e!s}"}
         except NoAPIKeysError as e:
             error_message = {"error": str(e)}
         except Exception as e:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             error_message = {"error": str(e)}
         finally:
             params.pop(api_key_param_name, None)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -83,22 +81,22 @@ It is tightly coupled with `LexicalFuzzer` (for spelling correction)
 and `numbers` (for numeric normalization), and acts as a foundation
 for structure recognition and semantic evaluation downstream.
 """
-import re
-import random
-import inspect
+
 import functools
+import inspect
+import logging
+import operator
+import random
+import re
 
 import numbr
 
+from .arithmetic import numbers, timeline
 from .string_similarity.spell_correction import LexicalFuzzer
-from .arithmetic import timeline, numbers
-
-
-
 
 
 # CONVERT WORDS BETWEEN SINGULAR AND PLURAL FORMS
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # The TemporalInflection class provides methods for handling pluralization and singularization of
 # time-related words such as months, seasons, quarters, and days of the week.
 class TemporalInflection:
@@ -111,7 +109,10 @@ class TemporalInflection:
     - Handle specific cases for time units, days, months, seasons, and quarters.
     - TemporalInflection entire phrases containing pluralized words.
     """
-    def __init__(self, quarters=timeline.quarters, months=timeline.months, days=timeline.days, seasons=timeline.seasons):
+
+    def __init__(
+        self, quarters=timeline.quarters, months=timeline.months, days=timeline.days, seasons=timeline.seasons
+    ):
         self.plural_to_singular = {}
 
         # Build up a reverse lookup map for known plural forms
@@ -134,7 +135,7 @@ class TemporalInflection:
 
     def _load_canonical_plural_map(self, mapping):
         """For each canonical time term, generate expected plural variants like "s"/"ies"."""
-        for k, v in mapping.items():
+        for v in mapping.values():
             canonical = v.lower()
             plural_s = canonical + "s"
             plural_ies = canonical[:-1] + "ies" if canonical.endswith("y") and canonical != "may" else None
@@ -147,21 +148,19 @@ class TemporalInflection:
         word = self.remove_possessive_ownership(word)
         if word.lower() in set(timeline.days.index.keys()):
             return word + "s"
-        elif word.endswith('y') and word.lower() not in {"may"}:
-            return word[:-1] + 'ies'
-        elif word == 'weekend':
-            return word + 's'
-        elif word == 'weekday':
-            return word + 's'
-        elif word == 'month':
-            return 'Months'
-        elif word == 'year':
-            return 'Years'
+        elif word.endswith("y") and word.lower() not in {"may"}:
+            return word[:-1] + "ies"
+        elif word == "weekend" or word == "weekday":
+            return word + "s"
+        elif word == "month":
+            return "Months"
+        elif word == "year":
+            return "Years"
         else:
-            return word + 's'
+            return word + "s"
 
     def _pluralize_keys_and_values(self, valid_dict):
-        """ Generates a dictionary with pluralized keys and values."""
+        """Generates a dictionary with pluralized keys and values."""
         plural_dict = {}
         for key, value in valid_dict.items():
             plural_key = self._pluralize_key(key)
@@ -172,7 +171,7 @@ class TemporalInflection:
         return plural_dict
 
     def _pluralize_key(self, key):
-        """ Converts a key to its plural form based on known patterns."""
+        """Converts a key to its plural form based on known patterns."""
         if key.startswith("quarter"):
             return key + "s"
         elif key.endswith(" 1"):
@@ -202,9 +201,9 @@ class TemporalInflection:
         original_word = word
         word = word.strip().lower()
 
-        if word.endswith("’s") or word.endswith("'s"):
+        if word.endswith(("’s", "'s")):
             word = word[:-2]
-        elif word.endswith("s’") or word.endswith("s'"):
+        elif word.endswith(("s’", "s'")):
             word = word[:-1]
 
         if word in self.time_units_plural_to_singular:
@@ -229,27 +228,25 @@ class TemporalInflection:
         """
         Removes possessive endings from a word to normalize it for further processing.
         """
-        if word.endswith("’s") or word.endswith("'s"):
-            return word[:-2]
-        elif word.endswith("s’") or word.endswith("s'"):
+        if word.endswith(("’s", "'s", "s’", "s'")):
             return word[:-2]
         return word
 
     # Singularization Interfaces
     # -----------------------------
     def singularize(self, valid_input):
-        if isinstance(valid_input, str): # Case 1: String input
+        if isinstance(valid_input, str):  # Case 1: String input
             singular = self._singularize_word(valid_input)
             return singular
-        elif isinstance(valid_input, set): # Case 2: Set input
+        elif isinstance(valid_input, set):  # Case 2: Set input
             return {self._singularize_word(item) for item in valid_input}
-        elif isinstance(valid_input, dict): # Case 3: Dictionary input
+        elif isinstance(valid_input, dict):  # Case 3: Dictionary input
             result = {}
             for key, value in valid_input.items():
                 singular = self._singularize_word(value)
                 result[key.lower()] = singular
             return result
-        elif isinstance(valid_input, list): # Case 4: List input
+        elif isinstance(valid_input, list):  # Case 4: List input
             return [self._singularize_word(item) for item in valid_input]
         else:
             raise TypeError("Input must be a string, dictionary, or set")
@@ -261,16 +258,16 @@ class TemporalInflection:
         elif isinstance(phrase, list):
             words = phrase
         singular_words = self.singularize(words)
-        return ' '.join(singular_words)
+        return " ".join(singular_words)
 
     # Pluralization Interfaces
     # -----------------------------
     def pluralize(self, valid_input):
-        if isinstance(valid_input, str): # Case 1: String input
+        if isinstance(valid_input, str):  # Case 1: String input
             plural = self._pluralize_word(valid_input)
             self.plural_to_singular[plural.lower()] = valid_input.lower()
             return plural.lower()
-        elif isinstance(valid_input, dict): # Case 2: Dictionary input
+        elif isinstance(valid_input, dict):  # Case 2: Dictionary input
             result = {}
             for key, value in valid_input.items():
                 plural_value = self._pluralize_word(value)
@@ -279,14 +276,14 @@ class TemporalInflection:
                 self.plural_to_singular[plural_lower] = value.lower()
                 result[key_lower] = plural_lower
             return result
-        elif isinstance(valid_input, set): # Case 3: Set input
+        elif isinstance(valid_input, set):  # Case 3: Set input
             plural_set = set()
             for item in valid_input:
                 plural_item = self._pluralize_word(item)
                 self.plural_to_singular[plural_item.lower()] = item.lower()
                 plural_set.add(plural_item.lower())
             return plural_set
-        elif isinstance(valid_input, list): # Case 4: List input
+        elif isinstance(valid_input, list):  # Case 4: List input
             plural_list = []
             for item in valid_input:
                 plural_item = self._pluralize_word(item)
@@ -297,22 +294,20 @@ class TemporalInflection:
             raise TypeError("Input must be a string, dictionary, or set")
 
     def pluralize_phrase(self, phrase):
-        """ Converts all singular words in a phrase to their plural forms."""
+        """Converts all singular words in a phrase to their plural forms."""
         if isinstance(phrase, str):
             words = phrase.split()
         elif isinstance(phrase, list):
             words = phrase
         plural_words = [self.pluralize(word) for word in words]
-        return ' '.join(plural_words)
+        return " ".join(plural_words)
 
     def __dir__(self):
-        return ['singularize_phrase', 'pluralize', 'singularize', 'pluralize_phrase', 'remove_possessive_ownership']
-
-
+        return ["singularize_phrase", "pluralize", "singularize", "pluralize_phrase", "remove_possessive_ownership"]
 
 
 # EXPRESSION TOKENIZATION FOR TEMPORAL PHRASES
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # The Expression class provides flexible parsing for temporal expressions that
 # may be passed as strings or lists. It normalizes input, applies custom
 # tokenization logic for partial dates (e.g., "july 4 2022"), and supports
@@ -326,10 +321,11 @@ class Expression:
     with either a str or a list. It provides a single tokenize method
     that applies custom date-aware tokenization logic.
     """
+
     def __init__(self, value):
         self.original_type = type(value)  # Store the original type
         if isinstance(value, list):
-            self.raw = ' '.join(str(x) for x in value) # Convert list input to a single string.
+            self.raw = " ".join(str(x) for x in value)  # Convert list input to a single string.
         elif isinstance(value, str):
             self.raw = " ".join(value.split())
         else:
@@ -350,7 +346,7 @@ class Expression:
         if tokenize_date:
             return self.raw.split()
 
-        tokens = re.sub(r',', '', self.raw.lower()).split()
+        tokens = re.sub(r",", "", self.raw.lower()).split()
         tokens = self._merge_day_of_month(tokens, numeric_plausibility=numeric_plausibility)
         tokens = self._merge_date_tokens(tokens, include_year=include_year, numeric_plausibility=numeric_plausibility)
         tokens = self._merge_month_year(tokens)
@@ -379,11 +375,11 @@ class Expression:
                 if i + 1 < len(tokens):
                     day_token = tokens[i + 1]
                     try:
-                        day_value = int(numbers.to_type(day_token, 'cardinalNumber', as_str=True))
+                        day_value = int(numbers.to_type(day_token, "cardinalNumber", as_str=True))
                         max_days = timeline.days_in_month(token).d
 
                         if (not numeric_plausibility and day_value) or (numeric_plausibility and day_value <= max_days):
-                            if include_year and i + 2 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 2]):
+                            if include_year and i + 2 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 2]):
                                 merged.append(f"{token} {day_value} {tokens[i + 2]}")
                                 i += 3
                             else:
@@ -392,7 +388,7 @@ class Expression:
                             processed = True
                             continue
                     except Exception:
-                        pass
+                        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
                 if not processed:
                     merged.append(token)
                     i += 1
@@ -422,20 +418,22 @@ class Expression:
         while i < len(tokens):
             try:
                 num_type = numbers.num_type(tokens[i])
-                if (
-                    i + 1 < len(tokens) and
-                    num_type in {"ordinalNumber", "cardinalNumber", "ordinalWord", "cardinalWord"}
-                ):
+                if i + 1 < len(tokens) and num_type in {
+                    "ordinalNumber",
+                    "cardinalNumber",
+                    "ordinalWord",
+                    "cardinalWord",
+                }:
                     num = numbers.to_type(tokens[i], "cardinalNumber", as_str=True)
 
-                    if ( # Case 1: "<ordinal> day of <month> [<year>]"
-                        tokens[i + 1] == "day" and
-                        i + 3 < len(tokens) and
-                        tokens[i + 2] == "of" and
-                        tokens[i + 3] in set(timeline.months) and
-                        (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 3]).d)
+                    if (  # Case 1: "<ordinal> day of <month> [<year>]"
+                        tokens[i + 1] == "day"
+                        and i + 3 < len(tokens)
+                        and tokens[i + 2] == "of"
+                        and tokens[i + 3] in set(timeline.months)
+                        and (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 3]).d)
                     ):
-                        if i + 4 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 4]):
+                        if i + 4 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 4]):
                             merged.append(f"{tokens[i + 3]} {num} {tokens[i + 4]}")
                             i += 5
                         else:
@@ -443,27 +441,18 @@ class Expression:
                             i += 4
                         continue
 
-                    elif ( # Case 2: "<ordinal> day <month> [<year>]"
-                        tokens[i + 1] == "day" and
-                        i + 2 < len(tokens) and
-                        tokens[i + 2] in set(timeline.months) and
-                        (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 2]).d)
+                    elif (  # Case 2: "<ordinal> day <month> [<year>]"
+                        tokens[i + 1] == "day"
+                        and i + 2 < len(tokens)
+                        and tokens[i + 2] in set(timeline.months)
+                        and (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 2]).d)
+                    ) or (  # Case 3: "<ordinal> of <month> [<year>]"
+                        tokens[i + 1] == "of"
+                        and i + 2 < len(tokens)
+                        and tokens[i + 2] in set(timeline.months)
+                        and (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 2]).d)
                     ):
-                        if i + 3 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 3]):
-                            merged.append(f"{tokens[i + 2]} {num} {tokens[i + 3]}")
-                            i += 4
-                        else:
-                            merged.append(f"{tokens[i + 2]} {num}")
-                            i += 3
-                        continue
-
-                    elif ( # Case 3: "<ordinal> of <month> [<year>]"
-                        tokens[i + 1] == "of" and
-                        i + 2 < len(tokens) and
-                        tokens[i + 2] in set(timeline.months) and
-                        (not numeric_plausibility or int(num) <= timeline.days_in_month(tokens[i + 2]).d)
-                    ):
-                        if i + 3 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 3]):
+                        if i + 3 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 3]):
                             merged.append(f"{tokens[i + 2]} {num} {tokens[i + 3]}")
                             i += 4
                         else:
@@ -471,7 +460,7 @@ class Expression:
                             i += 3
                         continue
             except Exception:
-                pass
+                logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             merged.append(tokens[i])
             i += 1
         return merged
@@ -487,7 +476,7 @@ class Expression:
         while i < len(tokens):
             if (
                 i + 1 < len(tokens)
-                and tokens[i] in set([unit for unit in [f for f in list(timeline.months)]])
+                and tokens[i] in {unit for unit in [f for f in list(timeline.months)]}
                 and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 1])
             ):
                 merged.append(f"{tokens[i]} {tokens[i + 1]}")
@@ -503,31 +492,29 @@ class Expression:
     def __str__(self):
         return self.raw
 
+
 def expr(func):
     """
     Decorator that ensures the 'expression' argument for the function
     is wrapped as an Expression instance.
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         sig = inspect.signature(func)
         bound = sig.bind(*args, **kwargs)
         bound.apply_defaults()
-        if 'expression' in bound.arguments:
-            expr_val = bound.arguments['expression']
+        if "expression" in bound.arguments:
+            expr_val = bound.arguments["expression"]
             if not isinstance(expr_val, Expression):
-                bound.arguments['expression'] = Expression(expr_val)
+                bound.arguments["expression"] = Expression(expr_val)
         return func(*bound.args, **bound.kwargs)
+
     return wrapper
 
 
-
-
-
-
-
 # NORMALIZE TEMPORAL PHRASES AND TOKEN SEQUENCES
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # The TemporalPhraseEngine class provides methods for cleaning, standardizing,
 # and transforming temporal expressions prior to parsing. It includes support
 # for article removal, token correction, prefix replacement, and structural
@@ -544,17 +531,20 @@ class TemporalPhraseEngine:
     - Correct token spelling using hybrid Levenshtein + Jaro-Winkler algorithms.
     - Tokenize and return cleaned temporal phrases for downstream parsing.
     """
+
     def __init__(self):
         self.temporal_inflect = TemporalInflection()
         self.numbers = numbers()
         self.quantifier_ranges = {
-            "couple": (2, 2), 	# Always 2
-            "few": (3, 5),      # Randomly choose between 3 and 5
+            "couple": (2, 2),  # Always 2
+            "few": (3, 5),  # Randomly choose between 3 and 5
             "several": (6, 9),  # Randomly choose between 6 and 9
-            "many": (10, 15)  	# Randomly choose between 10 and 15
+            "many": (10, 15),  # Randomly choose between 10 and 15
         }
         self.ordinal_words_set = self._ordinal_set(vocab=list(LexicalFuzzer.vocabulary))
-        self.ordinal_numbers_set = {word for word in LexicalFuzzer.vocabulary if re.compile(r'^\d+(st|nd|rd|th)$').match(word)}
+        self.ordinal_numbers_set = {
+            word for word in LexicalFuzzer.vocabulary if re.compile(r"^\d+(st|nd|rd|th)$").match(word)
+        }
         self.drop = self.DropClass()
         self.sub = self.SubstituteClass(parent=self)
         self.match = self.MatchClass()
@@ -579,7 +569,7 @@ class TemporalPhraseEngine:
                     del tokens[i + 1]
                 else:
                     i += 1
-            return tokens if return_tokens else ' '.join(tokens)
+            return tokens if return_tokens else " ".join(tokens)
 
         @expr
         def In(self, expression, return_tokens=True):
@@ -591,14 +581,14 @@ class TemporalPhraseEngine:
             i = 0
             while i < len(tokens) - 1:
                 if tokens[i] == "in" and (
-                    tokens[i + 1] in timeline.months or
-                    tokens[i + 1] in timeline.seasons or
-                    tokens[i + 1] in timeline.quarters or
-                    tokens[i + 1] in {"week", "month", "year", "quarter", "season"}
+                    tokens[i + 1] in timeline.months
+                    or tokens[i + 1] in timeline.seasons
+                    or tokens[i + 1] in timeline.quarters
+                    or tokens[i + 1] in {"week", "month", "year", "quarter", "season"}
                 ):
                     tokens[i] = "of"
                 i += 1
-            return tokens if return_tokens else ' '.join(tokens)
+            return tokens if return_tokens else " ".join(tokens)
 
         @expr
         def any(self, expression, replacements, prefix=False, return_tokens=True):
@@ -626,10 +616,10 @@ class TemporalPhraseEngine:
             tokens = expression.tokenize()
             if prefix:
                 text_lower = " ".join(tokens).lower()
-                for prefix, replacement in replacements.items():
-                    prefix_tokens = prefix.split()
+                for match_prefix, replacement in replacements.items():
+                    prefix_tokens = match_prefix.split()
                     prefix_length = len(prefix_tokens)
-                    if text_lower.startswith(prefix):
+                    if text_lower.startswith(match_prefix):
                         new_tokens = [replacement] + tokens[prefix_length:]
                         if return_tokens:
                             return new_tokens
@@ -640,8 +630,10 @@ class TemporalPhraseEngine:
                     for original, replacement in replacements.items():
                         original_tokens = original.split()
                         original_length = len(original_tokens)
-                        if tokens[i:i+original_length] == original_tokens: # Check if the slice of tokens matches the original_tokens
-                            tokens[i:i+original_length] = [replacement]  # Replace the entire phrase
+                        if (
+                            tokens[i : i + original_length] == original_tokens
+                        ):  # Check if the slice of tokens matches the original_tokens
+                            tokens[i : i + original_length] = [replacement]  # Replace the entire phrase
                             i += original_length - 1  # Adjust index to skip replaced tokens
                             break
                     i += 1
@@ -715,12 +707,12 @@ class TemporalPhraseEngine:
             for token in tokens:
                 if self.parent.is_partial_date(token):
                     try:
-                        monthname, daytype = token.split() # Expected format: "Month Day", e.g., "July 11"
-                        if daytype: # Check what format day number is in
-                            if self.parent.numbers.num_type(daytype) == 'ordinalWord':
-                                converted_number = self.parent.numbers.to_type(daytype, 'ordinalNumber')
-                            elif self.parent.numbers.num_type(daytype) == 'cardinalWord':
-                                converted_number = self.parent.numbers.to_type(daytype, 'cardinalNumber', as_str=True)
+                        monthname, daytype = token.split()  # Expected format: "Month Day", e.g., "July 11"
+                        if daytype:  # Check what format day number is in
+                            if self.parent.numbers.num_type(daytype) == "ordinalWord":
+                                converted_number = self.parent.numbers.to_type(daytype, "ordinalNumber")
+                            elif self.parent.numbers.num_type(daytype) == "cardinalWord":
+                                converted_number = self.parent.numbers.to_type(daytype, "cardinalNumber", as_str=True)
                             else:
                                 converted_number = None
                         if converted_number:
@@ -731,11 +723,11 @@ class TemporalPhraseEngine:
                         tokenized.append(token)
                     continue
                 try:
-                    if self.parent.numbers.num_type(token) == 'ordinalWord':
-                        converted = self.parent.numbers.to_type(token, 'ordinalNumber')
+                    if self.parent.numbers.num_type(token) == "ordinalWord":
+                        converted = self.parent.numbers.to_type(token, "ordinalNumber")
                         tokenized.append(converted)
-                    elif self.parent.numbers.num_type(token) == 'cardinalWord':
-                        converted = self.parent.numbers.to_type(token, 'cardinalNumber', as_str=True)
+                    elif self.parent.numbers.num_type(token) == "cardinalWord":
+                        converted = self.parent.numbers.to_type(token, "cardinalNumber", as_str=True)
                         tokenized.append(converted)
                     else:
                         tokenized.append(token)
@@ -760,21 +752,21 @@ class TemporalPhraseEngine:
                 list of str: Token list with combined month-day pairs.
             """
             if isinstance(expression, str):
-                tokens = re.sub(r',', '', expression.lower()).split()
+                tokens = re.sub(r",", "", expression.lower()).split()
             else:
-                tokens = [str(exp).lower().replace(',', '') for exp in expression]
+                tokens = [str(exp).lower().replace(",", "") for exp in expression]
             merged = []
             i = 0
             while i < len(tokens):
                 token = tokens[i]
-                if token in timeline.months.keys():
+                if token in timeline.months:
                     processed = False
                     if i + 1 < len(tokens):
                         day_token = tokens[i + 1]
                         # Check 1: "<Month> <NumericDay>"
-                        if re.fullmatch(r'0?[1-9]|1[0-9]|2[0-9]|3[01]', day_token):
-                            day_value = day_token.lstrip('0')
-                            if include_year and i + 2 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 2]):
+                        if re.fullmatch(r"0?[1-9]|1[0-9]|2[0-9]|3[01]", day_token):
+                            day_value = day_token.lstrip("0")
+                            if include_year and i + 2 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 2]):
                                 merged.append(f"{token} {day_value} {tokens[i + 2]}")
                                 i += 3
                             else:
@@ -783,9 +775,9 @@ class TemporalPhraseEngine:
                             processed = True
                             continue
                         # Check 2: "<Month> <OrdinalNumber>"
-                        ordinal_pattern = r'(?:[1-9]|1[0-9]|2[0-9]|3[01])(st|nd|rd|th)'
+                        ordinal_pattern = r"(?:[1-9]|1[0-9]|2[0-9]|3[01])(st|nd|rd|th)"
                         if re.fullmatch(ordinal_pattern, day_token):
-                            if include_year and i + 2 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 2]):
+                            if include_year and i + 2 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 2]):
                                 merged.append(f"{token} {day_token} {tokens[i + 2]}")
                                 i += 3
                             else:
@@ -795,7 +787,7 @@ class TemporalPhraseEngine:
                             continue
                         # Check 3: "<Month> <OrdinalWord>"
                         if day_token in self.parent.ordinal_words_set:
-                            if include_year and i + 2 < len(tokens) and re.fullmatch(r'(?:\d{2}|\d{4})', tokens[i + 2]):
+                            if include_year and i + 2 < len(tokens) and re.fullmatch(r"(?:\d{2}|\d{4})", tokens[i + 2]):
                                 merged.append(f"{token} {day_token} {tokens[i + 2]}")
                                 i += 3
                             else:
@@ -812,9 +804,8 @@ class TemporalPhraseEngine:
 
         def __dir__(self):
             default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
-            public_attrs = ['In', 'any', 'approximate_words', 'past', 'ordinal_cardinal', 'partial_date']
+            public_attrs = ["In", "any", "approximate_words", "past", "ordinal_cardinal", "partial_date"]
             return sorted(set(default_attrs + public_attrs))
-
 
     # ========= Drop ===================================================================================================
     class DropClass:
@@ -827,17 +818,20 @@ class TemporalPhraseEngine:
             Remove redundant 'this' when it conflicts with clearer anchors
             ('last', 'past', or a numeric/ordinal) immediately following it.
             """
+
             def _is_numeric_like(tok):
                 """
                 Returns True if the token represents any numeric concept.
                 """
                 tok = str(tok).lower()
-                return any([
-                    numbr.cardinalNumToCardinalWord(tok),
-                    numbr.cardinalWordToCardinalNum(tok),
-                    numbr.ordinalWordToCardinalWord(tok),
-                    numbr.ordinalNumToCardinalWord(tok),
-                ])
+                return any(
+                    [
+                        numbr.cardinalNumToCardinalWord(tok),
+                        numbr.cardinalWordToCardinalNum(tok),
+                        numbr.ordinalWordToCardinalWord(tok),
+                        numbr.ordinalNumToCardinalWord(tok),
+                    ]
+                )
 
             valid_units = {"week", "weeks", "month", "months", "year", "years", "quarter", "quarters"}
 
@@ -862,7 +856,7 @@ class TemporalPhraseEngine:
                 i += 1
             if return_tokens:
                 return cleaned
-            return ' '.join(cleaned) if input_is_str else cleaned
+            return " ".join(cleaned) if input_is_str else cleaned
 
         @expr
         def useless_of(self, expression, return_tokens=True):
@@ -881,10 +875,12 @@ class TemporalPhraseEngine:
             """
             tokens = expression.tokenize()
 
-            PERIODS = set(timeline.days.index.keys())        \
-                       | set(timeline.months.keys())            \
-                       | set(timeline.seasons.keys())           \
-                       | set(timeline.quarters.keys())
+            PERIODS = (
+                set(timeline.days.index.keys())
+                | set(timeline.months.keys())
+                | set(timeline.seasons.keys())
+                | set(timeline.quarters.keys())
+            )
 
             # Excluding `day` preserves the `of` required by resolver rule 6.
             TIME_UNITS = {"week", "month", "quarter", "season", "year"}
@@ -932,10 +928,10 @@ class TemporalPhraseEngine:
             result = []
             for token in tokens:
                 parts = token.split()
-                filtered_parts = [part for part in parts if part.lower() != 'of']
+                filtered_parts = [part for part in parts if part.lower() != "of"]
                 if filtered_parts:
-                    result.append(' '.join(filtered_parts))
-            return result if return_tokens else ' '.join(result)
+                    result.append(" ".join(filtered_parts))
+            return result if return_tokens else " ".join(result)
 
         @expr
         def one(self, expression, return_tokens=True):
@@ -946,13 +942,13 @@ class TemporalPhraseEngine:
             tokens = expression.tokenize()
             i = 0
             while i < len(tokens) - 1:
-                if tokens[i] in {'next', 'last', 'this', 'previous'} and tokens[i+1] == '1':
-                    del tokens[i+1]
+                if tokens[i] in {"next", "last", "this", "previous"} and tokens[i + 1] == "1":
+                    del tokens[i + 1]
                 else:
                     i += 1
-            return tokens if return_tokens else ' '.join(tokens)
+            return tokens if return_tokens else " ".join(tokens)
 
-        def article(self, expression, article_type='definite', only_ordinal=False, return_tokens=True):
+        def article(self, expression, article_type="definite", only_ordinal=False, return_tokens=True):
             """
             Removes specified articles ('the' or 'a') from the start of a phrase or list of tokens.
 
@@ -966,9 +962,9 @@ class TemporalPhraseEngine:
                 str or list: The modified phrase or tokens with the specified article removed.
             """
             if isinstance(expression, list):
-                expression = ' '.join(expression)  # Convert list of tokens to a single string for processing
+                expression = " ".join(expression)  # Convert list of tokens to a single string for processing
 
-            if article_type in ['definite', 'the']:
+            if article_type in ["definite", "the"]:
                 if only_ordinal:
                     pattern = r"""^the (
                         first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|
@@ -977,10 +973,10 @@ class TemporalPhraseEngine:
                         twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|
                         twenty-eighth|twenty-ninth|thirtieth|thirty-first|\d+(st|nd|rd|th)
                     )\b"""
-                    modified_expression = re.sub(pattern, r'\1', expression, flags=re.IGNORECASE)
+                    modified_expression = re.sub(pattern, r"\1", expression, flags=re.IGNORECASE)
                 else:
                     modified_expression = re.sub(r"^the\s+", "", expression, flags=re.IGNORECASE)
-            elif article_type in ['indefinite', 'a']:
+            elif article_type in ["indefinite", "a"]:
                 modified_expression = re.sub(r"^a\s+", "", expression, flags=re.IGNORECASE)
             else:
                 modified_expression = expression  # Return original if article_type does not match any known types
@@ -994,8 +990,8 @@ class TemporalPhraseEngine:
                 pass
 
             tokens = expression.tokenize()
-            month_regex = r'(?:' + '|'.join(timeline.months) + r')'
-            pattern = rf'\b({month_regex})(?:\s(0?[1-9]|[12][0-9]|3[01]))?\s(?:\d{{2}}|\d{{4}})\b'
+            month_regex = r"(?:" + "|".join(timeline.months) + r")"
+            pattern = rf"\b({month_regex})(?:\s(0?[1-9]|[12][0-9]|3[01]))?\s(?:\d{{2}}|\d{{4}})\b"
             updated_tokens = []
             for token in tokens:
                 match = re.match(pattern, token, flags=re.IGNORECASE)
@@ -1012,9 +1008,8 @@ class TemporalPhraseEngine:
 
         def __dir__(self):
             default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
-            public_attrs = ['of', 'one', 'this', 'article', 'partial_date_year', 'useless_of']
+            public_attrs = ["of", "one", "this", "article", "partial_date_year", "useless_of"]
             return sorted(set(default_attrs + public_attrs))
-
 
     # ========= Match ===================================================================================================
     class MatchClass:
@@ -1093,15 +1088,16 @@ class TemporalPhraseEngine:
                 if isinstance(token_index, int):
                     if token_index < 0 or token_index >= len(tokens):
                         raise IndexError("Token index out of range.")
-                    return tokens[token_index].lower() in (target if target is not None else sum(candidate_sequences, []))
+                    return tokens[token_index].lower() in (
+                        target if target is not None else functools.reduce(operator.iadd, candidate_sequences, [])
+                    )
                 elif isinstance(token_index, tuple):
                     start, end = token_index
                     if start < 0 or end >= len(tokens) or start > end:
                         return False  # Avoid raising an IndexError; just return False
-                    return check_subsequence(tokens[start:end + 1])
+                    return check_subsequence(tokens[start : end + 1])
             else:
                 return check_subsequence(tokens)
-
 
     # ========= Insert ===================================================================================================
     class InsertClass:
@@ -1120,31 +1116,32 @@ class TemporalPhraseEngine:
               that merges it into an ordinal expression (e.g., "first Monday").
             - If found, insert 'this' before it and return immediately.
             """
+
             def _remove_redundant_this(tokens):
-                month_names = set(list(timeline.adj_months().keys()))
+                month_names = set(timeline.adj_months().keys())
                 result = []
                 i = 0
                 while i < len(tokens):
-                    if i <= len(tokens) - 3:
-                        if (tokens[i].lower() == "this" and
-                            tokens[i+1].lower() in month_names and
-                            tokens[i+2].isdigit()):
-                            i += 1
-                            continue
+                    if i <= len(tokens) - 3 and (
+                        tokens[i].lower() == "this" and tokens[i + 1].lower() in month_names and tokens[i + 2].isdigit()
+                    ):
+                        i += 1
+                        continue
                     result.append(tokens[i])
                     i += 1
                 return result
 
-            DIRECTION = {"this", "next", "last", 'previous'}
+            DIRECTION = {"this", "next", "last", "previous"}
             EXCEPTIONS = {"today", "yesterday", "tomorrow"}
-            NAMED_PERIODS = set(
-                k.lower() for k in (
+            NAMED_PERIODS = {
+                k.lower()
+                for k in (
                     list(timeline.adj_months().keys())
                     + list(timeline.days.index.keys())
                     + list(timeline.adj_quarters().keys())
                     + list(timeline.seasons.keys())
                 )
-            )
+            }
             tokens = expression.tokenize()
             if len(tokens) == 1 and tokens[0].lower() in EXCEPTIONS:
                 return tokens
@@ -1153,8 +1150,8 @@ class TemporalPhraseEngine:
 
                 if tok in NAMED_PERIODS:
                     if i > 0:
-                        prev = tokens[i-1].lower()
-                        if prev.isdigit() or numbers.num_type(prev) in {'ordinalNumber', 'ordinalWord'}:
+                        prev = tokens[i - 1].lower()
+                        if prev.isdigit() or numbers.num_type(prev) in {"ordinalNumber", "ordinalWord"}:
                             continue
 
                     j = i - 1
@@ -1162,11 +1159,11 @@ class TemporalPhraseEngine:
                         p = tokens[j].lower()
                         if p in DIRECTION:
                             return tokens
-                        if not (p.isdigit() or numbers.num_type(p) in {'ordinalNumber', 'ordinalWord'}):
+                        if not (p.isdigit() or numbers.num_type(p) in {"ordinalNumber", "ordinalWord"}):
                             break
                         j -= 1
-                    return tokens[:i] + ['this'] + tokens[i:]
-            return _remove_redundant_this(tokens) if return_tokens else ' '.join(_remove_redundant_this(tokens))
+                    return tokens[:i] + ["this"] + tokens[i:]
+            return _remove_redundant_this(tokens) if return_tokens else " ".join(_remove_redundant_this(tokens))
 
     @expr
     def clean_gaps(self, expression):
@@ -1186,11 +1183,11 @@ class TemporalPhraseEngine:
 
     def _ordinal_set(self, vocab):
         ordinal_word_pattern = re.compile(
-            r'\b(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|'
-            r'eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|'
-            r'twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|'
-            r'thirtieth|thirty-first)\b',
-            re.IGNORECASE
+            r"\b(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|"
+            r"eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|"
+            r"twentieth|twenty-first|twenty-second|twenty-third|twenty-fourth|twenty-fifth|twenty-sixth|twenty-seventh|twenty-eighth|twenty-ninth|"
+            r"thirtieth|thirty-first)\b",
+            re.IGNORECASE,
         )
 
         ordinal_words = set()
@@ -1235,7 +1232,7 @@ class TemporalPhraseEngine:
         """
         tokens = expression.tokenize()
         if len(tokens) == 1 and len(tokens[0].split()) > 1:
-            tokens = ' '.join([str(t) for t in tokens]).split()
+            tokens = " ".join([str(t) for t in tokens]).split()
 
         if len(tokens) < 2 or len(tokens) > 3:
             return False
@@ -1243,23 +1240,33 @@ class TemporalPhraseEngine:
         month = tokens[0]
         value = tokens[1]
         year = tokens[2] if len(tokens) == 3 else None
-        if month not in timeline.months.keys():
+        if month not in timeline.months:
             return False
 
         month_max_days = int(timeline.days_in_month(month, year=year).d)
-        year_pattern = r'(?:\d{2}|\d{4})'
+        year_pattern = r"(?:\d{2}|\d{4})"
         if include_year and len(tokens) == 2 and re.fullmatch(year_pattern, value):
             if return_val:
                 return {"month": month, "day": None, "year": value}
             return True
 
         checks = [
-            len(tokens) == 2 and self.numbers.num_type(value) == 'cardinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
-            len(tokens) == 2 and self.numbers.num_type(value) == 'ordinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
-            len(tokens) == 2 and self.numbers.num_type(value) == 'ordinalWord',
-            year and re.fullmatch(year_pattern, year) and self.numbers.num_type(value) == 'cardinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
-            year and re.fullmatch(year_pattern, year) and self.numbers.num_type(value) == 'ordinalNumber' and 1 <= int(self.numbers.to_type(value, target='cardinalNumber')) <= month_max_days,
-            year and re.fullmatch(year_pattern, year) and self.numbers.num_type(value) == 'ordinalWord',
+            len(tokens) == 2
+            and self.numbers.num_type(value) == "cardinalNumber"
+            and 1 <= int(self.numbers.to_type(value, target="cardinalNumber")) <= month_max_days,
+            len(tokens) == 2
+            and self.numbers.num_type(value) == "ordinalNumber"
+            and 1 <= int(self.numbers.to_type(value, target="cardinalNumber")) <= month_max_days,
+            len(tokens) == 2 and self.numbers.num_type(value) == "ordinalWord",
+            year
+            and re.fullmatch(year_pattern, year)
+            and self.numbers.num_type(value) == "cardinalNumber"
+            and 1 <= int(self.numbers.to_type(value, target="cardinalNumber")) <= month_max_days,
+            year
+            and re.fullmatch(year_pattern, year)
+            and self.numbers.num_type(value) == "ordinalNumber"
+            and 1 <= int(self.numbers.to_type(value, target="cardinalNumber")) <= month_max_days,
+            year and re.fullmatch(year_pattern, year) and self.numbers.num_type(value) == "ordinalWord",
         ]
         if any(checks):
             if return_val:
@@ -1267,17 +1274,13 @@ class TemporalPhraseEngine:
                 year_val = None
 
                 if len(tokens) == 2:
-                    if self.numbers.num_type(value) in {'cardinalNumber', 'ordinalNumber', 'ordinalWord'}:
+                    if self.numbers.num_type(value) in {"cardinalNumber", "ordinalNumber", "ordinalWord"}:
                         day_val = value
                 elif len(tokens) == 3:
                     day_val = value
                     year_val = year
 
-                return {
-                    "month": month,
-                    "day": day_val,
-                    "year": year_val
-                }
+                return {"month": month, "day": day_val, "year": year_val}
             return True
         return False
 
@@ -1341,20 +1344,25 @@ class TemporalPhraseEngine:
         if not phrase_tokens:
             return None
 
-        phrase = ' '.join(phrase_tokens)
+        phrase = " ".join(phrase_tokens)
 
         # Normalize quarter references.
-        phrase = self.sub.any(phrase, replacements={k: v for k, v in timeline.quarters.items() if k != v}, prefix=False, return_tokens=False)
+        phrase = self.sub.any(
+            phrase,
+            replacements={k: v for k, v in timeline.quarters.items() if k != v},
+            prefix=False,
+            return_tokens=False,
+        )
 
         # Handle article removal.
         if remove_article:
             if isinstance(remove_article, str):
                 remove_article = [remove_article]
             remove_article = [article.lower() for article in remove_article]
-            if 'definite' in remove_article or 'the' in remove_article:
-                phrase = self.drop.article(phrase, article_type='definite', only_ordinal=False, return_tokens=False)
-            if 'indefinite' in remove_article or 'a' in remove_article:
-                phrase = self.drop.article(phrase, article_type='indefinite', only_ordinal=False, return_tokens=False)
+            if "definite" in remove_article or "the" in remove_article:
+                phrase = self.drop.article(phrase, article_type="definite", only_ordinal=False, return_tokens=False)
+            if "indefinite" in remove_article or "a" in remove_article:
+                phrase = self.drop.article(phrase, article_type="indefinite", only_ordinal=False, return_tokens=False)
 
         if prefix_replace:
             phrase = self.sub.any(phrase, replacements=prefix_replace, prefix=True, return_tokens=False)
@@ -1374,16 +1382,29 @@ class TemporalPhraseEngine:
     def __dir__(self):
         default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
         public_attrs = [
-            'quantifier_ranges', 'drop', 'inflect_phrase', 'inflect_tokens', 'normalize',
-            'sub', 'inflect', 'match', 'insert', 'extract', 'is_partial_date', 'ordinal_number',
-            'ordinal_words_set', 'ordinal_numbers_set', 'temporal_inflect', 'numbers', 'clean_gaps'
-            ]
+            "quantifier_ranges",
+            "drop",
+            "inflect_phrase",
+            "inflect_tokens",
+            "normalize",
+            "sub",
+            "inflect",
+            "match",
+            "insert",
+            "extract",
+            "is_partial_date",
+            "ordinal_number",
+            "ordinal_words_set",
+            "ordinal_numbers_set",
+            "temporal_inflect",
+            "numbers",
+            "clean_gaps",
+        ]
         return sorted(set(default_attrs + public_attrs))
 
 
 # Instantiate the TemporalPhraseEngine class.
 PhraseEngine = TemporalPhraseEngine()
-
 
 
 __all__ = ["PhraseEngine"]

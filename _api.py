@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -48,7 +46,6 @@ from ._temporal_scan import resolver
 from .dt_nlp.fiscal_calendar import get_fiscal_calendar, set_fiscal_calendar
 
 
-
 # Library-level convenience: tweak the singleton’s week start in one call
 def set_week_start(day):
     """
@@ -82,5 +79,5 @@ def set_week_start(day):
     # Informative log message (quiet unless the user enables it) -------------
     logger.info("Week-start updated → %s", resolver.week_start.capitalize())
 
-__all__ = ["set_week_start", "get_fiscal_calendar", "set_fiscal_calendar"]
 
+__all__ = ["get_fiscal_calendar", "set_fiscal_calendar", "set_week_start"]

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -96,11 +94,11 @@ in numeric reasoning tasks.
 
 It forms a shared utility layer across higher-level temporal modules.
 """
-import time
+
 import math
+import time
 
 import numbr
-
 
 
 class DateHelper:
@@ -138,15 +136,17 @@ class DateHelper:
         Seasonal boundaries in this class follow the meteorological definition
         (e.g., winter starts on December 1st), rather than astronomical.
     """
+
     class MonthInfo:
         """
         A wrapper for month metadata including its name, numeric index, and day count.
         """
+
         def __init__(self, name, number, days, year=None):
-            self._name = name          # "April"
-            self._number = number      # 4
-            self._days = days          # 30
-            self._year = year					 # yyyy
+            self._name = name  # "April"
+            self._number = number  # 4
+            self._days = days  # 30
+            self._year = year  # yyyy
 
         @property
         def m(self):
@@ -221,18 +221,18 @@ class DateHelper:
             Dynamically returns combinations like .mmmdd, .mmddyy, etc.
             using values from to_dict().
             """
-            parts = ['yyyy', 'yy', 'dd', 'd', 'mmmmm', 'mmmm', 'mmm', 'mm', 'm']
+            parts = ["yyyy", "yy", "dd", "d", "mmmmm", "mmmm", "mmm", "mm", "m"]
             available = {k: str(v) for k, v in self.to_dict().items()}
 
-            result = ''
+            result = ""
             working_name = name
 
             while working_name:
                 match = next((p for p in parts if working_name.startswith(p)), None)
                 if not match:
                     raise AttributeError(f"'MonthInfo' object has no attribute '{name}'")
-                result += available.get(match, '')
-                working_name = working_name[len(match):]
+                result += available.get(match, "")
+                working_name = working_name[len(match) :]
             return result
 
     class TypedValue:
@@ -241,6 +241,7 @@ class DateHelper:
         as either `int` or `str`. Used to enhance date components like month/day for
         both singular and grouped contexts.
         """
+
         def __init__(self, value):
             """
             Initializes the wrapper with a single value or a dictionary of values.
@@ -289,13 +290,14 @@ class DateHelper:
         A lightweight wrapper for a MM/DD date string, exposing its components
         (`mm` and `dd`) with type-flexible access (via TypedValue).
         """
+
         def __init__(self, date_str):
             """
             Args:
                 date_str (str): A string in MM/DD format.
             """
             self.date_str = date_str
-            parts = date_str.split('/')
+            parts = date_str.split("/")
             self._mm = parts[0]
             self._dd = parts[1]
 
@@ -327,6 +329,7 @@ class DateHelper:
         attribute access to 'start', 'middle', and 'end' date values,
         returned as DateFieldGroup objects.
         """
+
         def __init__(self, data):
             """
             Args:
@@ -341,11 +344,8 @@ class DateHelper:
             Returns:
                 DateFieldGroup: Object exposing .mm and .dd across months.
             """
-            if attr in ['start', 'middle', 'end']:
-                return DateHelper.DateFieldGroup(attr, {
-                    month: details[attr]
-                    for month, details in self._data.items()
-                })
+            if attr in ["start", "middle", "end"]:
+                return DateHelper.DateFieldGroup(attr, {month: details[attr] for month, details in self._data.items()})
             raise AttributeError(f"No attribute named '{attr}' exists.")
 
         def __getitem__(self, key):
@@ -371,6 +371,7 @@ class DateHelper:
         A group of dates (e.g., all 'start' dates across months) that exposes
         unified access to day and month components via TypedValue.
         """
+
         def __init__(self, label, data):
             """
             Args:
@@ -387,11 +388,10 @@ class DateHelper:
             Returns:
                 TypedValue over dict[str, str or int]
             """
-            if attr in ['dd', 'mm']:
-                return DateHelper.TypedValue({
-                    month: getattr(DateHelper.DateComponent(date_str), attr)
-                    for month, date_str in self._data.items()
-                })
+            if attr in ["dd", "mm"]:
+                return DateHelper.TypedValue(
+                    {month: getattr(DateHelper.DateComponent(date_str), attr) for month, date_str in self._data.items()}
+                )
             return self._data
 
         def __repr__(self):
@@ -402,6 +402,7 @@ class DateHelper:
         A wrapper for a single month's data (start/middle/end), allowing dot-access
         to any component and automatic DateComponent conversion when accessing start/mid/end.
         """
+
         def __init__(self, data):
             """
             Args:
@@ -419,7 +420,7 @@ class DateHelper:
             value = self._data.get(name)
             if value is None:
                 raise AttributeError(f"No attribute named '{name}' exists.")
-            if name in ['start', 'middle', 'end']:
+            if name in ["start", "middle", "end"]:
                 return DateHelper.DateComponent(value)
             return value
 
@@ -438,6 +439,7 @@ class DateHelper:
 
         Used for scenarios where set semantics are needed but original key order matters.
         """
+
         def __init__(self, iterable):
             super().__init__()
             self._items = []
@@ -474,6 +476,7 @@ class DateHelper:
             sorted (list): Alphabetically sorted version of the list.
             unique (list): List with duplicates removed while preserving order.
         """
+
         @property
         def upper(self):
             """
@@ -525,7 +528,7 @@ class DateHelper:
             return list(dict.fromkeys(self))
 
         def __dir__(self):
-            return ['upper', 'lower', 'sorted', 'capitalize', 'unique']
+            return ["upper", "lower", "sorted", "capitalize", "unique"]
 
     class QuarterDict(dict):
         """
@@ -537,12 +540,13 @@ class DateHelper:
         Properties:
             list (List): A sorted list of two-character quarter keys.
         """
+
         @property
         def list(self):
             return DateHelper.List(sorted(set(self.values())))
 
         def __dir__(self):
-            return ['list']
+            return ["list"]
 
     class SeasonDict(dict):
         """
@@ -560,39 +564,61 @@ class DateHelper:
             info (dict): Dictionary of structured season data with formatted
                          start, middle, and end dates based on the current year.
         """
+
         class DateInfoFormatter:
             """
             A helper class to format the dates with or without the year included.
             This class will mimic a dictionary's behavior by default and provide additional
             properties for different date formats.
             """
+
             def __init__(self, data, parent):
                 self.data = data  # includes full MM/DD/YYYY structure
                 self._parent = parent  # reference to DateHelper
 
             @property
             def mmdd(self):
-                return {season: {key: self._format_date(date, include_year=False, format="mmdd") for key, date in dates.items()} for season, dates in self.data.items()}
+                return {
+                    season: {
+                        key: self._format_date(date, include_year=False, format="mmdd") for key, date in dates.items()
+                    }
+                    for season, dates in self.data.items()
+                }
 
             @property
             def mm(self):
-                return {season: {key: self._format_date(date, include_year=False, format="mm") for key, date in dates.items()} for season, dates in self.data.items()}
+                return {
+                    season: {
+                        key: self._format_date(date, include_year=False, format="mm") for key, date in dates.items()
+                    }
+                    for season, dates in self.data.items()
+                }
 
             @property
             def dd(self):
-                return {season: {key: self._format_date(date, include_year=False, format="dd") for key, date in dates.items()} for season, dates in self.data.items()}
+                return {
+                    season: {
+                        key: self._format_date(date, include_year=False, format="dd") for key, date in dates.items()
+                    }
+                    for season, dates in self.data.items()
+                }
 
             @property
             def yyyy(self):
-                return {season: {key: self._format_date(date, include_year=False, format="yyyy") for key, date in dates.items()} for season, dates in self.data.items()}
+                return {
+                    season: {
+                        key: self._format_date(date, include_year=False, format="yyyy") for key, date in dates.items()
+                    }
+                    for season, dates in self.data.items()
+                }
 
             @property
             def mmddyy(self):
                 return self.MMDDYYView(self.data, self._parent)
 
             def _format_date(self, date_str, include_year, format=None):
-                """ Formats a date string as MM/DD or MM/DD/YYYY."""
-                month, day, year = date_str.split('/')
+                """Formats a date string as MM/DD or MM/DD/YYYY."""
+                month, day, year = date_str.split("/")
                 if format in (None, "mmddyy"):
                     return f"{month}/{day}" if not include_year else f"{month}/{day}/{year}"
 
@@ -627,13 +653,16 @@ class DateHelper:
 
             class MMDDYYView:
                 """Dict-like wrapper around mmddyy data with .year() support."""
+
                 def __init__(self, data, parent):
                     self._data = data
                     self._parent = parent
 
                 def year(self, new_year):
                     """Returns a recomputed mmddyy dict for the given year."""
-                    return DateHelper.SeasonDict.DateInfoFormatter(self._data, parent=self._parent).year(new_year).mmddyy
+                    return (
+                        DateHelper.SeasonDict.DateInfoFormatter(self._data, parent=self._parent).year(new_year).mmddyy
+                    )
 
                 def __getitem__(self, key):
                     return self._data[key]
@@ -663,7 +692,7 @@ class DateHelper:
                     return key in self._data
 
                 def __dir__(self):
-                    return dir(self._data) + ['year']
+                    return dir(self._data) + ["year"]
 
             # Dictionary-like hooks
             def __getitem__(self, key):
@@ -701,7 +730,7 @@ class DateHelper:
 
             def __dir__(self):
                 default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
-                public_attrs = ['mmdd', 'mmddyy', 'mm', 'dd','yyyy','year']
+                public_attrs = ["mmdd", "mmddyy", "mm", "dd", "yyyy", "year"]
                 return sorted(set(default_attrs + public_attrs))
 
         def __init__(self, data, parent):
@@ -745,7 +774,7 @@ class DateHelper:
             return self.DateInfoFormatter(seasons_dict, parent=self._parent)
 
         def __dir__(self):
-            return ['list', 'info']
+            return ["list", "info"]
 
     class IndexedDict(dict):
         """
@@ -763,12 +792,14 @@ class DateHelper:
             index (IndexView or None): A derived dictionary based on the index_func,
                                        with access to case-transformed key views.
         """
+
         class IndexView(dict):
             """
             A dictionary subclass that provides case-normalized views of its keys.
 
             Useful for flexible key lookups or displaying keys in various text formats.
             """
+
             def __init__(self, data, parent):
                 """
                 Initializes the IndexView with a dictionary of indexed data.
@@ -820,9 +851,9 @@ class DateHelper:
                 return self._parent.OrderedSet(self.keys())
 
             def __getitem__(self, key):
-                if key in self: # Try normal (string) key lookup first
+                if key in self:  # Try normal (string) key lookup first
                     return super().__getitem__(key)
-                try: # Try reverse lookup: value -> key
+                try:  # Try reverse lookup: value -> key
                     # Search for the key that has this value
                     for k, v in self.items():
                         if v == key:
@@ -832,8 +863,7 @@ class DateHelper:
                 raise KeyError(f"Index key or reverse value '{key}' not found.")
 
             def __dir__(self):
-                return ['upper', 'lower', 'capitalize', 'orderedset']
-
+                return ["upper", "lower", "capitalize", "orderedset"]
 
         def __init__(self, data, index_func=None, parent=None):
             """
@@ -866,7 +896,7 @@ class DateHelper:
             return None
 
         def __dir__(self):
-            return ['index']
+            return ["index"]
 
     def __init__(self, year=None):
         """
@@ -882,20 +912,13 @@ class DateHelper:
         self.year = year or time.localtime().tm_year
         self.months = self.IndexedDict(
             self._create_valid_months(),
-            index_func=lambda d: {
-                i.lower(): idx + 1
-                for idx, i in enumerate(dict.fromkeys(d.values()))
-            },
-            parent=self
+            index_func=lambda d: {i.lower(): idx + 1 for idx, i in enumerate(dict.fromkeys(d.values()))},
+            parent=self,
         )
         self.days = self.IndexedDict(
             self._create_valid_days(),
-            index_func=lambda d: {
-                d[i].lower(): i
-                for i in range(7)
-                if isinstance(i, int) and i in d
-            },
-            parent=self
+            index_func=lambda d: {d[i].lower(): i for i in range(7) if isinstance(i, int) and i in d},
+            parent=self,
         )
         self.quarters = self.QuarterDict(self._create_valid_quarters())
         self.seasons = self.SeasonDict(self._create_valid_seasons(), parent=self)
@@ -945,18 +968,30 @@ class DateHelper:
                   to their canonical capitalized form.
         """
         return {
-            "january": "January", "jan": "January",
-            "february": "February", "feb": "February",
-            "march": "March", "mar": "March",
-            "april": "April", "apr": "April",
+            "january": "January",
+            "jan": "January",
+            "february": "February",
+            "feb": "February",
+            "march": "March",
+            "mar": "March",
+            "april": "April",
+            "apr": "April",
             "may": "May",
-            "june": "June", "jun": "June",
-            "july": "July", "jul": "July",
-            "august": "August", "aug": "August",
-            "september": "September", "sep": "September", "sept": "September",
-            "october": "October", "oct": "October",
-            "november": "November", "nov": "November",
-            "december": "December", "dec": "December",
+            "june": "June",
+            "jun": "June",
+            "july": "July",
+            "jul": "July",
+            "august": "August",
+            "aug": "August",
+            "september": "September",
+            "sep": "September",
+            "sept": "September",
+            "october": "October",
+            "oct": "October",
+            "november": "November",
+            "nov": "November",
+            "december": "December",
+            "dec": "December",
         }
 
     def _create_valid_days(self):
@@ -969,13 +1004,23 @@ class DateHelper:
             dict: Mapping of various day representations to their canonical form.
         """
         days = {
-            "monday": "Monday", "mon": "Monday",
-            "tuesday": "Tuesday", "tue": "Tuesday", "tues": "Tuesday",
-            "wednesday": "Wednesday", "wed": "Wednesday",
-            "thursday": "Thursday", "thu": "Thursday", "thur": "Thursday", "thurs": "Thursday",
-            "friday": "Friday", "fri": "Friday",
-            "saturday": "Saturday", "sat": "Saturday",
-            "sunday": "Sunday", "sun": "Sunday",
+            "monday": "Monday",
+            "mon": "Monday",
+            "tuesday": "Tuesday",
+            "tue": "Tuesday",
+            "tues": "Tuesday",
+            "wednesday": "Wednesday",
+            "wed": "Wednesday",
+            "thursday": "Thursday",
+            "thu": "Thursday",
+            "thur": "Thursday",
+            "thurs": "Thursday",
+            "friday": "Friday",
+            "fri": "Friday",
+            "saturday": "Saturday",
+            "sat": "Saturday",
+            "sunday": "Sunday",
+            "sun": "Sunday",
             "day": "Day",
             "days": "Day",
         }
@@ -1007,15 +1052,36 @@ class DateHelper:
             canonical = f"q{number}"
             forms = {
                 canonical,
-                f"quarter {number}", f"{ordinal} quarter", f"{numeric_ordinal} quarter",
-                f"{numeric_ordinal} q", f"{number}q", f"qtr {number}",
-                f"quarter {cardinal}", f"{ordinal} qtr", f"{numeric_ordinal} qtr",
-                f"qtr {cardinal}", f"q {cardinal}", f"quarter {roman}", f"qtr {roman}",
-                f"quarter {ordinal}", f"{number} q", f"quarter-{number}", f"q-{number}",
-                f"qtr-{number}", f"quarter{number}", f"{ordinal}quarter",
-                f"{numeric_ordinal}quarter", f"{numeric_ordinal}q", f"qtr{number}",
-                f"quarter{cardinal}", f"{ordinal}qtr", f"{numeric_ordinal}qtr",
-                f"qtr{cardinal}", f"q{cardinal}", f"quarter{roman}", f"qtr{roman}",
+                f"quarter {number}",
+                f"{ordinal} quarter",
+                f"{numeric_ordinal} quarter",
+                f"{numeric_ordinal} q",
+                f"{number}q",
+                f"qtr {number}",
+                f"quarter {cardinal}",
+                f"{ordinal} qtr",
+                f"{numeric_ordinal} qtr",
+                f"qtr {cardinal}",
+                f"q {cardinal}",
+                f"quarter {roman}",
+                f"qtr {roman}",
+                f"quarter {ordinal}",
+                f"{number} q",
+                f"quarter-{number}",
+                f"q-{number}",
+                f"qtr-{number}",
+                f"quarter{number}",
+                f"{ordinal}quarter",
+                f"{numeric_ordinal}quarter",
+                f"{numeric_ordinal}q",
+                f"qtr{number}",
+                f"quarter{cardinal}",
+                f"{ordinal}qtr",
+                f"{numeric_ordinal}qtr",
+                f"qtr{cardinal}",
+                f"q{cardinal}",
+                f"quarter{roman}",
+                f"qtr{roman}",
                 f"quarter{ordinal}",
             }
             aliases.update(dict.fromkeys(forms, canonical))
@@ -1045,7 +1111,7 @@ class DateHelper:
             "winter": {"start": "12/01", "middle": "01/15", "end": feb_end},
             "spring": {"start": "03/01", "middle": "04/15", "end": "05/31"},
             "summer": {"start": "06/01", "middle": "07/15", "end": "08/31"},
-            "fall":   {"start": "09/01", "middle": "10/15", "end": "11/30"}
+            "fall": {"start": "09/01", "middle": "10/15", "end": "11/30"},
         }
 
     def _create_valid_days_in_months(self, year=None):
@@ -1059,10 +1125,18 @@ class DateHelper:
         leap = self.is_leap_year(cy)
 
         return {
-            "January": 31, "February": 29 if leap else 28,
-            "March": 31, "April": 30, "May": 31, "June": 30,
-            "July": 31, "August": 31, "September": 30,
-            "October": 31, "November": 30, "December": 31
+            "January": 31,
+            "February": 29 if leap else 28,
+            "March": 31,
+            "April": 30,
+            "May": 31,
+            "June": 30,
+            "July": 31,
+            "August": 31,
+            "September": 30,
+            "October": 31,
+            "November": 30,
+            "December": 31,
         }
 
     def days_in_month(self, month=None, year=None):
@@ -1211,9 +1285,9 @@ class DateHelper:
         if include_year:
             seasonal_dict = {}
             for period, date in template.items():
-                start_month, start_day = map(int, date['start'].split('/'))
-                mid_month, mid_day = map(int, date['middle'].split('/'))
-                end_month, end_day = map(int, date['end'].split('/'))
+                start_month, start_day = map(int, date["start"].split("/"))
+                mid_month, mid_day = map(int, date["middle"].split("/"))
+                end_month, end_day = map(int, date["end"].split("/"))
 
                 start_year = current_year - 1 if start_month == 12 else current_year
                 mid_year = current_year if period == "winter" else start_year
@@ -1237,8 +1311,21 @@ class DateHelper:
         return DateHelper.DateFrame(seasonal_dict)
 
     def __dir__(self):
-        return ['months', 'year', 'days', 'quarters', 'seasons', 'time_units', 'special_units', 'is_leap_year', 'adj_months', 'adj_quarters', 'adj_seasons', 'adj_weeks_months', 'days_in_month']
-
+        return [
+            "months",
+            "year",
+            "days",
+            "quarters",
+            "seasons",
+            "time_units",
+            "special_units",
+            "is_leap_year",
+            "adj_months",
+            "adj_quarters",
+            "adj_seasons",
+            "adj_weeks_months",
+            "days_in_month",
+        ]
 
 
 class numbers:
@@ -1257,6 +1344,7 @@ class numbers:
     in a consistent, type-safe API. Common use cases include normalization of
     numeric phrases in time expressions (e.g., "third quarter", "2nd week").
     """
+
     @staticmethod
     def num_type(value):
         """
@@ -1300,10 +1388,7 @@ class numbers:
         return numbr.Cast(value, target=target, as_str=as_str)
 
 
-
-
 timeline = DateHelper()
 
 
-
-__all__ = ["timeline", "numbers"]
+__all__ = ["numbers", "timeline"]

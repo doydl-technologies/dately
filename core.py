@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,39 +41,51 @@
 # SOFTWARE.
 #
 
+import logging
+from copy import deepcopy
+from datetime import date as d
+from datetime import datetime as dt
+from datetime import timedelta as td
+
 import numpy as np
 import pandas as pd
-from copy import deepcopy
-from datetime import datetime as dt, timedelta as td, date as d
 
-from ._log import logger
 from ._datetime_scan import DateTimeScan
+from ._holiday import HolidayLookupError
+from ._log import logger
 from ._temporal_scan import parse_temporal
+from ._timeutils import (
+    _stripTimeIndicator,
+    coerce_timezone,
+    exist_meridiem,
+    make_datetime_string,
+    remove_marker,
+    replace_time_by_position,
+    strTime,
+    validate_date,
+    validate_timezone,
+)
 from .dt_nlp.business_calendar import BusinessCalendar
 from .dt_nlp.fiscal_calendar import FiscalCalendar, get_fiscal_calendar
-from ._holiday import HolidayLookupError
-from ._timeutils import (
-    strTime, validate_date, make_datetime_string, replace_time_by_position,
-    remove_marker, exist_meridiem, validate_timezone,
-    coerce_timezone, _stripTimeIndicator
-)
-from .mold.pyd.cdatetime.UniversalDateFormatter import (
-    zero_handling_date_formats, has_leading_zero,
-    date_format_leading_zero, replace_non_padded_with_padded
-)
 from .mold.pyd.cdatetime.iso8601T import isISOT as is_iso_date
 from .mold.pyd.cdatetime.iso8601Z import replaceZ
+from .mold.pyd.cdatetime.UniversalDateFormatter import (
+    date_format_leading_zero,
+    has_leading_zero,
+    replace_non_padded_with_padded,
+    zero_handling_date_formats,
+)
 from .mold.pyd.clean_str import cleanstr
 from .mold.pyd.Compiled import (
-    datetime_regex as datetime_pattern_search,
     anytime_regex,
 )
-
-
-
+from .mold.pyd.Compiled import (
+    datetime_regex as datetime_pattern_search,
+)
 
 # Debug mode toggle
 DEBUG_MODE = False
+
 
 def _apply_to_data(data, func, vectorize_excluded=None, *func_args, **func_kwargs):
     """
@@ -98,9 +108,7 @@ def _apply_to_data(data, func, vectorize_excluded=None, *func_args, **func_kwarg
     elif isinstance(data, np.ndarray):
         # Vectorize the scalar callback while preserving Python-object results.
         vec_func = np.vectorize(
-            lambda x: func(x, *func_args, **func_kwargs),
-            excluded=vectorize_excluded,
-            otypes=[object]
+            lambda x: func(x, *func_args, **func_kwargs), excluded=vectorize_excluded, otypes=[object]
         )
         return vec_func(data)
 
@@ -112,13 +120,12 @@ def _apply_to_data(data, func, vectorize_excluded=None, *func_args, **func_kwarg
 
     # 5) If none match, raise
     else:
-        raise ValueError(
-            "Unsupported data type. Must be str, list, np.ndarray, or pd.Series."
-        )
+        raise ValueError("Unsupported data type. Must be str, list, np.ndarray, or pd.Series.")  # noqa: TRY004 - Preserve the existing ValueError API.
 
-#────────────────────────────────────────────────────────────────────────────
+
+# ────────────────────────────────────────────────────────────────────────────
 # HELPER: if user provides a detected_format, use it; otherwise detect
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def _get_detected_format(date_string):
     """
     Returns the detected format for the date string.
@@ -126,9 +133,10 @@ def _get_detected_format(date_string):
     """
     return DateTimeScan.search(date_string)
 
-#────────────────────────────────────────────────────────────────────────────
+
+# ────────────────────────────────────────────────────────────────────────────
 # HELPER: CHECK IF DATETIME OBJECT
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def _is_datetime(dt_input):
     """
     Checks if the input `dt_input` is a datetime object or an iterable of datetime objects.
@@ -152,45 +160,57 @@ def _is_datetime(dt_input):
         return all(isinstance(x, (dt, d)) for x in dt_input)
 
     # Check if it's a Pandas Series
-    if isinstance(dt_input, pd.Series):
-        if dt_input.ndim == 1 and (pd.api.types.is_datetime64_any_dtype(dt_input) or
-                                   (pd.api.types.is_object_dtype(dt_input) and dt_input.apply(lambda x: isinstance(x, (dt, d))).all())):
-            return True
+    if (
+        isinstance(dt_input, pd.Series)
+        and dt_input.ndim == 1
+        and (
+            pd.api.types.is_datetime64_any_dtype(dt_input)
+            or (pd.api.types.is_object_dtype(dt_input) and dt_input.apply(lambda x: isinstance(x, (dt, d))).all())
+        )
+    ):
+        return True
 
     # Check if it's a NumPy array
-    if isinstance(dt_input, np.ndarray):
-        if dt_input.ndim == 1 and (np.issubdtype(dt_input.dtype, np.datetime64) or
-                                   (np.issubdtype(dt_input.dtype, np.object_) and np.all([isinstance(x, (dt, d)) for x in dt_input]))):
-            return True
+    return bool(
+        isinstance(dt_input, np.ndarray)
+        and dt_input.ndim == 1
+        and (
+            np.issubdtype(dt_input.dtype, np.datetime64)
+            or np.issubdtype(dt_input.dtype, np.object_)
+            and np.all([isinstance(x, (dt, d)) for x in dt_input])
+        )
+    )
 
-    return False
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # HELPER: NON-ISO REPLACE TIMESTRING
-#────────────────────────────────────────────────────────────────────────────
-def _repl_timestring(datetime_strings, hour=None, minute=None, second=None, microsecond=None, tzinfo=None, time_indicator=None):
+# ────────────────────────────────────────────────────────────────────────────
+def _repl_timestring(
+    datetime_strings, hour=None, minute=None, second=None, microsecond=None, tzinfo=None, time_indicator=None
+):
     """
     Handles non-ISO datetime strings. Applies changes to hour, minute, second, microsecond, tzinfo,
     and optionally inserts an AM/PM indicator if not already present.
     """
+
     def process(dt_str):
         # Add a default time when the ISO input has no recognized time component.
         dt_str = make_datetime_string(dt_str)
 
         # 2) Replace each component if needed
         if hour is not None:
-            dt_str = replace_time_by_position(dt_str, 'hour', hour)
+            dt_str = replace_time_by_position(dt_str, "hour", hour)
         if minute is not None:
-            dt_str = replace_time_by_position(dt_str, 'minute', minute)
+            dt_str = replace_time_by_position(dt_str, "minute", minute)
         if second is not None:
-            dt_str = replace_time_by_position(dt_str, 'second', second)
+            dt_str = replace_time_by_position(dt_str, "second", second)
         if microsecond is not None:
-            dt_str = replace_time_by_position(dt_str, 'microsecond', microsecond)
+            dt_str = replace_time_by_position(dt_str, "microsecond", microsecond)
         if tzinfo is not None:
-            dt_str = replace_time_by_position(dt_str, 'tzinfo', tzinfo)
+            dt_str = replace_time_by_position(dt_str, "tzinfo", tzinfo)
 
         # 3) Handle time indicator (AM/PM) if set
-        if time_indicator == '':
+        if time_indicator == "":
             # remove any existing AM/PM
             return remove_marker(_stripTimeIndicator(dt_str))
         elif time_indicator is not None and time_indicator.upper() in ["AM", "PM"]:
@@ -199,9 +219,7 @@ def _repl_timestring(datetime_strings, hour=None, minute=None, second=None, micr
             if timematch:
                 time_fragment_str = timematch.group()
                 if not exist_meridiem(time_fragment_str):
-                    dt_str = (dt_str[:timematch.end()]
-                              + f' {time_indicator.upper()}'
-                              + dt_str[timematch.end():])
+                    dt_str = dt_str[: timematch.end()] + f" {time_indicator.upper()}" + dt_str[timematch.end() :]
 
         # 4) Validate the resulting timezone usage
         valid, msg = validate_timezone(dt_str)
@@ -211,25 +229,27 @@ def _repl_timestring(datetime_strings, hour=None, minute=None, second=None, micr
 
     return _apply_to_data(datetime_strings, process)
 
-#────────────────────────────────────────────────────────────────────────────
+
+# ────────────────────────────────────────────────────────────────────────────
 # HELPER: ISO REPLACE TIMESTRING
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def _repl_iso_timestring(datetime_strings, hour=None, minute=None, second=None, microsecond=None, tzinfo=None):
     """
     Handles ISO8601-like strings using dt.fromisoformat, adjusting hour, minute, second, microsecond,
     tzinfo, then returning the new ISO8601 string.
     """
+
     def process(dt_str):
         dt_str = replaceZ(dt_str)
         dt_obj = dt.fromisoformat(dt_str)
 
         replacement_timezone = coerce_timezone(tzinfo) if tzinfo is not None else dt_obj.tzinfo
-        replacement_values = dict(
-            hour=hour if hour is not None else dt_obj.hour,
-            minute=minute if minute is not None else dt_obj.minute,
-            second=second if second is not None else dt_obj.second,
-            microsecond=microsecond if microsecond is not None else dt_obj.microsecond,
-        )
+        replacement_values = {
+            "hour": hour if hour is not None else dt_obj.hour,
+            "minute": minute if minute is not None else dt_obj.minute,
+            "second": second if second is not None else dt_obj.second,
+            "microsecond": microsecond if microsecond is not None else dt_obj.microsecond,
+        }
         if hasattr(replacement_timezone, "localize"):
             naive_dt = dt_obj.replace(tzinfo=None, **replacement_values)
             new_dt = replacement_timezone.localize(naive_dt)
@@ -240,12 +260,9 @@ def _repl_iso_timestring(datetime_strings, hour=None, minute=None, second=None, 
     return _apply_to_data(datetime_strings, process)
 
 
-
-
-
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 1) EXTRACT DATETIME COMPONENT
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def extract_datetime_component(date_strings, component, ret_format=False):
     """
     Extract a specific component from a single date string or a collection of date strings.
@@ -285,6 +302,7 @@ def extract_datetime_component(date_strings, component, ret_format=False):
     - ValueError:
       If the input format is not recognized.
     """
+
     def process(date_string, comp, ret_fmt):
         try:
             used_format = _get_detected_format(date_string)
@@ -292,12 +310,12 @@ def extract_datetime_component(date_strings, component, ret_format=False):
             match = pattern.match(date_string)
             if match and comp in match.groupdict():
                 value = match.group(comp)
-                if comp == 'hour12' and 'am_pm' in match.groupdict():
-                    am_pm = match.group('am_pm')
-                    if am_pm == 'PM' and value != '12':
+                if comp == "hour12" and "am_pm" in match.groupdict():
+                    am_pm = match.group("am_pm")
+                    if am_pm == "PM" and value != "12":
                         value = str(int(value) + 12)
-                    elif am_pm == 'AM' and value == '12':
-                        value = '00'
+                    elif am_pm == "AM" and value == "12":
+                        value = "00"
                 if ret_fmt:
                     return (used_format, value)
                 return value
@@ -310,13 +328,13 @@ def extract_datetime_component(date_strings, component, ret_format=False):
         func=process,
         # The next arguments become *func_args or **func_kwargs
         comp=component,
-        ret_fmt=ret_format
+        ret_fmt=ret_format,
     )
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 2) DETECT DATE FORMAT
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def detect_date_format(date_strings):
     """
     Detect and adjust the date format for a given date string or a collection of date strings.
@@ -345,14 +363,14 @@ def detect_date_format(date_strings):
     - ValueError:
       If no valid format is found for the given date string.
     """
+
     def process(date_string):
         fmt = _get_detected_format(date_string)
         try:
             for comp_key, comp_details in zero_handling_date_formats().items():
                 component_value = extract_datetime_component(date_string, comp_key)
                 if has_leading_zero(component_value) is False:
-                    fmt = fmt.replace(comp_details['zero_padded']['format'],
-                                      comp_details['no_leading_zero']['format'])
+                    fmt = fmt.replace(comp_details["zero_padded"]["format"], comp_details["no_leading_zero"]["format"])
             return fmt
         except (ValueError, TypeError):
             raise ValueError("No matching format found for the given date string.")
@@ -360,9 +378,9 @@ def detect_date_format(date_strings):
     return _apply_to_data(date_strings, process)
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 3) CONVERT DATE
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=False):
     """
     Convert date strings or datetime objects to a specified format or modify them by a time delta.
@@ -403,6 +421,7 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
       - If `dates` is a dictionary but `dict_keys` is not provided.
       - If date format is unrecognized or invalid.
     """
+
     def process(date, to_format, delta):
         try:
             if isinstance(date, (dt, d)):
@@ -422,7 +441,7 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
             else:
                 return parsed_date
         except Exception as e:
-            raise ValueError(f"Error processing date: {date}. {str(e)}") from e
+            raise ValueError(f"Error processing date: {date}. {e!s}") from e
 
     # Handle dictionary inputs separately using recursive conversion.
     def recursive_convert(data, keys):
@@ -430,8 +449,12 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
             for key, value in data.items():
                 if key in keys:
                     if isinstance(value, list):
-                        data[key] = [process(item, to_format, delta) if not isinstance(item, (dict, list))
-                                     else recursive_convert(item, keys) for item in value]
+                        data[key] = [
+                            process(item, to_format, delta)
+                            if not isinstance(item, (dict, list))
+                            else recursive_convert(item, keys)
+                            for item in value
+                        ]
                     else:
                         data[key] = process(value, to_format, delta)
                 elif isinstance(value, dict):
@@ -465,9 +488,9 @@ def convert_date(dates, to_format=None, delta=0, dict_keys=None, dict_inplace=Fa
         return _apply_to_data(dates, process, to_format=to_format, delta=delta)
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 4) REPLACE TIMESTRING
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def replace_timestring(datetime_strings, *args, **kwargs):
     """
     Modifies various time components within a single datetime string or a collection of datetime strings,
@@ -527,19 +550,20 @@ def replace_timestring(datetime_strings, *args, **kwargs):
       These safeguards ensure proper function usage within expected data types.
     """
     # Filter out time_indicator from kwargs for ISO processing (if needed)
-    filtered_kwargs = {k: v for k, v in kwargs.items() if k != 'time_indicator'}
+    filtered_kwargs = {k: v for k, v in kwargs.items() if k != "time_indicator"}
 
     def transform(dt_str):
         if is_iso_date(dt_str):
             return _repl_iso_timestring(dt_str, *args, **filtered_kwargs)
         else:
             return _repl_timestring(dt_str, *args, **kwargs)
+
     return _apply_to_data(datetime_strings, transform)
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 5) REPLACE DATESTRING
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def replace_datestring(date_strings, year=None, month=None, day=None):
     """
     Replace specific components (year, month, day) in a date string or a collection of date strings.
@@ -571,16 +595,17 @@ def replace_datestring(date_strings, year=None, month=None, day=None):
     - ValueError:
       - If the resulting date string is invalid after modifications.
     """
+
     def process(date_string):
         result = strTime(date_string)
         time_match = None
-        time_separator = ' '
+        time_separator = " "
         if result:
-            time_match = result['full_time_details']['full_time_string']
-            fulltime_start = result['full_time_details']['start']
+            time_match = result["full_time_details"]["full_time_string"]
+            fulltime_start = result["full_time_details"]["start"]
             datestr = date_string[:fulltime_start]
-            if datestr.endswith('T'):
-                time_separator = 'T'
+            if datestr.endswith("T"):
+                time_separator = "T"
                 datestr = datestr[:-1]
             date_string = cleanstr(datestr)
         used_format = _get_detected_format(date_string)
@@ -588,26 +613,28 @@ def replace_datestring(date_strings, year=None, month=None, day=None):
         match = pattern.match(date_string)
         components = {"year": (year, None), "month": (month, None), "day": (day, None)}
         if match:
-            for key in components.keys():
+            for key in components:
                 if key in match.groupdict():
                     components[key] = (components[key][0], match.span(key))
         # Replace components from rightmost (largest index) first:
-        for key, (new_value, span) in sorted(components.items(), key=lambda item: item[1][1] if item[1][1] else (0,0), reverse=True):
+        for key, (new_value, span) in sorted(
+            components.items(), key=lambda item: item[1][1] if item[1][1] else (0, 0), reverse=True
+        ):
             if new_value is not None and span:
                 start, end = span
                 date_string = date_string[:start] + str(new_value) + date_string[end:]
         if not validate_date(date_string, date_format=used_format):
             raise ValueError("Invalid date string after replacement.")
         if time_match:
-            date_string += f'{time_separator}{time_match}'
+            date_string += f"{time_separator}{time_match}"
         return date_string
 
     return _apply_to_data(date_strings, process)
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 6) SEQUENCE
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def sequence(start_date, end_date, to_format=None):
     """
     Generate a sequence of formatted dates between two given dates.
@@ -649,9 +676,9 @@ def sequence(start_date, end_date, to_format=None):
     return date_list
 
 
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # 7) PARSE
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 def parse(input_str, *, business_calendar=None, country=None, subdiv=None, observed=True, fiscal_calendar=None):
     """
     Parse a natural language or formatted date string into a datetime object or range.
@@ -706,7 +733,10 @@ def parse(input_str, *, business_calendar=None, country=None, subdiv=None, obser
         raise TypeError("fiscal_calendar must be a FiscalCalendar")
     try:
         temporal_result = parse_temporal(
-            input_str, skip_validation=False, parse=True, clean_tokens=True,
+            input_str,
+            skip_validation=False,
+            parse=True,
+            clean_tokens=True,
             business_calendar=business_calendar,
             fiscal_calendar=fiscal_calendar,
         )
@@ -716,42 +746,40 @@ def parse(input_str, *, business_calendar=None, country=None, subdiv=None, obser
             result = temporal_result or convert_date(input_str)
 
         # Fix year if parser defaulted to 1900
-        current_year = dt.today().year
+        current_year = d.today().year
         if isinstance(result, dt) and result.year == 1900:
             result = result.replace(year=current_year)
         elif isinstance(result, tuple):
-            result = tuple(
-                r.replace(year=current_year) if isinstance(r, dt) and r.year == 1900 else r
-                for r in result
-            )
+            result = tuple(r.replace(year=current_year) if isinstance(r, dt) and r.year == 1900 else r for r in result)
         return result
 
     except HolidayLookupError:
         raise
     except Exception as e:
-        msg = (
-            f"[dately:parse] NLP parsing failed for input: '{input_str}'.\n"
-            f"{type(e).__name__}: {e}"
-        )
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
+        msg = f"[dately:parse] NLP parsing failed for input: '{input_str}'.\n{type(e).__name__}: {e}"
         if DEBUG_MODE:
             print(msg)
         else:
             logger.warning(msg)
-        logger.warning("To help improve NLP parsing, please report this issue:\n"
-                        "→ https://github.com/doydl-technologies/dately/issues/new?title=NLP%20parse%20error")
+        logger.warning(
+            "To help improve NLP parsing, please report this issue:\n"
+            "→ https://github.com/doydl-technologies/dately/issues/new?title=NLP%20parse%20error"
+        )
         # Fallback to deterministic parser
         try:
             return convert_date(input_str)
         except Exception:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             return None
 
 
 __all__ = [
-    "extract_datetime_component",
-    "detect_date_format",
     "convert_date",
-    "replace_timestring",
-    "replace_datestring",
-    "sequence",
+    "detect_date_format",
+    "extract_datetime_component",
     "parse",
+    "replace_datestring",
+    "replace_timestring",
+    "sequence",
 ]

@@ -58,8 +58,11 @@ class BusinessCalendar:
 
             try:
                 records = self._holiday_manager.Holiday(
-                    self.country, day.year, format="dict",
-                    subdiv=self.subdiv, observed=self.observed,
+                    self.country,
+                    day.year,
+                    format="dict",
+                    subdiv=self.subdiv,
+                    observed=self.observed,
                 )
             except (TypeError, ValueError) as exc:
                 raise HolidayLookupError(

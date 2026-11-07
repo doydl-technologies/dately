@@ -1,5 +1,4 @@
 #! python3.8
-# -*- coding: utf-8 -*-
 
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
@@ -50,7 +49,6 @@ import requests
 from requests.structures import CaseInsensitiveDict
 
 from .headers import HeaderProfile
-
 
 _ROTATING_HEADER_NAMES = (
     "User-Agent",

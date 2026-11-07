@@ -10,7 +10,6 @@ from datetime import date, timedelta
 from .arithmetic import numbers
 from .business_calendar import DEFAULT_BUSINESS_CALENDAR
 
-
 _FILTERED = re.compile(r"\b(?:business[ _-]+days?|working[ _-]+days?|weekdays?)\b")
 _UNIT = r"(business_day|weekday|day|week|month|year)s?"
 
@@ -77,8 +76,12 @@ def parse_calendar_expression(phrase, reference, calendar, resolve, add_months, 
         if base is None:
             return True, None
         return parse_calendar_expression(
-            anchored[1].replace("business_day", "business day"), base,
-            calendar, resolve, add_months, add_years,
+            anchored[1].replace("business_day", "business day"),
+            base,
+            calendar,
+            resolve,
+            add_months,
+            add_years,
         )
 
     match = re.fullmatch(r"in (.+?) " + _UNIT, text)

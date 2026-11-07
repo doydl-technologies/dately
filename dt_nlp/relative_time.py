@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -45,9 +43,8 @@
 
 import numbr
 
-from .temporal_preprocessing import PhraseEngine
 from .arithmetic import timeline
-
+from .temporal_preprocessing import PhraseEngine
 
 
 def handle_time_boundaries(tokens):
@@ -62,7 +59,6 @@ def handle_time_boundaries(tokens):
     # Step 1: Basic pattern check — only proceed if the structure is at least 3 tokens and
     # matches the canonical form: boundary preposition ("start/middle/end") + "of" + time anchor.
     if len(tokens) >= 3 and tokens[0] in {"start", "middle", "end"} and tokens[1] == "of":
-
         # Step 2: Extract everything after "of" — this represents the syntactic anchor
         # (e.g., "next year", "last quarter", etc.).
         anchor_tokens = tokens[2:]
@@ -102,10 +98,12 @@ def _parse_simple_relative_anchor(anchor_phrase):
 
     # Recognized temporal direction markers and canonical time units
     DIRECTIONS = {"next", "last", "this", "previous", "past"}
-    UNITS = {"week", "month", "year", "quarter", "season"} \
-            | set(timeline.months) \
-            | set(timeline.quarters) \
-            | set(timeline.seasons)
+    UNITS = (
+        {"week", "month", "year", "quarter", "season"}
+        | set(timeline.months)
+        | set(timeline.quarters)
+        | set(timeline.seasons)
+    )
 
     first = tokens[0]
 
@@ -117,9 +115,11 @@ def _parse_simple_relative_anchor(anchor_phrase):
 
         # Alternatively, allow a number between the direction and unit,
         # e.g., "past 2 years" or "last 3 quarters"
-        if (len(tokens) >= 3
+        if (
+            len(tokens) >= 3
             and PhraseEngine.numbers.to_type(tokens[1], target="cardinalNumber", as_str=True) is not None
-            and tokens[2] in UNITS):
+            and tokens[2] in UNITS
+        ):
             num = PhraseEngine.numbers.to_type(tokens[1], target="cardinalNumber", as_str=True)
             return [first, str(num)] + tokens[2:]
 
@@ -128,16 +128,14 @@ def _parse_simple_relative_anchor(anchor_phrase):
 
     # Handle expressions like "first quarter" or "third month",
     # which represent ordinal positions within a larger time period
-    ord_val = PhraseEngine.numbers.num_type(first) in ('ordinalWord', 'ordinalNumber')
-    if ord_val is not None and len(tokens) > 1:
-        if tokens[1] in UNITS or tokens[1] in timeline.quarters:
-            return tokens
+    ord_val = PhraseEngine.numbers.num_type(first) in ("ordinalWord", "ordinalNumber")
+    if ord_val is not None and len(tokens) > 1 and (tokens[1] in UNITS or tokens[1] in timeline.quarters):
+        return tokens
 
     # Support mid-span expressions like "start of year" or "middle of spring"
     # which refer to a sub-segment of a larger time unit
-    if first in {"start", "middle", "end"} and len(tokens) >= 3 and tokens[1] == "of":
-        if tokens[2] in UNITS:
-            return [first, "of"] + tokens[2:]
+    if first in {"start", "middle", "end"} and len(tokens) >= 3 and tokens[1] == "of" and tokens[2] in UNITS:
+        return [first, "of"] + tokens[2:]
 
     # If the expression does not match any valid temporal anchor grammar, return None
     return None
@@ -163,8 +161,8 @@ def _parse_subexpression(sub_tokens):
     # These are interpreted like ordinals even though they aren't numeric in nature
     SPECIAL_ORDINALS = {
         "middle": 2,  # Treated as roughly equivalent to "second"
-        "start": 1,   # Synonym for "first"
-        "end": -1     # Used in parsing but does not imply ordinal ranking
+        "start": 1,  # Synonym for "first"
+        "end": -1,  # Used in parsing but does not imply ordinal ranking
     }
 
     if not sub_tokens:
@@ -172,9 +170,8 @@ def _parse_subexpression(sub_tokens):
 
     # Identify whether the first token is an ordinal expression.
     # This could be a word like "first", "third", or a marker like "middle".
-    maybe_ordinal_value = (
-        PhraseEngine.numbers.to_type(sub_tokens[0], 'ordinalWord') or
-        SPECIAL_ORDINALS.get(sub_tokens[0])
+    maybe_ordinal_value = PhraseEngine.numbers.to_type(sub_tokens[0], "ordinalWord") or SPECIAL_ORDINALS.get(
+        sub_tokens[0]
     )
     if maybe_ordinal_value is None:
         # If the first word doesn't represent an ordinal (e.g., "third") or special case,
@@ -186,9 +183,7 @@ def _parse_subexpression(sub_tokens):
     try:
         cardinal_number = None
         if len(sub_tokens) >= 2:
-            card_val = PhraseEngine.numbers.to_type(
-                sub_tokens[1], target="cardinalNumber", as_str=True
-            )
+            card_val = PhraseEngine.numbers.to_type(sub_tokens[1], target="cardinalNumber", as_str=True)
             if card_val is not None:
                 cardinal_number = card_val
     except ValueError:
@@ -207,11 +202,7 @@ def _parse_subexpression(sub_tokens):
     # - Standard units like "week", "month", etc.
     # - Weekday names like "monday", "friday", etc.
     RECOGNIZED_SUBUNITS = {"day", "week", "month", "quarter", "year", "half"}
-    recognized_dow = set(
-        str(f).lower()
-        for f in timeline.days
-        if f not in {"day", "days"} and not str(f).isdigit()
-    )
+    recognized_dow = {str(f).lower() for f in timeline.days if f not in {"day", "days"} and not str(f).isdigit()}
     recognized_sub = RECOGNIZED_SUBUNITS.union(recognized_dow)
 
     if sub_unit not in recognized_sub:
@@ -219,8 +210,6 @@ def _parse_subexpression(sub_tokens):
 
     # If the expression has passed all structural checks, return it as a normalized sequence
     return [str(tok).lower() for tok in sub_tokens]
-
-
 
 
 ## MAIN PARSING LOGIC FOR INTERPRETING STRUCTURED RELATIVE TIME EXPRESSIONS.
@@ -250,7 +239,7 @@ def _parse_named_relative_expression(phrase):
         phrase,
         lexical_match=[["a", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],
         token_index=[0, 1],
-        exact=True
+        exact=True,
     ):
         phrase = PhraseEngine.sub.any(phrase, replacements={"a": "1"}, prefix=True, return_tokens=False)
 
@@ -260,7 +249,7 @@ def _parse_named_relative_expression(phrase):
         phrase,
         lexical_match=[["the", unit] for unit in sorted({unit for unit in timeline.time_units}.union({"weekend"}))],
         token_index=[0, 1],
-        exact=True
+        exact=True,
     ):
         phrase = PhraseEngine.sub.any(phrase, replacements={"the": ""}, prefix=True, return_tokens=False)
 
@@ -283,15 +272,11 @@ def _parse_named_relative_expression(phrase):
             "the beginning": "start",
             "beginning": "start",
             "the middle": "middle",
-            "halfway through": "middle"
+            "halfway through": "middle",
         },
-        remove_article=['the'],
+        remove_article=["the"],
         singularize=True,
-        replacements={
-            "of the current": "of this",
-            "of the": "of this",
-            "mid": "middle"
-        }
+        replacements={"of the current": "of this", "of the": "of this", "mid": "middle"},
     )
 
     if not phrase_tokenized:
@@ -307,9 +292,10 @@ def _parse_named_relative_expression(phrase):
     phrase_tokenized = PhraseEngine.sub.In(phrase_tokenized, return_tokens=True)
 
     # If phrase is just "today", "yesterday", "tomorrow", return directly
-    if len(phrase_tokenized) == 1:
-        if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["today", "yesterday", "tomorrow"]):
-            return phrase_tokenized
+    if len(phrase_tokenized) == 1 and PhraseEngine.match.lexical(
+        phrase_tokenized, lexical_match=["today", "yesterday", "tomorrow"]
+    ):
+        return phrase_tokenized
 
     # Skip phrases starting with vague quantifiers like "couple" or "few"
     if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["couple", "few", "several", "many"], token_index=0):
@@ -332,14 +318,25 @@ def _parse_named_relative_expression(phrase):
     if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["this"], token_index=0):
         if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["this", "day"], token_index=None, exact=True):
             return ["today"]
-        elif PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["this", "weekday"], token_index=None, exact=True):
+        elif PhraseEngine.match.lexical(
+            phrase_tokenized, lexical_match=["this", "weekday"], token_index=None, exact=True
+        ):
             return phrase_tokenized
 
     # Normalize expressions like "last day" or "next 1 day" → "yesterday" / "tomorrow"
-    if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["last", "next", "previous"], token_index=0, exact=False):
-        if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=[["next", "day"], ["next", "1", "day"]], token_index=None, exact=True):
+    if PhraseEngine.match.lexical(
+        phrase_tokenized, lexical_match=["last", "next", "previous"], token_index=0, exact=False
+    ):
+        if PhraseEngine.match.lexical(
+            phrase_tokenized, lexical_match=[["next", "day"], ["next", "1", "day"]], token_index=None, exact=True
+        ):
             return ["tomorrow"]
-        elif PhraseEngine.match.lexical(phrase_tokenized, lexical_match=[["last", "day"], ["last", "1", "day"], ["previous", "day"], ["previous", "1", "day"]], token_index=None, exact=True):
+        elif PhraseEngine.match.lexical(
+            phrase_tokenized,
+            lexical_match=[["last", "day"], ["last", "1", "day"], ["previous", "day"], ["previous", "1", "day"]],
+            token_index=None,
+            exact=True,
+        ):
             return ["yesterday"]
 
     # Handle time boundary expressions like "start of last quarter"
@@ -350,7 +347,9 @@ def _parse_named_relative_expression(phrase):
     # Handle edge cases like "day of", where it's just a day extracted from a container
     if PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["day", "of"], token_index=[0, 1], exact=True):
         return [PhraseEngine.drop.of(phrase_tokenized, return_tokens=True)[1]]
-    elif PhraseEngine.match.lexical(phrase_tokenized, lexical_match=["this", "day", "of"], token_index=[0, 2], exact=True):
+    elif PhraseEngine.match.lexical(
+        phrase_tokenized, lexical_match=["this", "day", "of"], token_index=[0, 2], exact=True
+    ):
         return [PhraseEngine.drop.of(phrase_tokenized, return_tokens=True)[2]]
 
     # Handle structures like:
@@ -360,7 +359,7 @@ def _parse_named_relative_expression(phrase):
     if "of" in phrase_tokenized:
         idx_of = phrase_tokenized.index("of")
         left_side = phrase_tokenized[:idx_of]
-        right_side = phrase_tokenized[idx_of + 1:]
+        right_side = phrase_tokenized[idx_of + 1 :]
 
         # Ensure the right-side anchor has direction, default to "this" if missing
         if not any(word in {"next", "last", "this", "previous"} for word in right_side) and right_side:
@@ -371,16 +370,14 @@ def _parse_named_relative_expression(phrase):
             return None
 
         # If left side is a recognized weekday (e.g., "Friday")
-        if left_side[0] in set(str(f) for f in list(timeline.days) if f not in {"day", "days"} and not str(f).isdigit()):
+        if left_side[0] in {str(f) for f in list(timeline.days) if f not in {"day", "days"} and not str(f).isdigit()}:
             left_parse = left_side
 
         # If left side starts with an ordinal or a normalized quarter label
-        elif PhraseEngine.numbers.num_type(left_side[0]) in ('ordinalNumber', 'ordinalWord'):
-            left_side[0] = PhraseEngine.numbers.to_type(left_side[0], 'ordinalWord')
+        elif PhraseEngine.numbers.num_type(left_side[0]) in ("ordinalNumber", "ordinalWord"):
+            left_side[0] = PhraseEngine.numbers.to_type(left_side[0], "ordinalWord")
             left_parse = left_side
-        elif left_side[0] in timeline.quarters.list:
-            left_parse = left_side
-        elif left_side[0] in {"last", "previous", "next"}:
+        elif left_side[0] in timeline.quarters.list or left_side[0] in {"last", "previous", "next"}:
             left_parse = left_side
 
         # Otherwise, attempt to interpret as quantifier-based temporal segment
@@ -402,10 +399,12 @@ def _parse_named_relative_expression(phrase):
         ordinal = True
 
     # If the first token is a cardinal but not a valid partial date, skip it
-    if not ordinal:
-        if not PhraseEngine.is_partial_date(" ".join(map(str, phrase_tokenized)).lower()):
-            if PhraseEngine.numbers.num_type(phrase_tokenized[0]) == "cardinalNumber":
-                return None
+    if (
+        not ordinal
+        and not PhraseEngine.is_partial_date(" ".join(map(str, phrase_tokenized)).lower())
+        and PhraseEngine.numbers.num_type(phrase_tokenized[0]) == "cardinalNumber"
+    ):
+        return None
 
     parsed_tokens = [token.lower() for token in phrase_tokenized]
     if not parsed_tokens:
@@ -419,4 +418,3 @@ def _parse_named_relative_expression(phrase):
 
 
 __all__ = ["_parse_named_relative_expression"]
-

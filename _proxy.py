@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -44,6 +42,8 @@
 #
 
 import importlib
+import logging
+
 
 class proxyObj:
     def __init__(self, module_name, attr_name):
@@ -64,6 +64,7 @@ class proxyObj:
                     self._value = attr
                 self._loaded = True
             except Exception as e:
+                logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
                 self._import_error = e
         if self._import_error:
             raise ImportError(f"Failed to load {self._attr_name} from {self._module_name}: {self._import_error}")
@@ -80,6 +81,7 @@ class proxyObj:
             real_obj = self._load()
             return dir(real_obj)
         except Exception:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             return super().__dir__()
 
     def __repr__(self):

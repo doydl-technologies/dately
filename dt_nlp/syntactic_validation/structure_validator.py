@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -74,31 +72,30 @@ This module focuses purely on structure and syntactic relationships.
 It does **not** assess calendar realism, numeric bounds, or contextual logic.
 Those checks are delegated to the `semantic_validation` layer.
 """
-from itertools import permutations
-from collections import Counter
 
-from ..temporal_preprocessing import PhraseEngine
+import logging
+from collections import Counter
+from itertools import permutations
+
 from ..temporal_core.temporal_units import (
-    remove_unnecessary_this,
     insert_prepositions,
     normalize_named_unit,
+    remove_unnecessary_this,
 )
-
+from ..temporal_preprocessing import PhraseEngine
 from .temporal_structure_rules import (
-    is_compound_structure,
+    _is_hierarchy_correct,
+    extract_compound_parts,
+    extract_containment_parts,
     is_anchoring_structure,
+    is_compound_structure,
     is_containment_structure,
     is_intersection_structure,
     is_relative_structure,
-    validate_compound_structure,
-    parse_relative_structure,
-    extract_containment_parts,
-    extract_compound_parts,
     is_valid_anchor,
-    _is_hierarchy_correct,
+    parse_relative_structure,
+    validate_compound_structure,
 )
-
-
 
 structure_checkers = {
     "compound": is_compound_structure,
@@ -110,6 +107,7 @@ structure_checkers = {
 
 structure_permutations = list(permutations(structure_checkers.keys()))
 
+
 def structural_majority_vote(tokens) -> Counter:
     vote_counts = Counter()
     for ordering in structure_permutations:
@@ -118,6 +116,7 @@ def structural_majority_vote(tokens) -> Counter:
                 vote_counts[label] += 1
                 break  # first match wins
     return vote_counts
+
 
 def analyze_structure_votes(tokens):
     votes = structural_majority_vote(tokens)
@@ -130,7 +129,7 @@ def analyze_structure_votes(tokens):
             "ambiguous": True,
             "votes": {},
             "co_occurrence": [],
-            "reason": "No structure matched"
+            "reason": "No structure matched",
         }
 
     sorted_votes = votes.most_common()
@@ -139,8 +138,7 @@ def analyze_structure_votes(tokens):
     ambiguous = confidence <= 0.5
 
     # Optional: capture close runners-up (within 2 votes of the winner)
-    co_occurring = [label for label, count in sorted_votes
-                    if count >= top_count - 2 and label != top]
+    co_occurring = [label for label, count in sorted_votes if count >= top_count - 2 and label != top]
 
     return {
         "structure": top,
@@ -148,7 +146,7 @@ def analyze_structure_votes(tokens):
         "ambiguous": ambiguous,
         "votes": dict(votes),
         "co_occurrence": co_occurring,
-        "reason": "Multiple structures co-dominant" if ambiguous else "Dominant structure clear"
+        "reason": "Multiple structures co-dominant" if ambiguous else "Dominant structure clear",
     }
 
 
@@ -192,7 +190,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
                 "co_occurrence": [],
                 "valid": True,
                 "reason": f"Recognized deictic term → '{t}'",
-                "parts": deictic_tokens[t]
+                "parts": deictic_tokens[t],
             }
 
     # Early check: if this is a standalone partial date, it's automatically an intersection
@@ -213,7 +211,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
             "co_occurrence": [],
             "valid": True,
             "reason": "Valid partial date → intersection structure",
-            "parts": parts
+            "parts": parts,
         }
 
     votes = structural_majority_vote(tokens)
@@ -228,15 +226,14 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
             "co_occurrence": [],
             "valid": False,
             "reason": "No structure matched",
-            "parts": {}
+            "parts": {},
         }
 
     sorted_votes = votes.most_common()
     top_structure, top_count = sorted_votes[0]
     confidence = top_count / total
     ambiguous = confidence <= 0.5
-    co_occurring = [label for label, count in sorted_votes
-                    if count >= top_count - 2 and label != top_structure]
+    co_occurring = [label for label, count in sorted_votes if count >= top_count - 2 and label != top_structure]
 
     valid = False
     reason = "Structure identified but not validated"
@@ -248,11 +245,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
             if extracted:
                 contained, anchor, modifier = extracted
                 valid, reason = validate_compound_structure(contained, anchor, modifier)
-                parts = {
-                    "contained": contained,
-                    "anchor": anchor,
-                    "modifier": modifier
-                }
+                parts = {"contained": contained, "anchor": anchor, "modifier": modifier}
         elif top_structure == "anchoring":
             if len(tokens) >= 2:
                 modifier = tokens[0]
@@ -266,10 +259,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
             if extracted:
                 contained, container = extracted
                 parts = {"contained": contained, "anchor": container}
-                valid = _is_hierarchy_correct(
-                    normalize_named_unit(contained),
-                    normalize_named_unit(container)
-                )
+                valid = _is_hierarchy_correct(normalize_named_unit(contained), normalize_named_unit(container))
                 reason = "Valid containment" if valid else "Invalid containment relationship"
 
         elif top_structure == "intersection":
@@ -286,6 +276,7 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
                 valid = False
                 reason = "Could not parse relative structure"
     except Exception as e:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         valid = False
         reason = f"Validation error: {e}"
 
@@ -297,24 +288,5 @@ def validate_temporal_structure(tokens, this_anchor_removal=True, auto_add_prepo
         "co_occurrence": co_occurring,
         "valid": valid,
         "reason": reason,
-        "parts": parts
+        "parts": parts,
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

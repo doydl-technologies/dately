@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -74,24 +72,23 @@ This module focuses solely on structural and syntactic validation.
 It does **not** evaluate semantic realism (e.g., "55th day of the week").
 That logic belongs to the `semantic_validation` layer.
 """
+
+import logging
+
 from ..arithmetic import numbers
-from ..temporal_preprocessing import PhraseEngine
 from ..temporal_core.temporal_units import (
-    named_units,
+    _unit_map,
     base_unit_map,
     global_rank,
-    _unit_map,
-    normalize_named_unit,
     # _norm_ordinals,
     is_valid_containment_with_partial,
+    named_units,
+    normalize_named_unit,
 )
-
-
-
-
+from ..temporal_preprocessing import PhraseEngine
 
 # 1. Containment (hierarchical nesting)
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # Describes a smaller temporal unit nested within a larger one.
 # Uses explicit grammatical signals like "of":
 #   e.g. "day of the week", "week of April", "month of 2022"
@@ -104,16 +101,17 @@ from ..temporal_core.temporal_units import (
 # - Optionally validated against contextual bounds (e.g. only 7 days in a week)
 
 temporal_units = {
-    "day_of_month":  {"dimension": "monthly_position", "rank": 1},
-    "day_of_week":   {"dimension": "weekly_cycle",      "rank": 1},
-    "week_of_month": {"dimension": "monthly_cycle",     "rank": 2},
-    "week_of_year":  {"dimension": "annual_week",       "rank": 3},
-    "month":         {"dimension": "annual_structure",  "rank": 4},
-    "quarter":       {"dimension": "annual_structure",  "rank": 5},
-    "season":        {"dimension": "annual_structure",  "rank": 6},
-    "half_year":     {"dimension": "multiannual",       "rank": 7},
-    "year":          {"dimension": "chronological",     "rank": 8},
+    "day_of_month": {"dimension": "monthly_position", "rank": 1},
+    "day_of_week": {"dimension": "weekly_cycle", "rank": 1},
+    "week_of_month": {"dimension": "monthly_cycle", "rank": 2},
+    "week_of_year": {"dimension": "annual_week", "rank": 3},
+    "month": {"dimension": "annual_structure", "rank": 4},
+    "quarter": {"dimension": "annual_structure", "rank": 5},
+    "season": {"dimension": "annual_structure", "rank": 6},
+    "half_year": {"dimension": "multiannual", "rank": 7},
+    "year": {"dimension": "chronological", "rank": 8},
 }
+
 
 def extract_containment_parts(tokens):
     """
@@ -137,6 +135,7 @@ def _is_hierarchy_correct(smaller, larger):
     Returns True if `smaller` is strictly finer‐grained than `larger`,
     i.e. rank(smaller) < rank(larger).
     """
+
     def normalize(token):
         """
         Turn any string like "day", "march", "friday", "month" into one of
@@ -174,7 +173,7 @@ def is_containment_structure(tokens):
         return False
 
     # Avoid misclassifying compound phrases ("... of next month")
-    if tokens[idx + 1] in {'from', 'starting from', 'next', 'last', 'this'}:
+    if tokens[idx + 1] in {"from", "starting from", "next", "last", "this"}:
         return False
 
     contained_tok = tokens[idx - 1]
@@ -191,9 +190,8 @@ def is_containment_structure(tokens):
     return _is_hierarchy_correct(contained_base, container_base)
 
 
-
 # 2. Anchoring (relative to a reference point)
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # Positions a temporal unit in relation to the present or another reference.
 # Uses directional modifiers like "next", "last", "this", "from", etc.
 #   e.g. "next week", "last quarter", "this Friday", "starting from March"
@@ -205,7 +203,7 @@ def is_containment_structure(tokens):
 # - Modifier must be valid for the unit (e.g. "next" applies to "month", not "2024")
 # - Handles both absolute references ("this year") and dynamic ones ("from May")
 
-anchor_modifier_valid_units = { # Each modifier maps to a set of allowed base temporal units
+anchor_modifier_valid_units = {  # Each modifier maps to a set of allowed base temporal units
     "next": {"day", "week", "month", "quarter", "year"},
     "last": {"day", "week", "month", "quarter", "year"},
     "this": {"day", "week", "month", "quarter", "year", "season"},
@@ -213,6 +211,7 @@ anchor_modifier_valid_units = { # Each modifier maps to a set of allowed base te
     "from": {"month", "quarter", "year"},  # often used in ranges
     "starting from": {"month", "quarter", "year"},  # range anchor
 }
+
 
 def _normalize_anchor(token):
     """
@@ -223,17 +222,21 @@ def _normalize_anchor(token):
     """
     t = token.strip().lower()
     # 1) If it's already a base unit, return as‑is
-    if t in anchor_modifier_valid_units["next"] | \
-            anchor_modifier_valid_units["last"] | \
-            anchor_modifier_valid_units["this"] | \
-            anchor_modifier_valid_units["from"] | \
-            anchor_modifier_valid_units["starting from"]:
+    if (
+        t
+        in anchor_modifier_valid_units["next"]
+        | anchor_modifier_valid_units["last"]
+        | anchor_modifier_valid_units["this"]
+        | anchor_modifier_valid_units["from"]
+        | anchor_modifier_valid_units["starting from"]
+    ):
         return t
     # 2) Otherwise map named units → generic unit keys, then to base
     if t in named_units:
         unit_key, _ = named_units[t]
         return base_unit_map[unit_key]
     raise ValueError(f"Cannot normalize anchor token: {token!r}")
+
 
 def is_valid_anchor(modifier, token):
     """
@@ -279,8 +282,8 @@ def parse_anchoring_range(phrase):
     unit_token = None
 
     # Detect an explicit cardinal number
-    if len(tokens) >= 3 and numbers.num_type(tokens[1]) in {'cardinalNumber', 'cardinalWord'}:
-        count = int(numbers.to_type(tokens[1], target='cardinalNumber'))
+    if len(tokens) >= 3 and numbers.num_type(tokens[1]) in {"cardinalNumber", "cardinalWord"}:
+        count = int(numbers.to_type(tokens[1], target="cardinalNumber"))
         unit_token = tokens[2]
     elif len(tokens) >= 2:
         unit_token = tokens[1]
@@ -292,18 +295,15 @@ def parse_anchoring_range(phrase):
     except ValueError:
         return None
 
-    return {
-        "structure": "anchoring_range",
-        "modifier": modifier,
-        "count": count,
-        "unit": unit
-    }
+    return {"structure": "anchoring_range", "modifier": modifier, "count": count, "unit": unit}
+
 
 def is_anchoring_structure(tokens):
     return tokens and tokens[0] in set(anchor_modifier_valid_units.keys())
 
+
 # 3. Intersection (Cross-Frame Filtering)
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # Combines two units to form a logical overlap or filter.
 #   e.g. "Friday April", "April 5", "May 2022", "Q2 2023"
 #
@@ -320,9 +320,8 @@ intersection_pairs = {
     "week": {"month", "quarter", "year"},
     "month": {"quarter", "year"},
     "quarter": {"year"},
-
     # Direct season and half-year support before normalization to broader units:
-    "season":    {"month", "quarter", "year"},
+    "season": {"month", "quarter", "year"},
     "half_year": {"month", "quarter", "year"},
 }
 
@@ -337,7 +336,6 @@ illegal_intersection_pairs = {
     ("month", "month"),
     ("quarter", "quarter"),
     ("year", "year"),
-
     # fuzzy or redundant overlaps
     ("season", "season"),
     ("half_year", "half_year"),
@@ -346,6 +344,7 @@ illegal_intersection_pairs = {
     ("week", "week_of_year"),
 }
 
+
 def _can_intersect_units(token_a, token_b, include_illegal=True):
     """
     True if their normalized base units are allowed to intersect.
@@ -353,12 +352,12 @@ def _can_intersect_units(token_a, token_b, include_illegal=True):
     """
     ua = normalize_named_unit(token_a)
     ub = normalize_named_unit(token_b)
-    if include_illegal:
-        if (ua, ub) in illegal_intersection_pairs or (ub, ua) in illegal_intersection_pairs:
-            return False
+    if include_illegal and ((ua, ub) in illegal_intersection_pairs or (ub, ua) in illegal_intersection_pairs):
+        return False
     if ua == ub:
         return True
-    return (ub in intersection_pairs.get(ua, set()) or ua in intersection_pairs.get(ub, set()))
+    return ub in intersection_pairs.get(ua, set()) or ua in intersection_pairs.get(ub, set())
+
 
 def _parse_intersection_structure(token_a, token_b):
     """
@@ -371,20 +370,21 @@ def _parse_intersection_structure(token_a, token_b):
                 "structure": "intersection",
                 "token_1": token_a,
                 "token_2": token_b,
-                "normalized": (normalize_named_unit(token_a), normalize_named_unit(token_b))
+                "normalized": (normalize_named_unit(token_a), normalize_named_unit(token_b)),
             }
     except ValueError:
         pass
     return None
+
 
 def _parse_intersection_phrase(phrase):
     """
     Parses a phrase and returns intersection structure if valid,
     otherwise None.
     """
-    phrase = phrase.strip().lower().replace(',', '')
-    if ' in ' in phrase:
-        a, b = phrase.split(' in ', 1)
+    phrase = phrase.strip().lower().replace(",", "")
+    if " in " in phrase:
+        a, b = phrase.split(" in ", 1)
     else:
         parts = phrase.split()
         if len(parts) == 2:
@@ -404,7 +404,7 @@ def is_intersection_structure(tokens):
 
 
 # 4. Compound (Anchoring + Containment)
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # Combines containment and anchoring to create a fully scoped reference.
 #   e.g. "second Friday of next month", "first day of this quarter"
 #
@@ -417,19 +417,20 @@ def is_intersection_structure(tokens):
 #     • Anchoring: e.g. "next month"
 # - Optionally checks contextual bounds (e.g. no "6th Friday of February")
 
+
 def extract_compound_parts(tokens):
     if "of" not in tokens:
         return None  # not compound
 
     idx = tokens.index("of")
     left = tokens[:idx]
-    right = tokens[idx+1:]
+    right = tokens[idx + 1 :]
 
     if not left or not right:
         return None
 
     modifier = None
-    if right[0] in {'from', 'starting from', 'next', 'last', 'this'}:
+    if right[0] in {"from", "starting from", "next", "last", "this"}:
         modifier = right[0]
         anchor_token = right[1] if len(right) > 1 else None
     else:
@@ -437,6 +438,7 @@ def extract_compound_parts(tokens):
 
     contained_token = left[-1]
     return contained_token, anchor_token, modifier
+
 
 def validate_compound_structure(contained_token, anchor_token, modifier=None):
     """
@@ -467,6 +469,7 @@ def validate_compound_structure(contained_token, anchor_token, modifier=None):
         return True, "Valid compound structure"
 
     except Exception as e:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         return False, f"Validation error: {e}"
 
 
@@ -474,12 +477,12 @@ def is_compound_structure(tokens):
     if "of" not in tokens:
         return False
     idx = tokens.index("of")
-    right = tokens[idx + 1:] if idx + 1 < len(tokens) else []
+    right = tokens[idx + 1 :] if idx + 1 < len(tokens) else []
     return bool(right and right[0] in set(anchor_modifier_valid_units.keys()))
 
 
 # 5. Relative (Offset-Based References)
-#────────────────────────────────────────────────────────────────────────────
+# ────────────────────────────────────────────────────────────────────────────
 # Refers to a range or count of units relative to the current moment.
 #   e.g. "last 3 days", "next 5 weeks", "2 days ago", "3 months from now"
 #
@@ -492,6 +495,7 @@ def is_compound_structure(tokens):
 # - Special tokens like "today", "yesterday", and "tomorrow" also fall under this structure
 
 relative_modifiers = {"ago", "from now", "before", "after", "prior to"}
+
 
 def parse_relative_structure(tokens):
     """
@@ -528,15 +532,14 @@ def parse_relative_structure(tokens):
                     unit = normalize_named_unit(unit_candidate)
                     break
         except Exception:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             continue
 
     if not unit:
         return None
 
-    return {
-        "unit": unit,
-        "offset": direction * count
-    }
+    return {"unit": unit, "offset": direction * count}
+
 
 def is_relative_structure(tokens):
     joined = " ".join(tokens).lower()

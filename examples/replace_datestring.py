@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -47,22 +45,29 @@
 
 # Import module
 import dately as dtly
+import numpy as np
 
 # Additional imports for examples
 import pandas as pd
-import numpy as np
 
 # Set variables
 datestring = "2023-06-21"
 datestring_list = [
-    '2023-06-21', '2024-06-21', '2024-07-21', '2024-08-20',
-    '2024-09-19', '2024-10-19', '2024-11-18', '2024-12-18',
-    '2025-01-17', '2025-02-16', '2025-03-18', '2025-04-17'
+    "2023-06-21",
+    "2024-06-21",
+    "2024-07-21",
+    "2024-08-20",
+    "2024-09-19",
+    "2024-10-19",
+    "2024-11-18",
+    "2024-12-18",
+    "2025-01-17",
+    "2025-02-16",
+    "2025-03-18",
+    "2025-04-17",
 ]
 datestring_array = np.array(datestring_list)
 datestring_series = pd.Series(datestring_list)
-
-
 
 
 ### Replacing Datestring
@@ -115,4 +120,3 @@ print(dtly.replace_timestring(iso_datestring, hour=2, minute=10, second=44, micr
 # Output: '2023-06-21T02:10:44.000001+00:00'
 print(dtly.replace_timestring(iso_datestring, hour=2, minute=10, second=44, microsecond=1, tzinfo=3))
 # Output: '2023-06-21T02:10:44.000001+03:00'
-

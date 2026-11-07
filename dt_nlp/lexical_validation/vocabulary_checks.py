@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -78,6 +76,7 @@ This module is strictly concerned with **lexical membership**.
 It does not attempt to correct spelling, infer structure, or resolve semantics.
 For fuzzy matching and recovery, use the companion module `string_similarity.spell_correction`.
 """
+
 from ..string_similarity.spell_correction import LexicalFuzzer
 
 
@@ -89,6 +88,7 @@ def vocab_validate(expression):
     Whole numbers (except "0") are considered
     valid even if not present in the canonical vocabulary.
     """
+
     def _is_cardinal(keyword):
         return keyword.isdigit()
 
@@ -111,4 +111,3 @@ def vocab_validate(expression):
         if keyword.lower() not in LexicalFuzzer.vocabulary:
             return False
     return True
-

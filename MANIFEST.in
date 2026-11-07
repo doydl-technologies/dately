@@ -1,5 +1,7 @@
 include LICENSE
 include README.md
+include CHANGELOG.md
+recursive-include release-notes *.md
 recursive-include mold/include *.h
 recursive-include mold/src *_impl.c
 recursive-include mold/pyx *.pyx

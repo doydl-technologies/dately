@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,10 +41,12 @@
 # SOFTWARE.
 #
 
-import time
 import json
+import logging
 import sys
+import time
 from pathlib import Path
+
 try:
     from importlib.resources import open_text
 except ImportError:
@@ -56,15 +56,13 @@ except ImportError:
 import requests
 
 from ._log import logger
-from ._version import __version__
 from ._mskutils import Shift
-
-
+from ._version import __version__
 
 
 class VersionChecker:
     @staticmethod
-    def check_version_sufficiency(minimum_required_version='3.9'):
+    def check_version_sufficiency(minimum_required_version="3.9"):
         """
         Checks if the current version is at least the minimum required version.
 
@@ -75,8 +73,8 @@ class VersionChecker:
             bool: True if the current version is equal to or greater than the minimum required version, False otherwise.
         """
         current_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-        parts_current = list(map(int, current_version.split('.')))
-        parts_minimum = list(map(int, minimum_required_version.split('.')))
+        parts_current = list(map(int, current_version.split(".")))
+        parts_minimum = list(map(int, minimum_required_version.split(".")))
 
         # Normalize the length of version lists by padding with zeros
         max_length = max(len(parts_current), len(parts_minimum))
@@ -85,9 +83,12 @@ class VersionChecker:
 
         return parts_current >= parts_minimum
 
+
 class UnixTime:
     @staticmethod
-    def Timestamp(year=None, month=None, day=None, hour=None, minute=None, second=None, weekday=None, yearday=None, isdst=-1):
+    def Timestamp(
+        year=None, month=None, day=None, hour=None, minute=None, second=None, weekday=None, yearday=None, isdst=-1
+    ):
         """
         Initializes the UnixTime with specific time components or defaults to current time values.
 
@@ -128,7 +129,7 @@ class UnixTime:
         str: The human-readable date in the format 'YYYY-MM-DD HH:MM:SS'.
         """
         time_struct = time.localtime(unix_timestamp)
-        return time.strftime('%Y-%m-%d %H:%M:%S', time_struct)
+        return time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
 
     @staticmethod
     def validate_input(value, default):
@@ -141,7 +142,6 @@ class UnixTime:
             return default
 
 
-
 def _load_json(bundled_pkg, filename, remote_url):
     """
     bundled_pkg  – import-path where the built-in file lives (e.g. 'dately.files')
@@ -149,7 +149,7 @@ def _load_json(bundled_pkg, filename, remote_url):
     remote_url   – fallback URL
     """
     _CACHE_DIR = Path.home() / ".dately"
-    _MAX_AGE   = 3600 * 24 * 7          # 7 days
+    _MAX_AGE = 3600 * 24 * 7  # 7 days
 
     # Bundled file
     try:
@@ -180,6 +180,7 @@ def _load_json(bundled_pkg, filename, remote_url):
         with cache_file.open("w") as f:
             json.dump(data, f)
     except Exception as e:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         logger.warning("Could not write cache for %s: %s", filename, e)
 
     return data
@@ -226,6 +227,7 @@ class DataImport:
         try:
             if VersionChecker.check_version_sufficiency():
                 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
                 for entry in data:
                     try:
                         entry["timezone_object"] = ZoneInfo(entry["zoneName"])
@@ -234,6 +236,7 @@ class DataImport:
                         entry["timezone_object"] = None
             else:
                 import pytz
+
                 for entry in data:
                     try:
                         entry["timezone_object"] = pytz.timezone(entry["zoneName"])
@@ -241,9 +244,9 @@ class DataImport:
                         logger.warning(f"Unknown timezone: {entry['zoneName']}")
                         entry["timezone_object"] = None
         except Exception as e:
+            logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
             logger.error(f"Error processing timezone data: {e}")
         return data
 
 
-
-__all__ = ['UnixTime', 'DataImport']
+__all__ = ["DataImport", "UnixTime"]

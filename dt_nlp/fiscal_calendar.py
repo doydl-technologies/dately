@@ -180,13 +180,13 @@ class RetailFiscalCalendar(FiscalCalendar):
         if type(period) is not int or not 1 <= period <= self.periods_per_year:
             raise ValueError(f"period must be an integer from 1 through {self.periods_per_year}")
         first, lengths = self._period_lengths(year)
-        start = first + timedelta(weeks=sum(lengths[:period - 1]))
+        start = first + timedelta(weeks=sum(lengths[: period - 1]))
         return start, start + timedelta(weeks=lengths[period - 1]) - timedelta(days=1)
 
     def quarter_range(self, year, quarter):
         if type(quarter) is not int or not 1 <= quarter <= 4:
             raise ValueError("quarter must be an integer from 1 through 4")
-        first_period = sum(self.quarter_periods[:quarter - 1]) + 1
+        first_period = sum(self.quarter_periods[: quarter - 1]) + 1
         last_period = sum(self.quarter_periods[:quarter])
         return self.period_range(year, first_period)[0], self.period_range(year, last_period)[1]
 

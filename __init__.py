@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -153,6 +151,7 @@ By harmonizing symbolic reasoning, deterministic NLP, and high-throughput engine
 elevates temporal data from an error-prone nuisance to a rigorously modeled, first-class element of
 modern software architecture.
 """
+
 if __package__ == "dately":
     from . import core as __core
     from ._api import get_fiscal_calendar, set_fiscal_calendar, set_week_start
@@ -168,36 +167,36 @@ else:  # Allows test collectors to import this flat-layout package initializer.
 
 
 __all__ = [
-    'extract_datetime_component',
-    'detect_date_format',
-    'convert_date',
-    'replace_timestring',
-    'replace_datestring',
-    'sequence',
-    'parse',
-    'BusinessCalendar',
-    'FiscalCalendar',
-    'RetailFiscalCalendar',
-    'get_fiscal_calendar',
-    'set_fiscal_calendar',
-    'set_week_start',
-    '__version__',
-    'Holidate',
-    'HolidayLookupError',
-    'TimeZoner',
+    "BusinessCalendar",
+    "FiscalCalendar",
+    "Holidate",
+    "HolidayLookupError",
+    "RetailFiscalCalendar",
+    "TimeZoner",
+    "__version__",
+    "convert_date",
+    "detect_date_format",
+    "extract_datetime_component",
+    "get_fiscal_calendar",
+    "parse",
+    "replace_datestring",
+    "replace_timestring",
+    "sequence",
+    "set_fiscal_calendar",
+    "set_week_start",
 ]
 
 # Reference functions using __core alias
-extract_datetime_component =  __core.extract_datetime_component
-detect_date_format =  __core.detect_date_format
-convert_date =  __core.convert_date
-replace_timestring =  __core.replace_timestring
-replace_datestring =  __core.replace_datestring
-sequence =  __core.sequence
-parse =  __core.parse
+extract_datetime_component = __core.extract_datetime_component
+detect_date_format = __core.detect_date_format
+convert_date = __core.convert_date
+replace_timestring = __core.replace_timestring
+replace_datestring = __core.replace_datestring
+sequence = __core.sequence
+parse = __core.parse
 
 # Remove core to keep namespace clean without relying on import side effects.
-globals().pop('core', None)
+globals().pop("core", None)
 
 # Import the real types and their lazy factories. Constructing either feature is
 # local-only; network access occurs only when a network-backed method is called.
@@ -209,6 +208,7 @@ else:
     from dately._holiday import HolidayLookupError, HolidayManager
     from dately._proxy import proxyObj as _proxyObj
     from dately._timezone import ZoneInfoManager
+
 
 # -----------------------------
 # TimeZoner - Stub for Autocomplete/Docs
@@ -225,31 +225,59 @@ class TimeZonerStub:
     Properties:
         Zones, ZonesByCountry, Offsets, ObservesDST, CountryNames, CountryCodes
     """
-    def ConvertTimeZone(self, from_zone, to_zone, year=None, month=None, day=None, hour=None, minute=None, second=None): pass
-    def CurrentTimebyZone(self, zone_name): pass
-    def FilterZoneDetail(self, zone_name): pass
+
+    def ConvertTimeZone(self, from_zone, to_zone, year=None, month=None, day=None, hour=None, minute=None, second=None):
+        pass
+
+    def CurrentTimebyZone(self, zone_name):
+        pass
+
+    def FilterZoneDetail(self, zone_name):
+        pass
 
     @property
-    def Zones(self): pass
-    @property
-    def ZonesByCountry(self): pass
-    @property
-    def Offsets(self): pass
-    @property
-    def ObservesDST(self): pass
-    @property
-    def CountryNames(self): pass
-    @property
-    def CountryCodes(self): pass
+    def Zones(self):
+        pass
 
-TimeZoner: ZoneInfoManager = _proxyObj('dately._timezone', 'get_TimeZoner')
+    @property
+    def ZonesByCountry(self):
+        pass
+
+    @property
+    def Offsets(self):
+        pass
+
+    @property
+    def ObservesDST(self):
+        pass
+
+    @property
+    def CountryNames(self):
+        pass
+
+    @property
+    def CountryCodes(self):
+        pass
+
+
+TimeZoner: ZoneInfoManager = _proxyObj("dately._timezone", "get_TimeZoner")
 TimeZoner.__doc__ = TimeZonerStub.__doc__
+
 
 # -----------------------------
 def timezoner_stub_dir():
-    return ['ConvertTimeZone', 'CurrentTimebyZone', 'FilterZoneDetail',
-            'Zones', 'ZonesByCountry', 'Offsets', 'ObservesDST',
-            'CountryNames', 'CountryCodes']
+    return [
+        "ConvertTimeZone",
+        "CurrentTimebyZone",
+        "FilterZoneDetail",
+        "Zones",
+        "ZonesByCountry",
+        "Offsets",
+        "ObservesDST",
+        "CountryNames",
+        "CountryCodes",
+    ]
+
 
 # --------------------------------------
 # Holidate - Stub for Autocomplete/Docs
@@ -262,17 +290,22 @@ class HolidateStub:
         ListCountries
         Holiday(country_name, year=None, format='list', source='public', subdiv=None, observed=True)
     """
+
     @property
-    def ListCountries(self): pass
+    def ListCountries(self):
+        pass
 
-    def Holiday(self, country_name, year=None, format='list', *, source='public', subdiv=None, observed=True): pass
+    def Holiday(self, country_name, year=None, format="list", *, source="public", subdiv=None, observed=True):
+        pass
 
-Holidate: HolidayManager = _proxyObj('dately._holiday', 'get_Holidate')
+
+Holidate: HolidayManager = _proxyObj("dately._holiday", "get_Holidate")
 Holidate.__doc__ = HolidateStub.__doc__
+
 
 # -----------------------------
 def holidate_stub_dir():
-    return ['ListCountries', 'Holiday']
+    return ["ListCountries", "Holiday"]
 
 
 # ------------------------------------------
@@ -281,13 +314,26 @@ def holidate_stub_dir():
 def __dir__():
     base_dir = globals().keys()
     base_dir = [f for f in base_dir if f.startswith("__") and f.endswith("__")]
-    return sorted(set(base_dir).union(
-        {
-            'extract_datetime_component', 'detect_date_format', 'convert_date',
-            'replace_timestring', 'replace_datestring', 'sequence', 'parse',
-            'set_week_start', '__version__', 'Holidate', 'TimeZoner', 'BusinessCalendar', 'HolidayLookupError',
-            'FiscalCalendar', 'RetailFiscalCalendar', 'get_fiscal_calendar', 'set_fiscal_calendar'
+    return sorted(
+        set(base_dir).union(
+            {
+                "extract_datetime_component",
+                "detect_date_format",
+                "convert_date",
+                "replace_timestring",
+                "replace_datestring",
+                "sequence",
+                "parse",
+                "set_week_start",
+                "__version__",
+                "Holidate",
+                "TimeZoner",
+                "BusinessCalendar",
+                "HolidayLookupError",
+                "FiscalCalendar",
+                "RetailFiscalCalendar",
+                "get_fiscal_calendar",
+                "set_fiscal_calendar",
             }
         )
-                  )
-
+    )

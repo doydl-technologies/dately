@@ -2,9 +2,8 @@ from contextvars import Context
 from dataclasses import FrozenInstanceError
 from datetime import date, datetime, timedelta
 
-import pytest
-
 import dately
+import pytest
 from dately._temporal_scan import resolver
 
 
@@ -45,31 +44,34 @@ def test_all_start_months_and_label_conventions_partition_the_year(month, label)
             assert end + timedelta(days=1) == quarters[index][0]
 
 
-@pytest.mark.parametrize("phrase, expected", [
-    ("FY2027", (date(2026, 7, 1), date(2027, 6, 30))),
-    ("FY 2027", (date(2026, 7, 1), date(2027, 6, 30))),
-    ("fiscal year 2027", (date(2026, 7, 1), date(2027, 6, 30))),
-    ("this fiscal year", (date(2026, 7, 1), date(2027, 6, 30))),
-    ("next fiscal year", (date(2027, 7, 1), date(2028, 6, 30))),
-    ("previous fiscal year", (date(2025, 7, 1), date(2026, 6, 30))),
-    ("Q1 FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("fiscal Q1 2027", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("FQ1 FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("fiscal Q1", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("first fiscal quarter of FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("fiscal quarter 1 of FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("Q1 of next fiscal year", (date(2027, 7, 1), date(2027, 9, 30))),
-    ("this fiscal quarter", (date(2026, 10, 1), date(2026, 12, 31))),
-    ("next fiscal quarter", (date(2027, 1, 1), date(2027, 3, 31))),
-    ("last fiscal quarter", (date(2026, 7, 1), date(2026, 9, 30))),
-    ("start of FY2027", date(2026, 7, 1)),
-    ("end of Q1 FY2027", date(2026, 9, 30)),
-    ("P8 FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
-    ("8th fiscal period of FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
-    ("fiscal period 8 of FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
-    ("FP8 FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
-    ("this fiscal period", (date(2026, 11, 1), date(2026, 11, 30))),
-])
+@pytest.mark.parametrize(
+    "phrase, expected",
+    [
+        ("FY2027", (date(2026, 7, 1), date(2027, 6, 30))),
+        ("FY 2027", (date(2026, 7, 1), date(2027, 6, 30))),
+        ("fiscal year 2027", (date(2026, 7, 1), date(2027, 6, 30))),
+        ("this fiscal year", (date(2026, 7, 1), date(2027, 6, 30))),
+        ("next fiscal year", (date(2027, 7, 1), date(2028, 6, 30))),
+        ("previous fiscal year", (date(2025, 7, 1), date(2026, 6, 30))),
+        ("Q1 FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("fiscal Q1 2027", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("FQ1 FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("fiscal Q1", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("first fiscal quarter of FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("fiscal quarter 1 of FY2027", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("Q1 of next fiscal year", (date(2027, 7, 1), date(2027, 9, 30))),
+        ("this fiscal quarter", (date(2026, 10, 1), date(2026, 12, 31))),
+        ("next fiscal quarter", (date(2027, 1, 1), date(2027, 3, 31))),
+        ("last fiscal quarter", (date(2026, 7, 1), date(2026, 9, 30))),
+        ("start of FY2027", date(2026, 7, 1)),
+        ("end of Q1 FY2027", date(2026, 9, 30)),
+        ("P8 FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
+        ("8th fiscal period of FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
+        ("fiscal period 8 of FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
+        ("FP8 FY2024", (date(2024, 2, 1), date(2024, 2, 29))),
+        ("this fiscal period", (date(2026, 11, 1), date(2026, 11, 30))),
+    ],
+)
 def test_explicit_fiscal_phrases(phrase, expected):
     assert dately.parse(phrase, fiscal_calendar=dately.FiscalCalendar(start_month=7)) == expected
 
@@ -112,10 +114,16 @@ def test_fiscal_scopes_work_with_country_business_days():
     assert dately.parse("last business day of FY2027", fiscal_calendar=july, country="US") == date(2027, 6, 30)
 
 
-@pytest.mark.parametrize("kwargs", [
-    {"start_month": 0}, {"start_month": 13}, {"start_month": True}, {"start_month": 7.0},
-    {"year_label": "guess"},
-])
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"start_month": 0},
+        {"start_month": 13},
+        {"start_month": True},
+        {"start_month": 7.0},
+        {"year_label": "guess"},
+    ],
+)
 def test_bad_month_based_configuration(kwargs):
     with pytest.raises(ValueError):
         dately.FiscalCalendar(**kwargs)
@@ -140,11 +148,21 @@ def test_bad_configuration_and_date_limits():
         calendar.start_month = 7
 
 
-@pytest.mark.parametrize("phrase", [
-    "FY0000", "FY27", "Q5 FY2027", "Q0 FY2027", "Q1 FY2027 banana",
-    "first fiscal quarter of banana", "1th fiscal quarter of FY2027", "P13 FY2027",
-    "banana fiscal year", "fiscal quarter 5 of FY2027",
-])
+@pytest.mark.parametrize(
+    "phrase",
+    [
+        "FY0000",
+        "FY27",
+        "Q5 FY2027",
+        "Q0 FY2027",
+        "Q1 FY2027 banana",
+        "first fiscal quarter of banana",
+        "1th fiscal quarter of FY2027",
+        "P13 FY2027",
+        "banana fiscal year",
+        "fiscal quarter 5 of FY2027",
+    ],
+)
 def test_invalid_fiscal_phrases_do_not_become_calendar_dates(phrase):
     assert dately.parse(phrase, fiscal_calendar=dately.FiscalCalendar(start_month=7)) is None
 
@@ -189,8 +207,12 @@ def test_retail_anchor_alignment_label_and_custom_thirteen_period_year():
     assert before.year_range(2023)[0] == date(2023, 1, 29)
     assert after.year_range(2023)[0] == date(2023, 2, 5)
     custom = dately.RetailFiscalCalendar(
-        start_month=10, start_day=1, week_start=0, alignment="on_or_after",
-        pattern=(4,) * 13, quarter_periods=(3, 3, 3, 4),
+        start_month=10,
+        start_day=1,
+        week_start=0,
+        alignment="on_or_after",
+        pattern=(4,) * 13,
+        quarter_periods=(3, 3, 3, 4),
     )
     assert custom.year_range(2024)[0] == date(2023, 10, 2)
     assert custom.periods_per_year == 13
@@ -224,12 +246,22 @@ def test_retail_relative_periods_wrap_custom_period_count():
     assert dately.parse("previous fiscal period", fiscal_calendar=custom) == custom.period_range(2023, 13)
 
 
-@pytest.mark.parametrize("kwargs", [
-    {"start_day": 0}, {"start_day": 29}, {"week_start": 7}, {"week_start": True},
-    {"alignment": "unknown"}, {"pattern": (4, 4, 4)}, {"pattern": (4, True, 8)},
-    {"pattern": None}, {"quarter_periods": (3, 3, 3)},
-    {"leap_week_period": 0}, {"leap_week_period": 13},
-])
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"start_day": 0},
+        {"start_day": 29},
+        {"week_start": 7},
+        {"week_start": True},
+        {"alignment": "unknown"},
+        {"pattern": (4, 4, 4)},
+        {"pattern": (4, True, 8)},
+        {"pattern": None},
+        {"quarter_periods": (3, 3, 3)},
+        {"leap_week_period": 0},
+        {"leap_week_period": 13},
+    ],
+)
 def test_bad_retail_configuration(kwargs):
     with pytest.raises(ValueError):
         dately.RetailFiscalCalendar(**kwargs)

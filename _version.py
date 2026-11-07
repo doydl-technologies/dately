@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,7 +41,7 @@
 # SOFTWARE.
 #
 
-__version__ = "3.4.0"
+__version__ = "4.7.6"
 
 
-__all__ = ['__version__']
+__all__ = ["__version__"]

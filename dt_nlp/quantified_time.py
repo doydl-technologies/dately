@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,9 +41,8 @@
 # SOFTWARE.
 #
 
-from .temporal_preprocessing import PhraseEngine
 from .arithmetic import timeline
-
+from .temporal_preprocessing import PhraseEngine
 
 
 def _parse_quantified_time_expression(phrase):
@@ -75,28 +72,24 @@ def _parse_quantified_time_expression(phrase):
     # lack explicit numeric quantifiers, such as "week ago", and require normalization
     # to "1 week ago" for consistent downstream processing.
     _patterns = (
-        [[unit, "ago"] for unit in sorted({unit for unit in timeline.time_units if unit != "half"}.union({"weekend"}))] +
-        [[unit, "ago"] for unit in [str(f) for f in list(timeline.days) if f not in ["day", "days"] and not str(f).isdigit()]] +
+        [[unit, "ago"] for unit in sorted({unit for unit in timeline.time_units if unit != "half"}.union({"weekend"}))]
+        + [
+            [unit, "ago"]
+            for unit in [str(f) for f in list(timeline.days) if f not in ["day", "days"] and not str(f).isdigit()]
+        ]
+        +
         # [[unit, "ago"] for unit in [f for f in list(timeline.months)]] +
-        [[unit, "ago"] for unit in list(set(timeline.seasons.list))] +
-        [[unit, "ago"] for unit in ["q1", "q2", "q3", "q4"]]
+        [[unit, "ago"] for unit in list(set(timeline.seasons.list))]
+        + [[unit, "ago"] for unit in ["q1", "q2", "q3", "q4"]]
     )
     # Check for a match against any of the canonical patterns defined above. If a match is found,
     # this indicates the phrase likely begins with an unquantified time unit (e.g., "day ago").
     # Insert an explicit quantifier (`1`) at the start of these phrases to
     # standardize the format — for example, converting "week ago" → "1 week ago".
     # This normalization is important for ensuring uniformity before number extraction.
-    if PhraseEngine.match.lexical(
-        phrase,
-        lexical_match=_patterns,
-        token_index=[0, 1],
-        exact=True
-    ):
+    if PhraseEngine.match.lexical(phrase, lexical_match=_patterns, token_index=[0, 1], exact=True):
         phrase = PhraseEngine.sub.any(
-            phrase,
-            replacements={" ".join(p): f"1 {' '.join(p)}" for p in _patterns},
-            prefix=False,
-            return_tokens=False
+            phrase, replacements={" ".join(p): f"1 {' '.join(p)}" for p in _patterns}, prefix=False, return_tokens=False
         )
 
     # Handle a separate but semantically equivalent case: expressions starting with "a",
@@ -104,17 +97,14 @@ def _parse_quantified_time_expression(phrase):
     # but the indefinite article "a" needs to be replaced with the explicit quantifier "1"
     # for reliable numeric parsing. This step systematically scans for such constructs and rewrites them.
     _updated_patterns = [["a"] + x[:] for x in _patterns]
-    if PhraseEngine.match.lexical(
-        phrase,
-        lexical_match=_updated_patterns,
-        token_index=[0, 1],
-        exact=True
-    ):
+    if PhraseEngine.match.lexical(phrase, lexical_match=_updated_patterns, token_index=[0, 1], exact=True):
         phrase = PhraseEngine.sub.any(
             phrase,
-            replacements={" ".join(p): "1 " + " ".join(p[1:]) if p[0] == "a" else " ".join(p) for p in _updated_patterns},
+            replacements={
+                " ".join(p): "1 " + " ".join(p[1:]) if p[0] == "a" else " ".join(p) for p in _updated_patterns
+            },
             prefix=True,
-            return_tokens=False
+            return_tokens=False,
         )
 
     # Some temporal expressions are preceded by adverbial modifiers that convey confidence levels
@@ -122,16 +112,10 @@ def _parse_quantified_time_expression(phrase):
     # While useful in natural conversation, these modifiers add no computational value for
     # temporal resolution, so remove them to simplify the phrase structure.
     if PhraseEngine.match.lexical(
-        phrase,
-        lexical_match=[['roughly'], ['about'], ['exactly']],
-        token_index=0,
-        exact=False
+        phrase, lexical_match=[["roughly"], ["about"], ["exactly"]], token_index=0, exact=False
     ):
         phrase = PhraseEngine.sub.any(
-            phrase,
-            replacements={"exactly": "", "about": "", "roughly": ""},
-            prefix=True,
-            return_tokens=False
+            phrase, replacements={"exactly": "", "about": "", "roughly": ""}, prefix=True, return_tokens=False
         )
 
     # Perform a general normalization pass over the cleaned phrase. This step includes:
@@ -145,10 +129,10 @@ def _parse_quantified_time_expression(phrase):
     phrase_tokenized = PhraseEngine.normalize(
         phrase,
         prefix_replace=None,
-        remove_article=['a', 'the'],
-        singularize=True, # Make time unit singular if applicable then tokenize the phrase
-        replacements={"couple of": "couple", "a couple": "couple"}
-        )
+        remove_article=["a", "the"],
+        singularize=True,  # Make time unit singular if applicable then tokenize the phrase
+        replacements={"couple of": "couple", "a couple": "couple"},
+    )
 
     # If the phrase becomes empty after normalization, it likely did not contain any valid
     # or recognizable temporal content. Return `None` to signal that no match
@@ -166,9 +150,8 @@ def _parse_quantified_time_expression(phrase):
     # Directly return atomic temporal references like "today", "yesterday", or "tomorrow"
     # without further processing. These are already in a fully resolved state and require
     # no quantification or normalization beyond their surface form.
-    if len(phrase_tokenized) == 1:
-        if phrase_tokenized[0] in ["today", "yesterday", "tomorrow"]:
-            return phrase_tokenized
+    if len(phrase_tokenized) == 1 and phrase_tokenized[0] in ["today", "yesterday", "tomorrow"]:
+        return phrase_tokenized
 
     # Handle vague quantifiers such as "couple", "few", "several", and "many".
     # These are mapped to numeric ranges internally, and a random value is selected
@@ -185,7 +168,11 @@ def _parse_quantified_time_expression(phrase):
     # If the first token is a valid numeric word, convert it to its digit representation.
     # This ensures uniformity in downstream processing, as all numerical values will
     # appear in cardinal form (e.g., "three" → "3").
-    quantifiable_number = PhraseEngine.numbers.to_type(phrase_tokenized[0], target="cardinalNumber", as_str=True) if PhraseEngine.numbers.num_type(phrase_tokenized[0]) else None
+    quantifiable_number = (
+        PhraseEngine.numbers.to_type(phrase_tokenized[0], target="cardinalNumber", as_str=True)
+        if PhraseEngine.numbers.num_type(phrase_tokenized[0])
+        else None
+    )
     if quantifiable_number:
         phrase_tokenized[0] = quantifiable_number
 
@@ -197,9 +184,8 @@ def _parse_quantified_time_expression(phrase):
     # Special-case shortcut: if the normalized phrase is exactly "1 day ago",
     # rewrite it to the simpler and more semantically precise "yesterday".
     # This transformation improves interpretability for downstream logic.
-    if phrase_tokenized and phrase_tokenized[-1].lower() == "ago":
-        if phrase_tokenized == ['1', 'day', 'ago']:
-            return ["yesterday"]
+    if phrase_tokenized and phrase_tokenized[-1].lower() == "ago" and phrase_tokenized == ["1", "day", "ago"]:
+        return ["yesterday"]
 
     tokens = [token.lower() for token in phrase_tokenized]
     return tokens if tokens else None

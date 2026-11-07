@@ -1,5 +1,4 @@
 #! python3.8
-# -*- coding: utf-8 -*-
 
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
@@ -47,6 +46,7 @@
 """Generate realistic reduced desktop browser user-agent strings."""
 
 import random
+from typing import ClassVar
 
 from .browser_versions.chrome import chrome_versions as chrome
 from .browser_versions.edge import edge_versions as edge
@@ -101,7 +101,7 @@ class Normalize:
 class RandomUserAgent:
     """Build recent or age-weighted historical desktop user agents."""
 
-    _CHROMIUM_PLATFORMS = {
+    _CHROMIUM_PLATFORMS: ClassVar[dict] = {
         "windows": "Windows NT 10.0; Win64; x64",
         "macos": "Macintosh; Intel Mac OS X 10_15_7",
         "linux": "X11; Linux x86_64",
@@ -120,9 +120,7 @@ class RandomUserAgent:
     ):
         self.chrome_versions = self._validate_versions("Chrome", chrome_versions)
         self.edge_versions = self._validate_versions("Edge", edge_versions)
-        self.safari_versions = self._validate_versions(
-            "Safari", safari_versions, allow_empty=True
-        )
+        self.safari_versions = self._validate_versions("Safari", safari_versions, allow_empty=True)
 
     @staticmethod
     def _validate_versions(name, versions, allow_empty=False):
@@ -180,9 +178,7 @@ class RandomUserAgent:
             raise ValueError(f"Chromium platform must be one of: {choices}.")
 
     def _generate_chrome(self, platform=None, version_profile="recent"):
-        source_version = self._random_version(
-            self.chrome_versions, version_profile, recent_major_count=3
-        )
+        source_version = self._random_version(self.chrome_versions, version_profile, recent_major_count=3)
         version = self._reduced_version(source_version)
         os_token = self._chromium_platform(platform)
         return (
@@ -192,9 +188,7 @@ class RandomUserAgent:
         )
 
     def _generate_edge(self, platform=None, version_profile="recent"):
-        source_version = self._random_version(
-            self.edge_versions, version_profile, recent_major_count=3
-        )
+        source_version = self._random_version(self.edge_versions, version_profile, recent_major_count=3)
         major = int(Normalize.major(source_version))
         chrome_version = self._reduced_version(source_version)
         edge_version = (
@@ -211,11 +205,7 @@ class RandomUserAgent:
         )
 
     def _generate_safari(self, version_profile="recent"):
-        version = Normalize(
-            self._random_version(
-                self.safari_versions, version_profile, recent_major_count=2
-            )
-        ).version
+        version = Normalize(self._random_version(self.safari_versions, version_profile, recent_major_count=2)).version
         return (
             f"Mozilla/5.0 ({self._SAFARI_PLATFORM}) "
             f"AppleWebKit/{self._SAFARI_WEBKIT} (KHTML, like Gecko) "
@@ -225,9 +215,7 @@ class RandomUserAgent:
     def generate(self, browser=None, platform=None, version_profile="recent"):
         """Return one user agent, optionally constrained by family and age profile."""
         if version_profile not in self._VERSION_PROFILES:
-            raise ValueError(
-                f"Version profile must be one of: {', '.join(self._VERSION_PROFILES)}."
-            )
+            raise ValueError(f"Version profile must be one of: {', '.join(self._VERSION_PROFILES)}.")
         families = ["chrome", "edge"]
         if self.safari_versions:
             families.append("safari")

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -49,7 +47,6 @@ import re
 from ._webutils import is_valid_url
 
 
-
 class Shift:
     class bool:
         @staticmethod
@@ -57,11 +54,11 @@ class Shift:
             """Check if string s is a valid base64-encoded value."""
             if len(s) % 4 != 0:
                 return False
-            if not re.match(r'^[A-Za-z0-9+/]*={0,2}$', s):
+            if not re.match(r"^[A-Za-z0-9+/]*={0,2}$", s):
                 return False
             try:
                 decoded_bytes = base64.b64decode(s, validate=True)
-                decoded_bytes.decode('utf-8')
+                decoded_bytes.decode("utf-8")
                 return True
             except (base64.binascii.Error, UnicodeDecodeError):
                 return False
@@ -69,14 +66,14 @@ class Shift:
         @staticmethod
         def bin(s):
             """Check if string s is valid binary (composed only of 0s and 1s in groups of 8)."""
-            if not all(c in '01' for c in s):
+            if not all(c in "01" for c in s):
                 return False
             if len(s) % 8 != 0:
                 return False
             try:
-                bytes_list = [s[i:i+8] for i in range(0, len(s), 8)]
+                bytes_list = [s[i : i + 8] for i in range(0, len(s), 8)]
                 decoded_chars = [chr(int(byte, 2)) for byte in bytes_list]
-                ''.join(decoded_chars)
+                "".join(decoded_chars)
                 return True
             except ValueError:
                 return False
@@ -85,16 +82,16 @@ class Shift:
         @staticmethod
         def chr(data, call, fallback_attempted=False):
             """Convert to/from base64. For 'format', decode base64.
-               If the result is empty or an error occurs, try binary decoding."""
+            If the result is empty or an error occurs, try binary decoding."""
             if call == "unformat":
                 if not Shift.bool.bytes(data):
-                    return base64.b64encode(data.encode('utf-8')).decode('utf-8')
+                    return base64.b64encode(data.encode("utf-8")).decode("utf-8")
             elif call == "format":
                 if is_valid_url(data):
                     return data
                 if Shift.bool.bytes(data):
                     try:
-                        result = base64.b64decode(data).decode('utf-8')
+                        result = base64.b64decode(data).decode("utf-8")
                         if not result:
                             raise ValueError("Decoded result is empty.")
                         return result
@@ -114,15 +111,15 @@ class Shift:
         @staticmethod
         def str(data, call, fallback_attempted=False):
             """Convert to/from binary. For 'format', decode a binary string.
-               If the result is empty or an error occurs, try base64 decoding."""
+            If the result is empty or an error occurs, try base64 decoding."""
             if call == "unformat":
                 if not Shift.bool.bin(data):
-                    return ''.join(format(ord(char), '08b') for char in data)
+                    return "".join(format(ord(char), "08b") for char in data)
             elif call == "format":
                 if Shift.bool.bin(data):
                     try:
-                        chars = [chr(int(data[i:i+8], 2)) for i in range(0, len(data), 8)]
-                        result = ''.join(chars)
+                        chars = [chr(int(data[i : i + 8], 2)) for i in range(0, len(data), 8)]
+                        result = "".join(chars)
                         if not result:
                             raise ValueError("Decoded binary result is empty.")
                         return result
@@ -152,5 +149,4 @@ class Shift:
             return unformatted
 
 
-
-__all__ = ['Shift']
+__all__ = ["Shift"]

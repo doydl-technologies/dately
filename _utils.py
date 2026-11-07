@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,6 +41,7 @@
 # SOFTWARE.
 #
 
+
 def is_leap_year(year):
     """
     Determine whether a specified year is a leap year.
@@ -62,13 +61,12 @@ def is_leap_year(year):
     except ValueError:
         raise ValueError("Input should be a year in integer or string form that can be converted to an integer.")
 
-    if (year % 400 == 0):
+    if year % 400 == 0:
         return True
-    if (year % 100 == 0):
+    if year % 100 == 0:
         return False
-    if (year % 4 == 0):
-        return True
-    return False
+    return year % 4 == 0
+
 
 def hundred_thousandths_place(number_str, decimal=True):
     """
@@ -104,12 +102,12 @@ def hundred_thousandths_place(number_str, decimal=True):
     try:
         float(number_str)  # Check for validity
     except ValueError:
-        return '00000' if not decimal else '.00000'
+        return "00000" if not decimal else ".00000"
 
-    if '.' in number_str:
-        integer_part, decimal_part = number_str.split('.')
+    if "." in number_str:
+        integer_part, decimal_part = number_str.split(".")
         if len(decimal_part) < 5:
-            decimal_part = decimal_part.ljust(5, '0')
+            decimal_part = decimal_part.ljust(5, "0")
         elif len(decimal_part) > 5:
             decimal_part = decimal_part[:5]
         formatted_number = f"{integer_part}.{decimal_part}"
@@ -117,23 +115,19 @@ def hundred_thousandths_place(number_str, decimal=True):
         formatted_number = f"{number_str.zfill(5)}"
 
     # Conditionally remove the decimal if not required
-    if not decimal and '.' not in number_str:
+    if not decimal and "." not in number_str:
         return formatted_number
-    elif not decimal and '.' in formatted_number:
+    elif not decimal and "." in formatted_number:
         # Remove decimal point if the number is effectively an integer
-        return formatted_number.replace('.', '')
+        return formatted_number.replace(".", "")
     return formatted_number
 
 
-
 def __dir__():
-    return [
-    'is_leap_year',
-    'hundred_thousandths_place'
-	]
+    return ["is_leap_year", "hundred_thousandths_place"]
 
 
 __all__ = [
-	'is_leap_year',
-	'hundred_thousandths_place',
-	]
+    "hundred_thousandths_place",
+    "is_leap_year",
+]

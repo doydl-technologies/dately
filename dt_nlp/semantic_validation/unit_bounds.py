@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -72,178 +70,165 @@ This module is only triggered for containment or compound structures involving
 validation has already succeeded, and is designed for **post-syntactic enforcement**
 within the semantic_validation layer.
 """
-from ..arithmetic import numbers
-from ..temporal_preprocessing import PhraseEngine
-from ..temporal_core.temporal_units import normalize_named_unit
 
+import logging
+
+from ..arithmetic import numbers
+from ..temporal_core.temporal_units import normalize_named_unit
+from ..temporal_preprocessing import PhraseEngine
 
 unitContextMaxBounds = {
     # Core units
-    ('day', 'week'): 7,
-    ('weekday', 'week'): 5,
-    ('weekend', 'week'): 2,
-    ('day', 'month'): 31,
-    ('day', 'year'): 366,
-    ('weekday', 'month'): 23,
-    ('weekday', 'year'): 262,
-    ('week', 'month'): 5,
-    ('week', 'year'): 53,
-    ('month', 'year'): 12,
-    ('quarter', 'year'): 4,
-    ('season', 'year'): 4,
-    ('day', 'quarter'): 92,
-    ('day', 'season'): 92,
-    ('weekday', 'quarter'): 66,
-    ('weekday', 'season'): 66,
-    ('week', 'quarter'): 14,
-    ('week', 'season'): 14,
-    ('month', 'quarter'): 3,
-    ('month', 'season'): 3,
-
+    ("day", "week"): 7,
+    ("weekday", "week"): 5,
+    ("weekend", "week"): 2,
+    ("day", "month"): 31,
+    ("day", "year"): 366,
+    ("weekday", "month"): 23,
+    ("weekday", "year"): 262,
+    ("week", "month"): 5,
+    ("week", "year"): 53,
+    ("month", "year"): 12,
+    ("quarter", "year"): 4,
+    ("season", "year"): 4,
+    ("day", "quarter"): 92,
+    ("day", "season"): 92,
+    ("weekday", "quarter"): 66,
+    ("weekday", "season"): 66,
+    ("week", "quarter"): 14,
+    ("week", "season"): 14,
+    ("month", "quarter"): 3,
+    ("month", "season"): 3,
     # Specific months — leap-safe
-    ('day', 'january'): 31,
-    ('day', 'february'): 29,
-    ('day', 'march'): 31,
-    ('day', 'april'): 30,
-    ('day', 'may'): 31,
-    ('day', 'june'): 30,
-    ('day', 'july'): 31,
-    ('day', 'august'): 31,
-    ('day', 'september'): 30,
-    ('day', 'october'): 31,
-    ('day', 'november'): 30,
-    ('day', 'december'): 31,
-    ('day', 'jan'): 31,
-    ('day', 'feb'): 29,
-    ('day', 'mar'): 31,
-    ('day', 'apr'): 30,
-    ('day', 'jun'): 30,
-    ('day', 'jul'): 31,
-    ('day', 'aug'): 31,
-    ('day', 'sep'): 30,
-    ('day', 'oct'): 31,
-    ('day', 'nov'): 30,
-    ('day', 'dec'): 31,
-
+    ("day", "january"): 31,
+    ("day", "february"): 29,
+    ("day", "march"): 31,
+    ("day", "april"): 30,
+    ("day", "may"): 31,
+    ("day", "june"): 30,
+    ("day", "july"): 31,
+    ("day", "august"): 31,
+    ("day", "september"): 30,
+    ("day", "october"): 31,
+    ("day", "november"): 30,
+    ("day", "december"): 31,
+    ("day", "jan"): 31,
+    ("day", "feb"): 29,
+    ("day", "mar"): 31,
+    ("day", "apr"): 30,
+    ("day", "jun"): 30,
+    ("day", "jul"): 31,
+    ("day", "aug"): 31,
+    ("day", "sep"): 30,
+    ("day", "oct"): 31,
+    ("day", "nov"): 30,
+    ("day", "dec"): 31,
     # Optional: quarters as containers for months or weeks
-    ('month', 'q1'): 3,
-    ('month', 'q2'): 3,
-    ('month', 'q3'): 3,
-    ('month', 'q4'): 3,
-    ('week', 'q1'): 14,
-    ('week', 'q2'): 14,
-    ('week', 'q3'): 14,
-    ('week', 'q4'): 14,
-    ('weekday', 'q1'): 66,
-    ('weekday', 'q2'): 66,
-    ('weekday', 'q3'): 66,
-    ('weekday', 'q4'): 66,
-    ('day', 'q1'): 92,
-    ('day', 'q2'): 92,
-    ('day', 'q3'): 92,
-    ('day', 'q4'): 92,
-
+    ("month", "q1"): 3,
+    ("month", "q2"): 3,
+    ("month", "q3"): 3,
+    ("month", "q4"): 3,
+    ("week", "q1"): 14,
+    ("week", "q2"): 14,
+    ("week", "q3"): 14,
+    ("week", "q4"): 14,
+    ("weekday", "q1"): 66,
+    ("weekday", "q2"): 66,
+    ("weekday", "q3"): 66,
+    ("weekday", "q4"): 66,
+    ("day", "q1"): 92,
+    ("day", "q2"): 92,
+    ("day", "q3"): 92,
+    ("day", "q4"): 92,
     # Optional: seasons as containers for months
-    ('month', 'spring'): 3,
-    ('month', 'summer'): 3,
-    ('month', 'fall'): 3,
-    ('month', 'autumn'): 3,
-    ('month', 'winter'): 3,
-
+    ("month", "spring"): 3,
+    ("month", "summer"): 3,
+    ("month", "fall"): 3,
+    ("month", "autumn"): 3,
+    ("month", "winter"): 3,
     # Weekday of month
-    ('monday', 'month'): 5,
-    ('tuesday', 'month'): 5,
-    ('wednesday', 'month'): 5,
-    ('thursday', 'month'): 5,
-    ('friday', 'month'): 5,
-    ('saturday', 'month'): 5,
-    ('sunday', 'month'): 5,
-
+    ("monday", "month"): 5,
+    ("tuesday", "month"): 5,
+    ("wednesday", "month"): 5,
+    ("thursday", "month"): 5,
+    ("friday", "month"): 5,
+    ("saturday", "month"): 5,
+    ("sunday", "month"): 5,
     # Weekday of quarter
-    ('monday', 'quarter'): 14,
-    ('tuesday', 'quarter'): 14,
-    ('wednesday', 'quarter'): 14,
-    ('thursday', 'quarter'): 14,
-    ('friday', 'quarter'): 14,
-    ('saturday', 'quarter'): 14,
-    ('sunday', 'quarter'): 14,
-
+    ("monday", "quarter"): 14,
+    ("tuesday", "quarter"): 14,
+    ("wednesday", "quarter"): 14,
+    ("thursday", "quarter"): 14,
+    ("friday", "quarter"): 14,
+    ("saturday", "quarter"): 14,
+    ("sunday", "quarter"): 14,
     # Weekday of season (same as quarter)
-    ('monday', 'season'): 14,
-    ('tuesday', 'season'): 14,
-    ('wednesday', 'season'): 14,
-    ('thursday', 'season'): 14,
-    ('friday', 'season'): 14,
-    ('saturday', 'season'): 14,
-    ('sunday', 'season'): 14,
-
+    ("monday", "season"): 14,
+    ("tuesday", "season"): 14,
+    ("wednesday", "season"): 14,
+    ("thursday", "season"): 14,
+    ("friday", "season"): 14,
+    ("saturday", "season"): 14,
+    ("sunday", "season"): 14,
     # Weekday of year (based on max 53 weeks)
-    ('monday', 'year'): 53,
-    ('tuesday', 'year'): 53,
-    ('wednesday', 'year'): 53,
-    ('thursday', 'year'): 53,
-    ('friday', 'year'): 53,
-    ('saturday', 'year'): 53,
-    ('sunday', 'year'): 53,
-
+    ("monday", "year"): 53,
+    ("tuesday", "year"): 53,
+    ("wednesday", "year"): 53,
+    ("thursday", "year"): 53,
+    ("friday", "year"): 53,
+    ("saturday", "year"): 53,
+    ("sunday", "year"): 53,
     # Weekday of month
-    ('mon', 'month'): 5,
-    ('tue', 'month'): 5,
-    ('wed', 'month'): 5,
-    ('thu', 'month'): 5,
-    ('fri', 'month'): 5,
-    ('sat', 'month'): 5,
-    ('sun', 'month'): 5,
-
+    ("mon", "month"): 5,
+    ("tue", "month"): 5,
+    ("wed", "month"): 5,
+    ("thu", "month"): 5,
+    ("fri", "month"): 5,
+    ("sat", "month"): 5,
+    ("sun", "month"): 5,
     # Weekday of quarter
-    ('mon', 'quarter'): 14,
-    ('tue', 'quarter'): 14,
-    ('wed', 'quarter'): 14,
-    ('thu', 'quarter'): 14,
-    ('fri', 'quarter'): 14,
-    ('sat', 'quarter'): 14,
-    ('sun', 'quarter'): 14,
-
+    ("mon", "quarter"): 14,
+    ("tue", "quarter"): 14,
+    ("wed", "quarter"): 14,
+    ("thu", "quarter"): 14,
+    ("fri", "quarter"): 14,
+    ("sat", "quarter"): 14,
+    ("sun", "quarter"): 14,
     # Weekday of season (same as quarter)
-    ('mon', 'season'): 14,
-    ('tue', 'season'): 14,
-    ('wed', 'season'): 14,
-    ('thu', 'season'): 14,
-    ('fri', 'season'): 14,
-    ('sat', 'season'): 14,
-    ('sun', 'season'): 14,
-
+    ("mon", "season"): 14,
+    ("tue", "season"): 14,
+    ("wed", "season"): 14,
+    ("thu", "season"): 14,
+    ("fri", "season"): 14,
+    ("sat", "season"): 14,
+    ("sun", "season"): 14,
     # Weekday of year (based on max 53 weeks)
-    ('mon', 'year'): 53,
-    ('tue', 'year'): 53,
-    ('wed', 'year'): 53,
-    ('thu', 'year'): 53,
-    ('fri', 'year'): 53,
-    ('sat', 'year'): 53,
-    ('sun', 'year'): 53,
-
+    ("mon", "year"): 53,
+    ("tue", "year"): 53,
+    ("wed", "year"): 53,
+    ("thu", "year"): 53,
+    ("fri", "year"): 53,
+    ("sat", "year"): 53,
+    ("sun", "year"): 53,
     # Days in a weekend
-    ('day', 'weekend'): 2,
-    ('weekday', 'weekend'): 0,  # Explicitly disallowed for clarity
+    ("day", "weekend"): 2,
+    ("weekday", "weekend"): 0,  # Explicitly disallowed for clarity
 }
 
 rangeContextMaxBounds = {
     # days
-    ("day",  "week"):    7,
-    ("day",  "month"):   31,
-    ("day",  "quarter"): 92,
-    ("day",  "year"):    366,
-
+    ("day", "week"): 7,
+    ("day", "month"): 31,
+    ("day", "quarter"): 92,
+    ("day", "year"): 366,
     # weeks
-    ("week", "month"):   5,
+    ("week", "month"): 5,
     ("week", "quarter"): 14,
-    ("week", "year"):    53,
-
+    ("week", "year"): 53,
     # months
     ("month", "quarter"): 3,
-    ("month", "season"):  3,
-    ("month", "year"):    12,
-
+    ("month", "season"): 3,
+    ("month", "year"): 12,
     # quarters
     ("quarter", "year"): 4,
 }
@@ -258,8 +243,9 @@ def extract_ordinal(token):
         if numbers.num_type(token) == "ordinalNumber":
             return int(numbers.to_type(token, "cardinalNumber"))
     except Exception:
-        pass
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
     return None
+
 
 def extract_cardinal(token):
     """
@@ -269,7 +255,7 @@ def extract_cardinal(token):
         if numbers.num_type(token) in {"cardinalNumber", "cardinalWord"}:
             return int(numbers.to_type(token, "cardinalNumber"))
     except Exception:
-        pass
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
     return None
 
 
@@ -298,8 +284,8 @@ def validate_bounds(structure_result, original_tokens):
         return True, "Bound check skipped — structure does not involve ordinal containment"
 
     parts = structure_result.get("parts", {})
-    contained  = parts.get("contained")
-    container  = parts.get("anchor")  # anchor == container in compound output
+    contained = parts.get("contained")
+    container = parts.get("anchor")  # anchor == container in compound output
     ordinal_val = extract_ordinal(original_tokens[0]) if original_tokens else None
 
     # If no ordinal present (e.g., 'day of april'), nothing to bound‑check.
@@ -316,10 +302,12 @@ def validate_bounds(structure_result, original_tokens):
             container_unit = normalize_named_unit(container)
         contained_unit = normalize_named_unit(contained)
     except Exception as e:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         return False, f"Normalization error: {e}"
 
     is_ok, reason = is_within_unit_bounds(contained_unit, container_unit, ordinal_val)
     return is_ok, reason
+
 
 def validate_range_bounds(tokens):
     """
@@ -339,6 +327,7 @@ def validate_range_bounds(tokens):
     try:
         count = int(numbers.to_type(t[1], "cardinalNumber"))
     except Exception:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         return True, "No cardinal span detected"
 
     # Next token is the span-unit (e.g. "week" or "weeks")

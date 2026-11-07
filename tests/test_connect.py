@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -44,7 +42,6 @@
 #
 
 import requests
-
 from dately._connect import http_client
 from dately._holiday import HolidayManager
 from dately._timezone import ZoneInfoManager
@@ -52,10 +49,7 @@ from dately._webutils import UserAgentRandomizer
 
 
 def test_http_client_uses_requests_encoding_negotiation():
-    assert (
-        http_client.get_headers("Accept-Encoding")
-        == requests.utils.default_headers()["Accept-Encoding"]
-    )
+    assert http_client.get_headers("Accept-Encoding") == requests.utils.default_headers()["Accept-Encoding"]
 
 
 def test_api_keys_are_scoped_to_their_own_service():
@@ -85,9 +79,7 @@ def test_key_bootstrap_remains_lazy():
 
 
 def test_user_agents_come_from_the_vendored_profile():
-    assert UserAgentRandomizer._generator.__class__.__module__.startswith(
-        "dately._vendor.agent_profile"
-    )
+    assert UserAgentRandomizer._generator.__class__.__module__.startswith("dately._vendor.agent_profile")
     assert UserAgentRandomizer.get().startswith("Mozilla/5.0")
 
 

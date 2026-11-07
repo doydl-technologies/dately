@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -63,12 +61,10 @@ Core Components:
 - `ALL_ORDINALS`: A combined set of numeric, word-based, and hyphenated ordinals
 - `Levenshtein` & `JaroWinkler`: Distance algorithms used to compare similarity between tokens
 """
+
 import re
 
 import numbr
-
-
-
 
 # ──────────────────────────────────────────────────────────────────────────────────────
 # CANONICAL TEMPORAL TERMS
@@ -80,67 +76,168 @@ import numbr
 CANONICAL_TEMPORAL_TERMS = {
     # ─ Absolute time units ─
     # Represent base time measurement units (ordered from smallest to largest).
-    "day", "days", "day's", "days'",
-    "week", "weeks", "week's", "weeks'",
-    "month", "months", "month's", "months'",
-    "quarter", "quarters", "quarter's", "quarters'",
-    "season", "seasons", "season's", "seasons'",
-    "year", "years", "year's", "years'",
+    "day",
+    "days",
+    "day's",
+    "days'",
+    "week",
+    "weeks",
+    "week's",
+    "weeks'",
+    "month",
+    "months",
+    "month's",
+    "months'",
+    "quarter",
+    "quarters",
+    "quarter's",
+    "quarters'",
+    "season",
+    "seasons",
+    "season's",
+    "seasons'",
+    "year",
+    "years",
+    "year's",
+    "years'",
     "half",
-
     # ─ Weekdays ─
     # Captures all variations of the seven-day cycle, including plural and possessive forms.
-    "sunday", "mondays", "monday", "sundays",
-    "tuesday", "tuesdays",
-    "wednesday", "wednesdays",
-    "thursday", "thursdays",
-    "friday", "fridays",
-    "saturday", "saturdays",
-    "weekday", "weekdays", "weekday's", "weekdays'",
-    "weekend", "weekends", "weekend's", "weekends'",
-
+    "sunday",
+    "mondays",
+    "monday",
+    "sundays",
+    "tuesday",
+    "tuesdays",
+    "wednesday",
+    "wednesdays",
+    "thursday",
+    "thursdays",
+    "friday",
+    "fridays",
+    "saturday",
+    "saturdays",
+    "weekday",
+    "weekdays",
+    "weekday's",
+    "weekdays'",
+    "weekend",
+    "weekends",
+    "weekend's",
+    "weekends'",
     # ─ Months ─
     # Includes every month name and possible plural/possessive variants.
     # Some forms (e.g., "januaries") are rare but possible in certain temporal phrases.
-    "january", "januarys", "januaries", "january's", "januarys'", "januaries'",
-    "february", "februarys", "februaries", "february's", "februarys'", "februaries'",
-    "march", "marches", "march's", "marches'",
-    "april", "aprils", "april's", "aprils'",
-    "may", "mays", "may's", "mays'",
-    "june", "junes", "june's", "junes'",
-    "july", "julys", "julies", "july's", "julys'",
-    "august", "augusts", "august's", "augusts'",
-    "september", "septembers", "september's", "septembers'",
-    "october", "octobers", "october's", "octobers'",
-    "november", "novembers", "november's", "novembers'",
-    "december", "decembers", "december's", "decembers'",
-
+    "january",
+    "januarys",
+    "januaries",
+    "january's",
+    "januarys'",
+    "januaries'",
+    "february",
+    "februarys",
+    "februaries",
+    "february's",
+    "februarys'",
+    "februaries'",
+    "march",
+    "marches",
+    "march's",
+    "marches'",
+    "april",
+    "aprils",
+    "april's",
+    "aprils'",
+    "may",
+    "mays",
+    "may's",
+    "mays'",
+    "june",
+    "junes",
+    "june's",
+    "junes'",
+    "july",
+    "julys",
+    "julies",
+    "july's",
+    "julys'",
+    "august",
+    "augusts",
+    "august's",
+    "augusts'",
+    "september",
+    "septembers",
+    "september's",
+    "septembers'",
+    "october",
+    "octobers",
+    "october's",
+    "octobers'",
+    "november",
+    "novembers",
+    "november's",
+    "novembers'",
+    "december",
+    "decembers",
+    "december's",
+    "decembers'",
     # ─ Quarters ─
     # Compact representations for business/financial time periods.
-    "q1", "q2", "q3", "q4",
-
+    "q1",
+    "q2",
+    "q3",
+    "q4",
     # ─ Seasons ─
     # Common seasonal terms across both meteorological and colloquial usage.
-    "spring", "springs", "spring's", "springs'",
-    "summer", "summers", "summer's", "summers'",
-    "fall", "falls", "fall's", "falls'",
-    "winter", "winters", "winter's", "winters'",
-    "autumn", "autumns", "autumn's", "autumns'",
-
+    "spring",
+    "springs",
+    "spring's",
+    "springs'",
+    "summer",
+    "summers",
+    "summer's",
+    "summers'",
+    "fall",
+    "falls",
+    "fall's",
+    "falls'",
+    "winter",
+    "winters",
+    "winter's",
+    "winters'",
+    "autumn",
+    "autumns",
+    "autumn's",
+    "autumns'",
     # ─ Relative day references ─
     # Words that refer to dates relative to the current date (e.g., "today", "tomorrow").
-    "today", "todays", "today's",
-    "tomorrow", "tomorrows", "tomorrow's",
-    "yesterday", "yesterdays", "yesterday's",
-
+    "today",
+    "todays",
+    "today's",
+    "tomorrow",
+    "tomorrows",
+    "tomorrow's",
+    "yesterday",
+    "yesterdays",
+    "yesterday's",
     # ─ Temporal modifiers ─
     # Modifiers that describe placement in time ("next", "last") or location within a period.
-    "start", "starting","middle", "end",
-    "of", "this", "next", "last", "from", "previous", "in", "on",
-
+    "start",
+    "starting",
+    "middle",
+    "end",
+    "of",
+    "this",
+    "next",
+    "last",
+    "from",
+    "previous",
+    "in",
+    "on",
     # ─ Durational markers ─
     "ago",
 }
+
 
 def _to_ordinal_words(day):
     """
@@ -157,6 +254,7 @@ def _to_ordinal_words(day):
 
     return word
 
+
 def _to_ordinal_number(day):
     """
     Converts a numeric day value into its ordinal number form (e.g., 1 -> "1st").
@@ -172,6 +270,7 @@ def _to_ordinal_number(day):
 
     return f"{day_int}{suffix}"
 
+
 def _hyphenate_word_numbers(text):
     """
     Converts compound cardinal number phrases into hyphenated form.
@@ -179,8 +278,11 @@ def _hyphenate_word_numbers(text):
     # NLP pre-processing trick:
     # Turns "twenty three" into "twenty-three", which helps match things like "twenty-third"
     # Useful for aligning fuzzy tokens with ordinal patterns.
-    pattern = r"\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\s(one|two|three|four|five|six|seven|eight|nine)\b"
+    pattern = (
+        r"\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)\s(one|two|three|four|five|six|seven|eight|nine)\b"
+    )
     return re.sub(pattern, r"\1-\2", text, flags=re.IGNORECASE)
+
 
 def _is_cardinal(token):
     """
@@ -191,21 +293,20 @@ def _is_cardinal(token):
     """
     return token.isdigit()
 
+
 def expand_dates(monthnames, terms):
     """
     Expands date expressions in the form of "<month> <day>" (e.g., "apr 05") into
     both ordinal number (e.g., "apr 5th") and ordinal word (e.g., "apr fifth") forms.
     """
+
     def _extract_mmdd(terms):
         # Build a regex pattern using the keys of _MONTH_DAYS
-        month_pattern = r'\b(' + '|'.join(monthnames.keys()) + r')\s0*(\d{1,2})\b'
+        month_pattern = r"\b(" + "|".join(monthnames.keys()) + r")\s0*(\d{1,2})\b"
 
         # Extract terms that match the pattern exactly as in the original set, without normalization
         # Match month name or abbreviation followed by space and a day (with or without leading zero)
-        raw_date_terms = sorted([
-            term for term in terms
-            if re.fullmatch(month_pattern, term, re.IGNORECASE)
-        ])
+        raw_date_terms = sorted([term for term in terms if re.fullmatch(month_pattern, term, re.IGNORECASE)])
         return raw_date_terms
 
     date_terms = _extract_mmdd(terms)
@@ -229,6 +330,7 @@ def expand_dates(monthnames, terms):
 
     return transformed_dates
 
+
 # ───────────────────────────────────────────────────────────────────────────────────────────
 # PARTIAL DATES
 # These are used to represent incomplete date expressions like "march 05" or "november 12".
@@ -238,18 +340,29 @@ def expand_dates(monthnames, terms):
 
 # Days in each month (leap year variant for February)
 _MONTH_DAYS = {
-    "january": 31, "jan": 31,
-    "february": 29, "feb": 29,
-    "march": 31, "mar": 31,
-    "april": 30, "apr": 30,
+    "january": 31,
+    "jan": 31,
+    "february": 29,
+    "feb": 29,
+    "march": 31,
+    "mar": 31,
+    "april": 30,
+    "apr": 30,
     "may": 31,
-    "june": 30, "jun": 30,
-    "july": 31, "jul": 31,
-    "august": 31, "aug": 31,
-    "september": 30, "sep": 30,
-    "october": 31, "oct": 31,
-    "november": 30, "nov": 30,
-    "december": 31, "dec": 31
+    "june": 30,
+    "jun": 30,
+    "july": 31,
+    "jul": 31,
+    "august": 31,
+    "aug": 31,
+    "september": 30,
+    "sep": 30,
+    "october": 31,
+    "oct": 31,
+    "november": 30,
+    "nov": 30,
+    "december": 31,
+    "dec": 31,
 }
 
 # All "month day" combinations (e.g., "january 01", "february 14")
@@ -274,17 +387,49 @@ NUMERIC_ORDINALS = {f"{i}{numbr.ordinalSuffix(i)}" for i in range(1, 367)}
 
 # e.g., "first", "second", ..., "thousandth"
 LEXICAL_ORDINALS = {
-    "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth",
-    "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth",
-    "eighteenth", "nineteenth", "twentieth", "thirtieth", "fortieth", "fiftieth", "sixtieth",
-    "seventieth", "eightieth", "ninetieth", "hundredth", "thousandth"
+    "first",
+    "second",
+    "third",
+    "fourth",
+    "fifth",
+    "sixth",
+    "seventh",
+    "eighth",
+    "ninth",
+    "tenth",
+    "eleventh",
+    "twelfth",
+    "thirteenth",
+    "fourteenth",
+    "fifteenth",
+    "sixteenth",
+    "seventeenth",
+    "eighteenth",
+    "nineteenth",
+    "twentieth",
+    "thirtieth",
+    "fortieth",
+    "fiftieth",
+    "sixtieth",
+    "seventieth",
+    "eightieth",
+    "ninetieth",
+    "hundredth",
+    "thousandth",
 }
 
 # e.g., "twenty-first", "thirty-first"
 COMPOUND_ORDINAL_WORDS = {
-    "twenty-first", "twenty-second", "twenty-third", "twenty-fourth", "twenty-fifth",
-    "twenty-sixth", "twenty-seventh", "twenty-eighth", "twenty-ninth",
-    "thirty-first"
+    "twenty-first",
+    "twenty-second",
+    "twenty-third",
+    "twenty-fourth",
+    "twenty-fifth",
+    "twenty-sixth",
+    "twenty-seventh",
+    "twenty-eighth",
+    "twenty-ninth",
+    "thirty-first",
 }
 
 # Used in regex for ordinal matching (e.g., "twenty-first")
@@ -321,8 +466,9 @@ if not _SKIP_ORDINAL_CORRECTION:
 # Jaro-Winkler captures transpositions and prefix similarity, often used for fuzzy matching.
 # ────────────────────────────────────────────────────────────────────────────────
 
+
 # Levenshtein Distance — character-level edit distance
-#──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
 class Levenshtein:
     """
     Classic Levenshtein edit distance implementation (a.k.a. minimum edit distance).
@@ -340,6 +486,7 @@ class Levenshtein:
     - No support for transpositions (that’s Damerau-Levenshtein).
     - Could be memoized if needed for speed in large vocab lookups.
     """
+
     def __init__(self):
         pass
 
@@ -359,9 +506,9 @@ class Levenshtein:
                 # deletion (left), insertion (up), or substitution (diag)
                 # this is basically modeling channel noise: what’s the cheapest path to align the sequences?
                 dp[i][j] = min(
-                    dp[i - 1][j] + 1,        # deletion → removing a char from `a`
-                    dp[i][j - 1] + 1,        # insertion → adding a char to match `b`
-                    dp[i - 1][j - 1] + cost  # substitution (or match)
+                    dp[i - 1][j] + 1,  # deletion → removing a char from `a`
+                    dp[i][j - 1] + 1,  # insertion → adding a char to match `b`
+                    dp[i - 1][j - 1] + cost,  # substitution (or match)
                 )
 
         # bottom-right corner = edit distance between full strings
@@ -370,7 +517,7 @@ class Levenshtein:
 
 
 # Jaro-Winkler distance
-#──────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────────────────
 class JaroWinkler:
     """
     Jaro-Winkler distance for fuzzy string similarity — optimized for prefix alignment.
@@ -391,6 +538,7 @@ class JaroWinkler:
 
     Note: This does *not* consider phonetics — just character order and overlap.
     """
+
     def __init__(self, scaling=0.1):
         # This scaling factor determines the strength of the Winkler prefix bonus.
         # Empirically, 0.1 performs well for most linguistic applications.
@@ -416,8 +564,7 @@ class JaroWinkler:
         # Jaro uses a window to define which characters are "close enough" to compare
         # It's half the length of the longer string (minus one) to ensure locality
         match_distance = (max(len1, len2) // 2) - 1
-        if match_distance < 0:
-            match_distance = 0  # Edge case for very short strings
+        match_distance = max(match_distance, 0)  # Edge case for very short strings
 
         # Flags for tracking matched characters between s1 and s2
         s1_matches = [False] * len1
@@ -503,7 +650,7 @@ class LexicalFuzzyMatcher:
         ignore_numerals=True,
         levenshtein_threshold=1,
         jaro_winkler_threshold=0.88,
-        jaro_winkler_scaling=0.1
+        jaro_winkler_scaling=0.1,
     ):
         # Initialize with a predefined vocabulary — ideally all known temporal terms.
         self.vocabulary = set(vocabulary) if isinstance(vocabulary, list) else vocabulary
@@ -541,7 +688,7 @@ class LexicalFuzzyMatcher:
         ignore_numerals=None,
         levenshtein_threshold=None,
         jaro_winkler_threshold=None,
-        jaro_winkler_scaling=None
+        jaro_winkler_scaling=None,
     ):
         """
         Dynamically updates the configuration of the LexicalFuzzyMatcher instance.
@@ -609,7 +756,7 @@ class LexicalFuzzyMatcher:
             return token
 
         # Set
-        #-----------------------------------------
+        # -----------------------------------------
         # Already valid? Return as-is
         if isinstance(vocab, set):
             if token in vocab:
@@ -648,7 +795,7 @@ class LexicalFuzzyMatcher:
             return token
 
         # Set
-        #-----------------------------------------
+        # -----------------------------------------
         # Already valid? Return as-is
         if isinstance(vocab, set):
             if token in vocab:
@@ -666,7 +813,7 @@ class LexicalFuzzyMatcher:
             return best_match if best_score >= self.jaro_winkler_threshold else token
 
         # Dict
-        #-----------------------------------------
+        # -----------------------------------------
         # Already valid? Return as-is
         elif isinstance(vocab, dict):
             if token in vocab:
@@ -675,14 +822,13 @@ class LexicalFuzzyMatcher:
             best_match = None
             best_score = 0
             # Iterate through known words, scoring each by similarity
-            for word in vocab.keys():
+            for word in vocab:
                 score = self.jw.jaro_winkler_distance(token, word)
                 if score > best_score:
                     best_score = score
                     best_match = word
             # If best score is above threshold, return it — otherwise no match.
             return best_match if best_score >= self.jaro_winkler_threshold else token
-
 
     def match_token(self, token, vocabulary=None):
         # Combine both metrics into a hybrid strategy.
@@ -700,7 +846,7 @@ class LexicalFuzzyMatcher:
             return token
 
         # Set
-        #-----------------------------------------
+        # -----------------------------------------
         # Already valid? Return as-is
         if isinstance(vocab, set):
             if token in vocab:
@@ -722,7 +868,7 @@ class LexicalFuzzyMatcher:
             return best_match if best_score >= self.jaro_winkler_threshold else token
 
         # Dict
-        #-----------------------------------------
+        # -----------------------------------------
         # Already valid? Return as-is
         elif isinstance(vocab, dict):
             if token in vocab:
@@ -736,13 +882,12 @@ class LexicalFuzzyMatcher:
             # Jaro-Winkler fallback
             best_match = None
             best_score = 0
-            for word in vocab.keys():
+            for word in vocab:
                 score = self.jw.jaro_winkler_distance(token, word)
                 if score > best_score:
                     best_score = score
                     best_match = word
             return vocab[best_match] if best_score >= self.jaro_winkler_threshold else token
-
 
     # Fuzzy Logic
     # ─────────────────────────────────────
@@ -752,8 +897,8 @@ class LexicalFuzzyMatcher:
         if not self.ignore_ordinals:
             # Normalize compound ordinals (e.g., “twenty three” → “twenty-three”)
             phrase = _hyphenate_word_numbers(phrase)
-            pattern = r"\w+(?:-\w+)*" # Allow hyphenated forms
-        raw_tokens = re.findall(pattern, phrase.lower()) # Tokenize words
+            pattern = r"\w+(?:-\w+)*"  # Allow hyphenated forms
+        raw_tokens = re.findall(pattern, phrase.lower())  # Tokenize words
         return [self._levenshtein(tok) for tok in raw_tokens]
 
     def jaro_winkler_correction(self, phrase):
@@ -762,8 +907,8 @@ class LexicalFuzzyMatcher:
         if not self.ignore_ordinals:
             # Normalize compound ordinals
             phrase = _hyphenate_word_numbers(phrase)
-            pattern = r"\w+(?:-\w+)*" # Allow hyphenated forms
-        raw_tokens = re.findall(pattern, phrase.lower()) # Tokenize words
+            pattern = r"\w+(?:-\w+)*"  # Allow hyphenated forms
+        raw_tokens = re.findall(pattern, phrase.lower())  # Tokenize words
         return [self._jaro_winkler(tok) for tok in raw_tokens]
 
     def hybrid_correction(self, phrase):
@@ -773,30 +918,33 @@ class LexicalFuzzyMatcher:
         if not self.ignore_ordinals:
             # Normalize compound ordinals
             phrase = _hyphenate_word_numbers(phrase)
-            pattern = r"\w+(?:-\w+)*" # Allow hyphenated forms
-        raw_tokens = re.findall(pattern, phrase.lower()) # Tokenize words
+            pattern = r"\w+(?:-\w+)*"  # Allow hyphenated forms
+        raw_tokens = re.findall(pattern, phrase.lower())  # Tokenize words
         return [self.match_token(tok) for tok in raw_tokens]
 
     def __dir__(self):
         default_attrs = [f for f in super().__dir__() if f.startswith("__") and f.endswith("__")]
-        public_attrs = ['hybrid_correction', 'levenshtein_correction', 'jaro_winkler_correction', 'vocabulary', 'configure', 'reset_configuration', 'match_token']
+        public_attrs = [
+            "hybrid_correction",
+            "levenshtein_correction",
+            "jaro_winkler_correction",
+            "vocabulary",
+            "configure",
+            "reset_configuration",
+            "match_token",
+        ]
         return sorted(set(default_attrs + public_attrs))
-
 
 
 # Shared fuzzy matcher for normalizing user-provided temporal phrases.
 LexicalFuzzer = LexicalFuzzyMatcher(
-    vocabulary=CANONICAL_TEMPORAL_TERMS,             # Canonical lexicon of valid temporal terms (months, days, seasons, ordinals, etc.)
-    ignore_ordinals=_SKIP_ORDINAL_CORRECTION,   		 # Preserve ordinals instead of fuzzy-matching them.
-    ignore_numerals=True,                            # Whether to skip correction for bare numerals (e.g., "1", "30", "2023") — valid as-is.
-    levenshtein_threshold=1,                         # Allow a max edit distance of 1 — tight bound, good for simple typos like "dy" → "day".
-    jaro_winkler_threshold=0.88,                     # Require a high phonetic similarity to trigger Jaro-Winkler correction (0.88+ is conservative).
-    jaro_winkler_scaling=0.1                         # Standard Winkler bonus scaling — gives a boost to prefix matches (e.g. “feburary” → “february”).
+    vocabulary=CANONICAL_TEMPORAL_TERMS,  # Canonical lexicon of valid temporal terms (months, days, seasons, ordinals, etc.)
+    ignore_ordinals=_SKIP_ORDINAL_CORRECTION,  # Preserve ordinals instead of fuzzy-matching them.
+    ignore_numerals=True,  # Whether to skip correction for bare numerals (e.g., "1", "30", "2023") — valid as-is.
+    levenshtein_threshold=1,  # Allow a max edit distance of 1 — tight bound, good for simple typos like "dy" → "day".
+    jaro_winkler_threshold=0.88,  # Require a high phonetic similarity to trigger Jaro-Winkler correction (0.88+ is conservative).
+    jaro_winkler_scaling=0.1,  # Standard Winkler bonus scaling — gives a boost to prefix matches (e.g. “feburary” → “february”).
 )
-
-
-
-
 
 
 __all__ = ["LexicalFuzzer"]

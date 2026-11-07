@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -47,21 +45,29 @@
 
 # Import module
 import dately as dtly
+import numpy as np
 
 # Additional imports for examples
 import pandas as pd
-import numpy as np
 
 # Set variables
 datestring = "2023-06-21"
 datestring_list = [
-    '2023-06-21', '2024-06-21', '2024-07-21', '2024-08-20',
-    '2024-09-19', '2024-10-19', '2024-11-18', '2024-12-18',
-    '2025-01-17', '2025-02-16', '2025-03-18', '2025-04-17'
+    "2023-06-21",
+    "2024-06-21",
+    "2024-07-21",
+    "2024-08-20",
+    "2024-09-19",
+    "2024-10-19",
+    "2024-11-18",
+    "2024-12-18",
+    "2025-01-17",
+    "2025-02-16",
+    "2025-03-18",
+    "2025-04-17",
 ]
 datestring_array = np.array(datestring_list)
 datestring_series = pd.Series(datestring_list)
-
 
 
 ### Extracting Datetime Components
@@ -140,8 +146,6 @@ print(dtly.extract_datetime_component(datestring_series, "month"))
 # dtype: object
 
 
-
-
 ### Detecting Datetime Formats
 #### Single Date String
 print(dtly.detect_date_format(datestring))
@@ -175,16 +179,16 @@ print(dtly.detect_date_format(datestring_series))
 
 ### Converting Dates
 # Converting a single date string
-print(dtly.convert_date(datestring, to_format='%m.%Y/%d %I:%M %p', delta=1))
+print(dtly.convert_date(datestring, to_format="%m.%Y/%d %I:%M %p", delta=1))
 # Output: '06.2023/22 12:00 AM'
 # Converting a list of date strings
-print(dtly.convert_date(datestring_list, to_format='%Y/%m/%d %I:%M:%S %p'))
+print(dtly.convert_date(datestring_list, to_format="%Y/%m/%d %I:%M:%S %p"))
 # Output: ['2023/06/21 12:00:00 AM', '2024/06/21 12:00:00 AM', '2024/07/21 12:00:00 AM', '2024/08/20 12:00:00 AM', '2024/09/19 12:00:00 AM', '2024/10/19 12:00:00 AM', '2024/11/18 12:00:00 AM', '2024/12/18 12:00:00 AM', '2025/01/17 12:00:00 AM', '2025/02/16 12:00:00 AM', '2025/03/18 12:00:00 AM', '2025/04/17 12:00:00 AM']
 # Converting a NumPy array of date strings
-print(dtly.convert_date(datestring_array, to_format='%y/%m-%d %H:%M'))
+print(dtly.convert_date(datestring_array, to_format="%y/%m-%d %H:%M"))
 # Output: array(['23/06-21 00:00', '24/06-21 00:00', '24/07-21 00:00', '24/08-20 00:00', '24/09-19 00:00', '24/10-19 00:00', '24/11-18 00:00', '24/12-18 00:00', '25/01-17 00:00', '25/02-16 00:00', '25/03-18 00:00', '25/04-17 00:00'], dtype=object)
 # Converting a Pandas Series of date strings
-print(dtly.convert_date(datestring_series, to_format='%Y.%m.%d'))
+print(dtly.convert_date(datestring_series, to_format="%Y.%m.%d"))
 # Output:
 # 0     2023.06.21
 # 1     2024.06.21
@@ -206,51 +210,23 @@ print(dtly.convert_date(datestring_series, to_format='%Y.%m.%d'))
 sample_dict = {
     "event": {
         "name": "Annual Conference",
-        "dates": {
-            "start_date": "2024-01-15",
-            "end_date": "2024-01-20"
-        },
-        "registration": {
-            "open_date": "2023-11-01",
-            "close_date": "2023-12-30"
-        }
+        "dates": {"start_date": "2024-01-15", "end_date": "2024-01-20"},
+        "registration": {"open_date": "2023-11-01", "close_date": "2023-12-30"},
     },
     "meetings": [
-        {
-            "title": "Planning Meeting",
-            "meeting_date": "2023-10-01"
-        },
-        {
-            "title": "Review Meeting",
-            "meeting_date": "2023-10-15"
-        }
+        {"title": "Planning Meeting", "meeting_date": "2023-10-01"},
+        {"title": "Review Meeting", "meeting_date": "2023-10-15"},
     ],
-    "webinars": [
-        {
-            "topic": "Introduction to the Event",
-            "session_dates": [
-                "2023-11-10",
-                "2023-11-17"
-            ]
-        }
-    ],
+    "webinars": [{"topic": "Introduction to the Event", "session_dates": ["2023-11-10", "2023-11-17"]}],
     "workshops": {
         "sessions": [
-            {
-                "session_name": "Workshop 1",
-                "date": "01/01/2024"
-            },
-            {
-                "session_name": "Workshop 2",
-                "date": "2024-01-18"
-            }
+            {"session_name": "Workshop 1", "date": "01/01/2024"},
+            {"session_name": "Workshop 2", "date": "2024-01-18"},
         ]
-    }
+    },
 }
 # Converting dates in a dictionary
-converted_dict = dtly.convert_date(sample_dict, to_format='%Y/%m', dict_keys=["meeting_date", "date", "session_dates"])
+converted_dict = dtly.convert_date(sample_dict, to_format="%Y/%m", dict_keys=["meeting_date", "date", "session_dates"])
 print(converted_dict)
 # Output:
 # {'event': {'name': 'Annual Conference', 'dates': {'start_date': '2024-01-15', 'end_date': '2024-01-20'}, 'registration': {'open_date': '2023-11-01', 'close_date': '2023-12-30'}}, 'meetings': [{'title': 'Planning Meeting', 'meeting_date': '2023/10'}, {'title': 'Review Meeting', 'meeting_date': '2023/10'}], 'webinars': [{'topic': 'Introduction to the Event', 'session_dates': ['2023/11', '2023/11']}], 'workshops': {'sessions': [{'session_name': 'Workshop 1', 'date': '2024/01'}, {'session_name': 'Workshop 2', 'date': '2024/01'}]}}
-
-

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,11 +41,11 @@
 # SOFTWARE.
 #
 
+import re
+import unicodedata
 from datetime import date
 from difflib import get_close_matches
 from html.parser import HTMLParser
-import re
-import unicodedata
 
 import pandas as pd
 
@@ -55,14 +53,22 @@ from ._connect import http_client
 from ._sysutils import DataImport
 from ._webutils import absolute_url
 
-
 _COLUMNS = ["Date", "Name", "Type"]
 # Names absent from, or different from, the bundled timezone country data.
 _COUNTRY_CODE_OVERRIDES = {
-    "Congo": "CG", "Congo Democratic Republic": "CD", "Cote d'Ivoire": "CI",
-    "East Timor": "TL", "Kosovo": "XK", "Macau": "MO", "St. Barts": "BL",
-    "The Bahamas": "BS", "US Virgin Islands": "VI", "Vatican City (Holy See)": "VA",
-    "Bouvet Island": "BV", "Western Sahara": "EH", "Heard Island and McDonald Islands": "HM",
+    "Congo": "CG",
+    "Congo Democratic Republic": "CD",
+    "Cote d'Ivoire": "CI",
+    "East Timor": "TL",
+    "Kosovo": "XK",
+    "Macau": "MO",
+    "St. Barts": "BL",
+    "The Bahamas": "BS",
+    "US Virgin Islands": "VI",
+    "Vatican City (Holy See)": "VA",
+    "Bouvet Island": "BV",
+    "Western Sahara": "EH",
+    "Heard Island and McDonald Islands": "HM",
 }
 
 
@@ -111,7 +117,7 @@ class parse_href_calendar(HTMLParser):
         self.data = []
 
     def set_html_content(self, html_content):
-        title = re.search(r"<title\b[^>]*>(.*?)</title>", html_content, re.I | re.S)
+        title = re.search(r"<title\b[^>]*>(.*?)</title>", html_content, re.IGNORECASE | re.DOTALL)
         title_year = re.search(r"\b\d{4}\b", title[1]) if title else None
         if title_year:
             detected_year = int(title_year[0])
@@ -154,9 +160,9 @@ class parse_href_calendar(HTMLParser):
         if not self.found_table:
             raise ValueError("Holiday table is missing from the response")
         months = {
-            name: index for index, name in enumerate(
-                ("jan", "feb", "mar", "apr", "may", "jun",
-                 "jul", "aug", "sep", "oct", "nov", "dec"), 1
+            name: index
+            for index, name in enumerate(
+                ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"), 1
             )
         }
         weekdays = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"}
@@ -165,8 +171,8 @@ class parse_href_calendar(HTMLParser):
             row = [value for value in raw_row if value and value.casefold() not in weekdays]
             if not row:
                 continue
-            match = re.fullmatch(r"([a-z]{3})\.? (\d{1,2})", row[0], re.I)
-            reverse = re.fullmatch(r"(\d{1,2}) ([a-z]{3})\.?", row[0], re.I)
+            match = re.fullmatch(r"([a-z]{3})\.? (\d{1,2})", row[0], re.IGNORECASE)
+            reverse = re.fullmatch(r"(\d{1,2}) ([a-z]{3})\.?", row[0], re.IGNORECASE)
             if not match and not reverse:
                 continue  # table headings and month separators
             month, day = (match[1], match[2]) if match else (reverse[2], reverse[1])
@@ -237,7 +243,12 @@ class HolidayManager:
             )
         try:
             return library.country_holidays(
-                code, years=year, subdiv=subdiv, observed=observed, language="en_US", expand=False,
+                code,
+                years=year,
+                subdiv=subdiv,
+                observed=observed,
+                language="en_US",
+                expand=False,
             )
         except (ValueError, NotImplementedError) as exc:
             raise ValueError(f"Invalid public holiday calendar for '{name}': {exc}") from exc
@@ -247,8 +258,7 @@ class HolidayManager:
     def _public_rows(self, name, code, year, subdiv, observed):
         calendar = self._public_calendar(name, code, year, subdiv, observed)
         rows = [
-            [day.isoformat(), label, "Public holiday"]
-            for day, label in sorted(calendar.items()) if day.year == year
+            [day.isoformat(), label, "Public holiday"] for day, label in sorted(calendar.items()) if day.year == year
         ]
         if not rows:
             raise HolidayLookupError(
@@ -316,8 +326,7 @@ class HolidayManager:
             raise ValueError("subdiv and observed options apply only to source='public'")
         name, code = self._resolve_country(country_name)
         data = (
-            self._public_rows(name, code, year, subdiv, observed)
-            if source == "public" else self._web_rows(name, year)
+            self._public_rows(name, code, year, subdiv, observed) if source == "public" else self._web_rows(name, year)
         )
         if format == "dict":
             return [dict(zip(_COLUMNS, row)) for row in data[1:]]

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing stable release tag (for example v3.4.0)
+        description: Existing stable release tag (for example v4.7.6)
         required: true
         type: string
       run_id:
@@ -26,15 +26,20 @@ concurrency:
 jobs:
   publish:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      github.repository == 'doydl-technologies/dately' &&
+      (github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push' &&
        startsWith(github.event.workflow_run.head_branch, 'v') &&
-       github.event.workflow_run.head_repository.full_name == github.repository)
+       github.event.workflow_run.head_repository.full_name == github.repository))
     runs-on: ubuntu-22.04
     permissions:
       contents: write
       actions: read
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      sha: ${{ steps.release.outputs.sha }}
+      run_id: ${{ steps.release.outputs.run_id }}
     steps:
       - name: Verify build provenance and tag commit
         id: release
@@ -106,23 +111,96 @@ jobs:
               return files;
             }
             const files = (await collect('artifacts')).sort();
-            const {data: notes} = await github.rest.repos.generateReleaseNotes({owner, repo, tag_name: tag});
-            const body = [
-              '## Release downloads',
-              'Windows x64, Linux x86-64 (glibc 2.28+), macOS Intel and Apple Silicon wheels.',
-              'CPython 3.8 through 3.14, plus a source archive rebuilt and tested on Linux.',
-              'Install with `python -m pip install --upgrade dately`.',
-              notes.body,
-            ].join('\n\n');
-            const {data: release} = await github.rest.repos.createRelease({
-              owner, repo, tag_name: tag, target_commitish: process.env.RELEASE_SHA,
-              name: tag, body, draft: true, prerelease: false,
-            });
+            let body = await fs.readFile(`release-notes/${tag}.md`, 'utf8');
+            if (!body.startsWith(`# ${tag}\n`)) throw new Error('Approved notes do not match the release tag');
+            body = body.replace('Full changelog (planned; requires the ' + tag + ' tag)', 'Full changelog');
+            let release;
+            try {
+              ({data: release} = await github.rest.repos.getReleaseByTag({owner, repo, tag}));
+              if (!release.draft) throw new Error('Refusing to replace an already published release');
+              ({data: release} = await github.rest.repos.updateRelease({owner, repo, release_id: release.id, name: tag, body}));
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              ({data: release} = await github.rest.repos.createRelease({
+                owner, repo, tag_name: tag, target_commitish: process.env.RELEASE_SHA,
+                name: tag, body, draft: true, prerelease: false,
+              }));
+            }
+            const crypto = require('node:crypto');
+            const sums = [];
             for (const file of files) {
+              const data = await fs.readFile(file);
+              const digest = crypto.createHash('sha256').update(data).digest('hex');
+              sums.push(`${digest}  ${path.basename(file)}`);
+              const existing = release.assets.find(asset => asset.name === path.basename(file));
+              if (existing) {
+                const {data: downloaded} = await github.rest.repos.getReleaseAsset({
+                  owner, repo, asset_id: existing.id, headers: {accept: 'application/octet-stream'},
+                });
+                if (crypto.createHash('sha256').update(Buffer.from(downloaded)).digest('hex') !== digest) {
+                  throw new Error(`Existing draft asset differs: ${existing.name}`);
+                }
+                continue;
+              }
               await github.rest.repos.uploadReleaseAsset({
                 owner, repo, release_id: release.id, name: path.basename(file),
-                data: await fs.readFile(file),
+                data,
+              });
+            }
+            if (!release.assets.some(asset => asset.name === 'SHA256SUMS')) {
+              await github.rest.repos.uploadReleaseAsset({
+                owner, repo, release_id: release.id, name: 'SHA256SUMS',
+                data: Buffer.from(sums.join('\n') + '\n'),
               });
             }
             await github.rest.repos.updateRelease({owner, repo, release_id: release.id, draft: false, make_latest: 'true'});
             core.notice(`Published ${tag} with ${files.length} validated downloads`);
+
+  pypi:
+    name: Publish package to PyPI with trusted publishing
+    needs: publish
+    runs-on: ubuntu-22.04
+    environment:
+      name: pypi
+      url: https://pypi.org/project/dately/
+    permissions:
+      contents: write
+      actions: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.publish.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install packaging
+      - uses: actions/download-artifact@v5
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ needs.publish.outputs.run_id }}
+          pattern: dately-*
+          path: dist
+          merge-multiple: true
+      - name: Validate exact tagged distributions
+        env:
+          RELEASE_TAG: ${{ needs.publish.outputs.tag }}
+        run: python scripts/release_checks.py --tag "$RELEASE_TAG" --artifacts dist
+      - name: Publish using GitHub OIDC identity
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+      - name: Finalize publication links
+        uses: actions/github-script@v8
+        env:
+          RELEASE_TAG: ${{ needs.publish.outputs.tag }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const tag = process.env.RELEASE_TAG;
+            const {data: release} = await github.rest.repos.getReleaseByTag({owner, repo, tag});
+            const body = release.body
+              .replace(/This draft describes the planned `[^`]+` release\. The pinned command below becomes usable after that version is published to PyPI\. /, '')
+              .replace('PyPI release (planned; available after publication)', 'PyPI release');
+            await github.rest.repos.updateRelease({owner, repo, release_id: release.id, body});

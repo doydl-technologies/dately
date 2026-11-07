@@ -1,9 +1,8 @@
 from datetime import date
 
+import dately
 import pytest
 import requests
-
-import dately
 from dately._holiday import HolidayManager
 from dately._temporal_scan import parse_temporal, resolver
 
@@ -40,7 +39,9 @@ def test_scoped_selections_and_lists_use_country_holidays():
     assert dately.parse("first business day of January 2027", country="US") == date(2027, 1, 4)
     assert dately.parse("last business day of December 2021", country="US") == date(2021, 12, 30)
     assert dately.parse("next 3 business days", country="US") == [
-        date(2026, 11, 27), date(2026, 11, 30), date(2026, 12, 1),
+        date(2026, 11, 27),
+        date(2026, 11, 30),
+        date(2026, 12, 1),
     ]
 
 
@@ -101,18 +102,21 @@ def test_holidays_are_loaded_lazily_and_cached_per_year_per_calendar(monkeypatch
     assert all(call[2:] == ("dict", {"subdiv": None, "observed": True}) for call in calls)
 
 
-@pytest.mark.parametrize("kwargs, error", [
-    ({"country": "Atlantis"}, ValueError),
-    ({"country": "Belguim"}, ValueError),
-    ({"country": 123}, TypeError),
-    ({"country": "US", "subdiv": "XX"}, ValueError),
-    ({"country": "US", "subdiv": []}, ValueError),
-    ({"subdiv": "WI"}, ValueError),
-    ({"observed": False}, ValueError),
-    ({"country": "US", "observed": 1}, TypeError),
-    ({"country": "US", "business_calendar": dately.BusinessCalendar()}, ValueError),
-    ({"business_calendar": dately.BusinessCalendar(), "observed": False}, ValueError),
-])
+@pytest.mark.parametrize(
+    "kwargs, error",
+    [
+        ({"country": "Atlantis"}, ValueError),
+        ({"country": "Belguim"}, ValueError),
+        ({"country": 123}, TypeError),
+        ({"country": "US", "subdiv": "XX"}, ValueError),
+        ({"country": "US", "subdiv": []}, ValueError),
+        ({"subdiv": "WI"}, ValueError),
+        ({"observed": False}, ValueError),
+        ({"country": "US", "observed": 1}, TypeError),
+        ({"country": "US", "business_calendar": dately.BusinessCalendar()}, ValueError),
+        ({"business_calendar": dately.BusinessCalendar(), "observed": False}, ValueError),
+    ],
+)
 def test_invalid_country_options_raise_instead_of_falling_back(kwargs, error):
     with pytest.raises(error):
         dately.parse("next business day", **kwargs)
@@ -126,7 +130,9 @@ def test_unsupported_provider_country_is_explicit(monkeypatch):
         dately.parse("next business day", country="Belgium")
 
 
-@pytest.mark.parametrize("error", [dately.HolidayLookupError("Calendar data unavailable"), ValueError("Year unavailable")])
+@pytest.mark.parametrize(
+    "error", [dately.HolidayLookupError("Calendar data unavailable"), ValueError("Year unavailable")]
+)
 def test_yearly_lookup_failures_propagate_through_both_parsers(monkeypatch, error):
     def fail(*args, **kwargs):
         raise error

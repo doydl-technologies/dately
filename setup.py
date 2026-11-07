@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -49,7 +47,6 @@ from pathlib import Path
 from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_py import build_py as _build_py
-
 
 ROOT = Path(__file__).resolve().parent
 VERSION_MATCH = re.search(

@@ -1,10 +1,9 @@
 from datetime import date
 
+import dately
 import pandas as pd
 import pytest
 import requests
-
-import dately
 from dately import _holiday as holiday_module
 from dately._connect import http_client
 from dately._holiday import HolidayLookupError, HolidayManager, parse_href_calendar
@@ -16,22 +15,40 @@ def manager():
     return HolidayManager()
 
 
-@pytest.mark.parametrize("name", [
-    "United States", "united states", "UNITED STATES", " US ", "usa", "U.S.A.",
-    "United States of America", "  united   states  ",
-])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "United States",
+        "united states",
+        "UNITED STATES",
+        " US ",
+        "usa",
+        "U.S.A.",
+        "United States of America",
+        "  united   states  ",
+    ],
+)
 def test_country_aliases_return_the_same_calendar(manager, name):
     assert manager.Holiday(name, 2026) == manager.Holiday("US", 2026)
 
 
-@pytest.mark.parametrize("name, expected", [
-    ("belgium", ("Belgium", "BE")), ("be", ("Belgium", "BE")),
-    ("U.K.", ("United Kingdom", "GB")), ("GB", ("United Kingdom", "GB")),
-    ("Côte d’Ivoire", ("Cote d'Ivoire", "CI")), ("Ivory Coast", ("Cote d'Ivoire", "CI")),
-    ("Republic of the Congo", ("Congo", "CG")), ("Congo", ("Congo", "CG")),
-    ("DR Congo", ("Congo Democratic Republic", "CD")), ("CD", ("Congo Democratic Republic", "CD")),
-    ("Macao", ("Macau", "MO")), ("Timor-Leste", ("East Timor", "TL")),
-])
+@pytest.mark.parametrize(
+    "name, expected",
+    [
+        ("belgium", ("Belgium", "BE")),
+        ("be", ("Belgium", "BE")),
+        ("U.K.", ("United Kingdom", "GB")),
+        ("GB", ("United Kingdom", "GB")),
+        ("Côte d’Ivoire", ("Cote d'Ivoire", "CI")),
+        ("Ivory Coast", ("Cote d'Ivoire", "CI")),
+        ("Republic of the Congo", ("Congo", "CG")),
+        ("Congo", ("Congo", "CG")),
+        ("DR Congo", ("Congo Democratic Republic", "CD")),
+        ("CD", ("Congo Democratic Republic", "CD")),
+        ("Macao", ("Macau", "MO")),
+        ("Timor-Leste", ("East Timor", "TL")),
+    ],
+)
 def test_country_resolution_handles_codes_accents_and_canonical_precedence(manager, name, expected):
     assert manager._resolve_country(name) == expected
 
@@ -116,12 +133,26 @@ def test_default_year_is_evaluated_on_each_call(manager, monkeypatch):
     assert manager.Holiday("US")[1][0] == "2027-01-01"
 
 
-@pytest.mark.parametrize("kwargs", [
-    {"year": "202x"}, {"year": 26}, {"year": 2026.0}, {"year": True}, {"year": 0},
-    {"year": "0000"}, {"year": []}, {"format": "csv"}, {"format": []},
-    {"source": "unknown"}, {"source": []}, {"observed": 1}, {"subdiv": ""},
-    {"source": "timeanddate", "subdiv": "WI"}, {"source": "timeanddate", "observed": False},
-])
+@pytest.mark.parametrize(
+    "kwargs",
+    [
+        {"year": "202x"},
+        {"year": 26},
+        {"year": 2026.0},
+        {"year": True},
+        {"year": 0},
+        {"year": "0000"},
+        {"year": []},
+        {"format": "csv"},
+        {"format": []},
+        {"source": "unknown"},
+        {"source": []},
+        {"observed": 1},
+        {"subdiv": ""},
+        {"source": "timeanddate", "subdiv": "WI"},
+        {"source": "timeanddate", "observed": False},
+    ],
+)
 def test_invalid_arguments_are_explicit(manager, kwargs):
     with pytest.raises((TypeError, ValueError)):
         manager.Holiday("US", **kwargs)
@@ -196,19 +227,22 @@ def test_web_source_preserves_labels_columns_and_formats():
     assert fake.urls[0] == "https://www.timeanddate.com/holidays/belgium/2026"
 
 
-@pytest.mark.parametrize("payload, match", [
-    ({"error": "HTTP Error 403: Forbidden"}, "403"),
-    ({"message": "Rate limit exceeded"}, "Rate limit"),
-    ({}, "missing response"),
-    ({"response": None}, "non-HTML"),
-    ({"response": "<html>Access denied</html>"}, "table is missing"),
-    ({"response": "<table id='holidays-table'></table>"}, "no dated holiday rows"),
-    ({"response": WEB_HTML.replace("2026", "2027")}, "year does not match"),
-    # Python 3.14 changed datetime's wording; assert our wrapper and the
-    # invalid day rather than depending on a particular interpreter message.
-    ({"response": WEB_HTML.replace("Jan&nbsp;1", "Feb 30")}, "Invalid holiday data.*day"),
-    ({"response": "<table id='holidays-table'><tr><td>Jan 1</td></tr></table>"}, "incomplete row"),
-])
+@pytest.mark.parametrize(
+    "payload, match",
+    [
+        ({"error": "HTTP Error 403: Forbidden"}, "403"),
+        ({"message": "Rate limit exceeded"}, "Rate limit"),
+        ({}, "missing response"),
+        ({"response": None}, "non-HTML"),
+        ({"response": "<html>Access denied</html>"}, "table is missing"),
+        ({"response": "<table id='holidays-table'></table>"}, "no dated holiday rows"),
+        ({"response": WEB_HTML.replace("2026", "2027")}, "year does not match"),
+        # Python 3.14 changed datetime's wording; assert our wrapper and the
+        # invalid day rather than depending on a particular interpreter message.
+        ({"response": WEB_HTML.replace("Jan&nbsp;1", "Feb 30")}, "Invalid holiday data.*day"),
+        ({"response": "<table id='holidays-table'><tr><td>Jan 1</td></tr></table>"}, "incomplete row"),
+    ],
+)
 def test_web_failures_raise_useful_errors_and_restore_state(payload, match):
     fake = WebHTTP(payload)
     with pytest.raises(HolidayLookupError, match=match):
@@ -242,7 +276,9 @@ def test_web_source_requires_an_http_client(manager):
 
 def test_headerless_web_table_does_not_drop_the_first_holiday():
     parser = parse_href_calendar(year=2027)
-    parser.set_html_content("<table id='holidays-table'><tr><td>Jan 1</td><td>New Year</td><td>Public</td></tr></table>")
+    parser.set_html_content(
+        "<table id='holidays-table'><tr><td>Jan 1</td><td>New Year</td><td>Public</td></tr></table>"
+    )
     expected = [["Date", "Name", "Type"], ["2027-01-01", "New Year", "Public"]]
     assert parser.get_cleaned_data() == expected
     assert parser.get_cleaned_data() == expected  # repeated reads preserve the data

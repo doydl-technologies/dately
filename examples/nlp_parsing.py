@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -47,17 +45,26 @@
 
 # Import module
 import dately as dtly
+import numpy as np
 
 # Additional imports for examples
 import pandas as pd
-import numpy as np
 
 # Set variables
 datestring = "2023-06-21"
 datestring_list = [
-    '2023-06-21', '2024-06-21', '2024-07-21', '2024-08-20',
-    '2024-09-19', '2024-10-19', '2024-11-18', '2024-12-18',
-    '2025-01-17', '2025-02-16', '2025-03-18', '2025-04-17'
+    "2023-06-21",
+    "2024-06-21",
+    "2024-07-21",
+    "2024-08-20",
+    "2024-09-19",
+    "2024-10-19",
+    "2024-11-18",
+    "2024-12-18",
+    "2025-01-17",
+    "2025-02-16",
+    "2025-03-18",
+    "2025-04-17",
 ]
 datestring_array = np.array(datestring_list)
 datestring_series = pd.Series(datestring_list)
@@ -76,7 +83,6 @@ datestring_series = pd.Series(datestring_list)
 # Behind the scenes, it uses rule-based grammars, temporal math, and context-aware resolution anchored to today's date (or a custom one you provide).
 
 
-
 ### Basic Usage
 # Parse natural phrases into exact dates or date ranges
 dtly.parse("first Monday of next month")
@@ -89,4 +95,3 @@ dtly.parse("last 5 weekends")
 ### Customizing Week Start
 # Control which day is considered the start of the week (default = Sunday):
 dtly.set_week_start("monday")  # affects “this week”, “last 3 weekends”, etc.
-

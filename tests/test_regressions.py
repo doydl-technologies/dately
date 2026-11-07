@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -45,9 +43,8 @@
 
 from datetime import date
 
-import pytest
-
 import dately
+import pytest
 from dately._temporal_scan import resolver
 
 
@@ -142,4 +139,4 @@ def test_timezoner_and_holidate_are_enabled_without_network_access():
 
 
 def test_public_version_matches_release():
-    assert dately.__version__ == "3.4.0"
+    assert dately.__version__ == "4.7.6"

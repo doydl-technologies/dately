@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,19 +41,22 @@
 # SOFTWARE.
 #
 
+import logging
 import re
 
+from ._connect import http_client
 from ._log import logger
 from ._mskutils import Shift
 from ._sysutils import DataImport, UnixTime
-from ._connect import http_client
 
 
 def get_timezone_data():
     return DataImport.load_timezone_data()
 
+
 class TimezoneOffset:
     """Converts a numeric or string time offset into a formatted string representing the offset in hours and minutes."""
+
     @staticmethod
     def format(offset):
         if isinstance(offset, str):
@@ -64,14 +65,14 @@ class TimezoneOffset:
                 return "+00:00"
             if offset.isupper():
                 return offset
-            if re.match(r'^[+-]\d{2}:\d{2}$', offset):
+            if re.match(r"^[+-]\d{2}:\d{2}$", offset):
                 return offset
         # Handle the case where offset is given as a string with hours and optional minutes
-        pattern_hm = r'^([+-]?)(\d{1,2})(?::?(\d{1,2})?)?$'
+        pattern_hm = r"^([+-]?)(\d{1,2})(?::?(\d{1,2})?)?$"
         match_hm = re.match(pattern_hm, str(offset).strip())
         if match_hm:
             sign, hours_str, minutes_str = match_hm.groups()
-            sign = '+' if sign != '-' else '-'
+            sign = "+" if sign != "-" else "-"
             try:
                 hours = int(hours_str)
                 minutes = int(minutes_str) if minutes_str else 0
@@ -89,11 +90,11 @@ class TimezoneOffset:
             except ValueError:
                 return None
         # Handle the case where offset is given as total seconds
-        pattern_seconds = r'^([+-]?)(\d+)$'
+        pattern_seconds = r"^([+-]?)(\d+)$"
         match_seconds = re.match(pattern_seconds, str(offset).strip())
         if match_seconds:
             sign, offset_str = match_seconds.groups()
-            sign = '+' if sign != '-' else '-'
+            sign = "+" if sign != "-" else "-"
             try:
                 total_seconds = int(offset_str)
                 hours = total_seconds // 3600
@@ -108,8 +109,10 @@ class TimezoneOffset:
                 return None
         return None
 
+
 class tzoneDataManager:
-    """ Manages the loading of json data """
+    """Manages the loading of json data"""
+
     def __init__(self):
         self.timezonedata = get_timezone_data()
         self.restructured_data = self.__restructure_data()
@@ -119,20 +122,19 @@ class tzoneDataManager:
         if self.timezonedata:
             restructured_data = {}
             for entry in self.timezonedata:
-                zone_name = entry['zoneName']
+                zone_name = entry["zoneName"]
                 restructured_data[zone_name] = {
-                    'countryCode': entry['countryCode'],
-                    'countryName': entry['countryName'],
-                    'Offset': entry['Offset'],
-                    'UTC offset (STD)': entry.get('UTC offset (STD)'),
-                    'UTC offset (DST)': entry.get('UTC offset (DST)'),
-                    'Abbreviation (STD)': entry.get('Abbreviation (STD)'),
-                    'Abbreviation (DST)': entry.get('Abbreviation (DST)'),
-                    'timezone_object': entry.get('timezone_object')
+                    "countryCode": entry["countryCode"],
+                    "countryName": entry["countryName"],
+                    "Offset": entry["Offset"],
+                    "UTC offset (STD)": entry.get("UTC offset (STD)"),
+                    "UTC offset (DST)": entry.get("UTC offset (DST)"),
+                    "Abbreviation (STD)": entry.get("Abbreviation (STD)"),
+                    "Abbreviation (DST)": entry.get("Abbreviation (DST)"),
+                    "timezone_object": entry.get("timezone_object"),
                 }
             return restructured_data
         return None
-
 
 
 class ZoneInfoManager:
@@ -142,10 +144,10 @@ class ZoneInfoManager:
 
     def __dir__(self):
         original_dir = super().__dir__()
-        return [item for item in original_dir if not item.startswith('_')]
+        return [item for item in original_dir if not item.startswith("_")]
 
     def __update_key_type(self, new_key_type):
-        """ Temporarily update the API key type for the http_client utility. """
+        """Temporarily update the API key type for the http_client utility."""
         if not self.__HTTP:
             return None
         original_key_type = self.__HTTP.current_key_type
@@ -155,30 +157,34 @@ class ZoneInfoManager:
     @property
     def CountryCodes(self):
         """Return a sorted list of unique country codes in the time zone data."""
-        return sorted({entry['countryCode'] for entry in self.__data.values()})
+        return sorted({entry["countryCode"] for entry in self.__data.values()})
 
     @property
     def CountryNames(self):
         """Return a sorted list of unique country names in the time zone data."""
-        return sorted({entry['countryName'] for entry in self.__data.values()})
+        return sorted({entry["countryName"] for entry in self.__data.values()})
 
     @property
     def MyTimeZone(self):
-        """ Get the current timezone details for users region. """
+        """Get the current timezone details for users region."""
         if not self.__HTTP:
             return None
         original_key_type = self.__update_key_type("DependentVersion")
         original_url = self.__HTTP.base_url
-        temp = Shift.type.map('aHR0cHM6Ly9hcGkuaXBnZW9sb2NhdGlvbi5pby90aW1lem9uZQ==', ret=True)
+        temp = Shift.type.map("aHR0cHM6Ly9hcGkuaXBnZW9sb2NhdGlvbi5pby90aW1lem9uZQ==", ret=True)
         self.__HTTP.update_base_url(temp)
         try:
-            result = self.__HTTP.make_request(params={}, api_key_param_name='apiKey')
+            result = self.__HTTP.make_request(params={}, api_key_param_name="apiKey")
         finally:
             if original_key_type:
                 self.__HTTP.set_key_type(original_key_type)
             if original_url:
                 self.__HTTP.update_base_url(original_url)
-        return next(iter(result[0].values()), {}).get('response', None) if any('response' in next(iter(item.values()), {}) for item in result or []) else None
+        return (
+            next(iter(result[0].values()), {}).get("response", None)
+            if any("response" in next(iter(item.values()), {}) for item in result or [])
+            else None
+        )
 
     @property
     def ObservesDST(self):
@@ -186,19 +192,19 @@ class ZoneInfoManager:
         zones_with_dst = []
         zones_without_dst = []
         for zone_name, details in self.__data.items():
-            dst_value = details['UTC offset (DST)']
+            dst_value = details["UTC offset (DST)"]
             if dst_value is None or (isinstance(dst_value, str) and dst_value.isalpha() and dst_value.isupper()):
                 zones_without_dst.append(zone_name)
             else:
                 zones_with_dst.append(zone_name)
-        return {'observes_dst': zones_with_dst, 'does_not_observe_dst': zones_without_dst}
+        return {"observes_dst": zones_with_dst, "does_not_observe_dst": zones_without_dst}
 
     @property
     def Offsets(self):
         """Return a dictionary mapping offsets to a list of time zones with that offset."""
         zones_by_offset = {}
         for zone_name, details in self.__data.items():
-            offset = details['Offset']
+            offset = details["Offset"]
             if offset not in zones_by_offset:
                 zones_by_offset[offset] = []
             zones_by_offset[offset].append(zone_name)
@@ -214,7 +220,7 @@ class ZoneInfoManager:
         """Return a dictionary mapping country codes to their respective time zones."""
         zones_by_country = {}
         for zone_name, details in self.__data.items():
-            country_code = details['countryCode']
+            country_code = details["countryCode"]
             if country_code not in zones_by_country:
                 zones_by_country[country_code] = []
             zones_by_country[country_code].append(zone_name)
@@ -252,21 +258,17 @@ class ZoneInfoManager:
         timestamp = UnixTime.Timestamp(year, month, day, hour, minute, second)
         if not self.__HTTP:
             return None
-        params = {
-            'from': from_zone,
-            'to': to_zone,
-            'time': timestamp
-        }
+        params = {"from": from_zone, "to": to_zone, "time": timestamp}
         original_url = self.__HTTP.base_url
-        self.__HTTP.update_base_url('https://api.timezonedb.com/v2.1/convert-time-zone')
+        self.__HTTP.update_base_url("https://api.timezonedb.com/v2.1/convert-time-zone")
         try:
             result = self.__HTTP.make_request(params)
         finally:
             self.__HTTP.update_base_url(original_url)
 
-        if any('response' in next(iter(item.values()), {}) for item in result or []):
-            data = next(iter(result[0].values()), {}).get('response', None)
-            return [zone for zone in data['zones'] if zone['zoneName'] in [from_zone, to_zone]]
+        if any("response" in next(iter(item.values()), {}) for item in result or []):
+            data = next(iter(result[0].values()), {}).get("response", None)
+            return [zone for zone in data["zones"] if zone["zoneName"] in [from_zone, to_zone]]
         else:
             return None
 
@@ -281,15 +283,15 @@ class ZoneInfoManager:
             return None
 
         original_url = self.__HTTP.base_url
-        temp = f'https://worldtimeapi.org/api/timezone/{zone_name}'
+        temp = f"https://worldtimeapi.org/api/timezone/{zone_name}"
         self.__HTTP.update_base_url(temp)
         try:
             result = self.__HTTP.make_request(params={})
         finally:
             self.__HTTP.update_base_url(original_url)
 
-        if any('response' in next(iter(item.values()), {}) for item in result or []):
-            return next(iter(result[0].values()), {}).get('response', None)["datetime"]
+        if any("response" in next(iter(item.values()), {}) for item in result or []):
+            return next(iter(result[0].values()), {}).get("response", None)["datetime"]
         else:
             return None
 
@@ -304,7 +306,7 @@ class ZoneInfoManager:
                  If as_datetime is True, returns the current datetime in that timezone.
         """
         if current:
-            current_timezone = self.MyTimeZone.get('timezone', None) if self.MyTimeZone else None
+            current_timezone = self.MyTimeZone.get("timezone", None) if self.MyTimeZone else None
             if current_timezone:
                 return self.Object(zone_name=current_timezone, current=False, as_datetime=as_datetime)
             else:
@@ -313,10 +315,11 @@ class ZoneInfoManager:
         else:
             zone_data = self.__data.get(zone_name)
             if zone_data:
-                timezone_object = zone_data.get('timezone_object')
+                timezone_object = zone_data.get("timezone_object")
                 if as_datetime and timezone_object:
-                    if hasattr(timezone_object, 'zone'):
+                    if hasattr(timezone_object, "zone"):
                         from datetime import datetime
+
                         current_time = datetime.now(timezone_object)
                         return current_time
                     else:
@@ -333,16 +336,9 @@ def get_TimeZoner():
         timezonedata = tzoneDataManager().restructured_data
         return ZoneInfoManager(timezonedata, http_client)
     except Exception as e:
+        logging.getLogger("dately").debug("Recovering from a failed operation", exc_info=True)
         logger.exception("Failed to initialize TimeZoner")
         raise ImportError(f"Failed to initialize TimeZoner: {e}")
 
 
-
-__all__ = ['ZoneInfoManager', 'get_TimeZoner']
-
-
-
-
-
-
-
+__all__ = ["ZoneInfoManager", "get_TimeZoner"]

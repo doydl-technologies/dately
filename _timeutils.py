@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,22 +41,24 @@
 # SOFTWARE.
 #
 
-import re
 import datetime
+import re
 
-from ._utils import is_leap_year, hundred_thousandths_place
+from ._utils import hundred_thousandths_place, is_leap_year
 from .mold.pyd.clean_str import cleanstr
 from .mold.pyd.Compiled import (
-    datetime_regex as datetime_pattern_search,
     anytime_regex,
-    timemeridiem_regex,
-    timeboundary_regex,
-    time_only_regex,
-    timezone_offset_regex,
-    timezone_abbreviation_regex,
-    iana_timezone_identifier_regex,
     full_timezone_name_regex,
     # get_time_fragment as gtf,
+    iana_timezone_identifier_regex,
+    time_only_regex,
+    timeboundary_regex,
+    timemeridiem_regex,
+    timezone_abbreviation_regex,
+    timezone_offset_regex,
+)
+from .mold.pyd.Compiled import (
+    datetime_regex as datetime_pattern_search,
 )
 
 
@@ -76,22 +76,23 @@ def _extract_time_details(datetime_string):
         time_match = time_only_regex.search(full_time_string)
         if time_match:
             return {
-                'time_details': {
-                    'time_found': time_match.group(),
-                    'start': time_match.start() + full_time_start_position,
-                    'end': time_match.end() + full_time_start_position
+                "time_details": {
+                    "time_found": time_match.group(),
+                    "start": time_match.start() + full_time_start_position,
+                    "end": time_match.end() + full_time_start_position,
                 },
-                'full_time_details': {
-                    'full_time_string': full_time_string,
-                    'start': full_time_start_position,
-                    'end': full_time_end_position
-                }
+                "full_time_details": {
+                    "full_time_string": full_time_string,
+                    "start": full_time_start_position,
+                    "end": full_time_end_position,
+                },
             }
     return None
 
+
 def datetime_offset(offset):
     if not isinstance(offset, (int, float)):
-        raise ValueError("Offset must be an integer or float representing hours.")
+        raise ValueError("Offset must be an integer or float representing hours.")  # noqa: TRY004 - Preserve the existing ValueError API.
     timezone = datetime.timezone(datetime.timedelta(hours=offset))
     return timezone
 
@@ -103,7 +104,7 @@ def coerce_timezone(value):
     if isinstance(value, (int, float)):
         return datetime_offset(value)
     if not isinstance(value, str):
-        raise ValueError("tzinfo must be a timezone object, name, or numeric UTC offset.")
+        raise ValueError("tzinfo must be a timezone object, name, or numeric UTC offset.")  # noqa: TRY004 - Preserve the existing ValueError API.
 
     value = value.strip()
     if not value:
@@ -124,10 +125,12 @@ def coerce_timezone(value):
 
     try:
         from zoneinfo import ZoneInfo
+
         return ZoneInfo(value)
     except (ImportError, KeyError):
         try:
             import pytz
+
             return pytz.timezone(value)
         except (pytz.UnknownTimeZoneError, ModuleNotFoundError) as exc:
             raise ValueError(f"Unknown timezone: {value}") from exc
@@ -166,8 +169,9 @@ def _format_timezone_text(value):
         return f"{sign}{hours:02d}:{minutes:02d}"
     raise ValueError("tzinfo must be a timezone object, name, or numeric UTC offset.")
 
+
 def strTime(datetime_string):
-    """ Extracts and returns detailed time information from a datetime string. """
+    """Extracts and returns detailed time information from a datetime string."""
     time_exists = timeboundary_regex.search(datetime_string)
 
     if time_exists:
@@ -179,22 +183,20 @@ def strTime(datetime_string):
 
         if time_match:
             time_details = {
-                'time_found': time_match.group(),
-                'start': time_match.start() + full_time_start_position,
-                'end': time_match.end() + full_time_start_position
+                "time_found": time_match.group(),
+                "start": time_match.start() + full_time_start_position,
+                "end": time_match.end() + full_time_start_position,
             }
             full_time_details = {
-                'full_time_string': full_time_string,
-                'start': full_time_start_position,
-                'end': full_time_end_position
+                "full_time_string": full_time_string,
+                "start": full_time_start_position,
+                "end": full_time_end_position,
             }
 
-            result = {
-                'time_details': time_details,
-                'full_time_details': full_time_details
-            }
+            result = {"time_details": time_details, "full_time_details": full_time_details}
             return result
     return None
+
 
 def _stripTimeIndicator(datetime_string):
     """
@@ -202,18 +204,21 @@ def _stripTimeIndicator(datetime_string):
     """
     match = _extract_time_details(datetime_string)
     if match:
-        time_end = match['time_details']['end']
-        full_time_start = match['full_time_details']['start']
-        full_time_end = match['full_time_details']['end']
+        time_end = match["time_details"]["end"]
+        full_time_start = match["full_time_details"]["start"]
+        full_time_end = match["full_time_details"]["end"]
         timezone_data = datetime_string[time_end:]
         if not timezone_data:
             return datetime_string
-        cleaned_string = re.sub(timemeridiem_regex, ' ', timezone_data)
-        return (datetime_string[:full_time_start]
-                + match['time_details']['time_found']
-                + cleaned_string
-                + datetime_string[full_time_end:])
+        cleaned_string = re.sub(timemeridiem_regex, " ", timezone_data)
+        return (
+            datetime_string[:full_time_start]
+            + match["time_details"]["time_found"]
+            + cleaned_string
+            + datetime_string[full_time_end:]
+        )
     return datetime_string
+
 
 def remove_marker(text):
     """
@@ -230,6 +235,7 @@ def remove_marker(text):
     cleaned_text = pattern.sub("", text)
     return cleaned_text
 
+
 def validate_timezone(datetime_string):
     """
     Check the timezone portion of the datetime string. Before checking,
@@ -237,11 +243,11 @@ def validate_timezone(datetime_string):
     """
     match = _extract_time_details(datetime_string)
     if match:
-        time_end = match['time_details']["end"]
+        time_end = match["time_details"]["end"]
         # Extract the suffix following the time and remove the internal placeholder.
         timezone_data = datetime_string[time_end:]
         timezone_data = timezone_data.replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", "").strip()
-        if timezone_data == '':
+        if timezone_data == "":
             return True, "The time string is valid."
         if len(timemeridiem_regex.findall(timezone_data)) > 1:
             return False, "More than one time indicator found."
@@ -256,6 +262,7 @@ def validate_timezone(datetime_string):
         return True, "The time string is valid."
     return False, "No valid time string found"
 
+
 def validate_date(date_string, date_format):
     """
     Validates the given date string in the format of 'month/day/year'.
@@ -265,7 +272,7 @@ def validate_date(date_string, date_format):
     """
 
     def stripTime(datetime_string):
-        """ Removes time from a datetime string. """
+        """Removes time from a datetime string."""
         time_exists = timeboundary_regex.search(datetime_string)
         if time_exists:
             full_time_start_position = time_exists.start()
@@ -278,21 +285,32 @@ def validate_date(date_string, date_format):
     pattern = datetime_pattern_search(date_format)
     match = pattern.match(date_str)
     if match:
-        for key in components_spans.keys():
+        for key in components_spans:
             if key in match.groupdict():
                 components_spans[key] = match.span(key)
 
-    day = int(date_str[slice(*components_spans['day'])])
-    month = int(date_str[slice(*components_spans['month'])])
-    year = int(date_str[slice(*components_spans['year'])])
+    day = int(date_str[slice(*components_spans["day"])])
+    month = int(date_str[slice(*components_spans["month"])])
+    year = int(date_str[slice(*components_spans["year"])])
 
-    month_days = {1: 31, 2: 29 if is_leap_year(year) else 28, 3: 31, 4: 30, 5: 31, 6: 30,
-                  7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
+    month_days = {
+        1: 31,
+        2: 29 if is_leap_year(year) else 28,
+        3: 31,
+        4: 30,
+        5: 31,
+        6: 30,
+        7: 31,
+        8: 31,
+        9: 30,
+        10: 31,
+        11: 30,
+        12: 31,
+    }
     if month < 1 or month > 12:
         return False  # Invalid month
-    if day < 1 or day > month_days.get(month, 31):
-        return False  # Day is not valid for the month
-    return True
+    return 1 <= day <= month_days.get(month, 31)
+
 
 def exist_meridiem(time_fragment_str):
     """
@@ -310,9 +328,6 @@ def exist_meridiem(time_fragment_str):
     return bool(timemeridiem_regex.search(time_fragment_str))
 
 
-
-
-
 ###############################################################################
 # CORE FUNCTIONS
 ###############################################################################
@@ -322,6 +337,7 @@ def make_datetime_string(date_string):
     placeholder removed. Otherwise, append a default time along with a
     placeholder so that later code can remove it.
     """
+
     def get_default_time():
         """
         Return a default time string for cases when a date string has no time.
@@ -345,16 +361,14 @@ def replace_time_by_position(datetime_string, component, new_value):
     """
 
     # Basic validation / bounding
-    if component == 'hour':
+    if component == "hour":
         new_value = str(max(0, min(23, int(new_value))))
         if len(new_value) == 1:
             new_value = "0" + new_value
-    elif component in ['minute', 'second']:
+    elif component in ["minute", "second"]:
         new_value = str(max(0, min(59, int(new_value)))).zfill(2)
-    elif component == 'microsecond':
-        # Skip invalid candidates.
-        if not str(new_value).isdigit():
-            return datetime_string
+    elif component == "microsecond" and not str(new_value).isdigit():
+        return datetime_string
 
     entire_time_match = timeboundary_regex.search(datetime_string)
     if not entire_time_match:
@@ -364,7 +378,7 @@ def replace_time_by_position(datetime_string, component, new_value):
     time_str_start = entire_time_match.start()
     time_substring = entire_time_match.group()
 
-    if component == 'tzinfo':
+    if component == "tzinfo":
         new_value = _format_timezone_text(new_value)
         time_match = time_only_regex.search(time_substring)
         tail_start = time_match.end() if time_match else 0
@@ -387,8 +401,8 @@ def replace_time_by_position(datetime_string, component, new_value):
             part_after = datetime_string[match_end:]
             updated = part_before + new_value + part_after
         else:
-            if 'NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET' in datetime_string:
-                updated = datetime_string.replace('NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET', new_value)
+            if "NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET" in datetime_string:
+                updated = datetime_string.replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", new_value)
             else:
                 updated = f"{datetime_string.rstrip()} {new_value}"
         return updated.strip()
@@ -402,48 +416,44 @@ def replace_time_by_position(datetime_string, component, new_value):
         # For hour/minute/second, it's typically group(1) or group(2)
         # Select the named group for the requested component.
 
-        if component == 'hour':
+        if component == "hour":
             # group 'hours' => groupdict has 'hours'
-            span = match_timeonly.span('hours')
-        elif component == 'minute':
-            span = match_timeonly.span('minutes')
-        elif component == 'second':
+            span = match_timeonly.span("hours")
+        elif component == "minute":
+            span = match_timeonly.span("minutes")
+        elif component == "second":
             # 'seconds' can be absent, so check:
-            if 'seconds' in groups and groups['seconds'] is not None:
-                span = match_timeonly.span('seconds')
+            if "seconds" in groups and groups["seconds"] is not None:
+                span = match_timeonly.span("seconds")
             else:
                 # Insert missing seconds immediately after the minute field.
-                minute_span = match_timeonly.span('minutes')
+                minute_span = match_timeonly.span("minutes")
                 insertion_pos = time_str_start + minute_span[1]
                 return (
-                    datetime_string[:insertion_pos]
-                    + f":{new_value}"
-                    + datetime_string[insertion_pos:]
-                ).replace('NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET', '').strip()
-        elif component == 'microsecond':
+                    (datetime_string[:insertion_pos] + f":{new_value}" + datetime_string[insertion_pos:])
+                    .replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", "")
+                    .strip()
+                )
+        elif component == "microsecond":
             # If there's a group 'microseconds'
-            if 'microseconds' in groups and groups['microseconds'] is not None:
-                span = match_timeonly.span('microseconds')
+            if "microseconds" in groups and groups["microseconds"] is not None:
+                span = match_timeonly.span("microseconds")
                 new_value = hundred_thousandths_place(new_value, decimal=False)
             else:
                 # Append missing fractional seconds to the matched time.
                 end_time_span = match_timeonly.end()
                 insertion_pos = time_str_start + end_time_span
-                to_insert = '.' + hundred_thousandths_place(new_value, decimal=False)
+                to_insert = "." + hundred_thousandths_place(new_value, decimal=False)
                 return (
-                    datetime_string[:insertion_pos]
-                    + to_insert
-                    + datetime_string[insertion_pos:]
-                ).replace('NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET', '').strip()
+                    (datetime_string[:insertion_pos] + to_insert + datetime_string[insertion_pos:])
+                    .replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", "")
+                    .strip()
+                )
 
         # Now do the actual substring replacement
         comp_start = time_str_start + span[0]
         comp_end = time_str_start + span[1]
-        updated = (
-            datetime_string[:comp_start]
-            + new_value
-            + datetime_string[comp_end:]
-        )
-        return updated.replace('NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET', '').strip()
+        updated = datetime_string[:comp_start] + new_value + datetime_string[comp_end:]
+        return updated.replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", "").strip()
 
-    return datetime_string.replace('NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET', '').strip()
+    return datetime_string.replace("NO_MERIDIEM_NO_TIMEZONE_NO_OFFSET", "").strip()

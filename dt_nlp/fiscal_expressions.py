@@ -2,11 +2,9 @@
 
 import re
 
-
 _MARKER = re.compile(r"\bfiscal\b|\bfy(?=\s|\d|$)|\bf[qp](?=\s|\d|$)")
 _DIRECTION = {"this": 0, "next": 1, "last": -1, "previous": -1}
-_ORDINALS = {"first": 1, "second": 2, "third": 3, "fourth": 4,
-             "1st": 1, "2nd": 2, "3rd": 3, "4th": 4}
+_ORDINALS = {"first": 1, "second": 2, "third": 3, "fourth": 4, "1st": 1, "2nd": 2, "3rd": 3, "4th": 4}
 
 
 def parse_fiscal_expression(phrase, reference, calendar):
@@ -61,7 +59,9 @@ def parse_fiscal_expression(phrase, reference, calendar):
         return True, resolve(year, int(part[2])) if year is not None else None
 
     # first fiscal quarter of FY2027; fiscal quarter 2 of next fiscal year.
-    ordinal = re.fullmatch(r"(first|second|third|fourth|[0-9]{1,2}(?:st|nd|rd|th)) fiscal (quarter|period)(?: of (.+))?", text)
+    ordinal = re.fullmatch(
+        r"(first|second|third|fourth|[0-9]{1,2}(?:st|nd|rd|th)) fiscal (quarter|period)(?: of (.+))?", text
+    )
     numeric = re.fullmatch(r"fiscal (quarter|period) ([0-9]{1,2})(?: (?:of )?(.+))?", text)
     if ordinal or numeric:
         match = ordinal or numeric

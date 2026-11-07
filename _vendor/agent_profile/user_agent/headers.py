@@ -1,5 +1,4 @@
 #! python3.8
-# -*- coding: utf-8 -*-
 
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
@@ -84,10 +83,7 @@ class HeaderProfile:
 
     @staticmethod
     def build_sec_ch_ua(brand, brand_major, chromium_major):
-        return (
-            f'"Not_A Brand";v="99", "Chromium";v="{chromium_major}", '
-            f'"{brand}";v="{brand_major}"'
-        )
+        return f'"Not_A Brand";v="99", "Chromium";v="{chromium_major}", "{brand}";v="{brand_major}"'
 
     def headers_for_ua(self, user_agent):
         brand, brand_major, chromium_major = self._extract_browser_info(user_agent)
@@ -104,9 +100,7 @@ class HeaderProfile:
             platform = self._extract_platform(user_agent)
             headers.update(
                 {
-                    "Sec-CH-UA": self.build_sec_ch_ua(
-                        brand, brand_major, chromium_major
-                    ),
+                    "Sec-CH-UA": self.build_sec_ch_ua(brand, brand_major, chromium_major),
                     "Sec-CH-UA-Mobile": "?0",
                 }
             )

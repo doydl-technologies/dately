@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #
 # DOYDL's Temporal Parsing & Normalization Engine — dately
 #
@@ -43,14 +41,14 @@
 # SOFTWARE.
 #
 
-import threading
 import re
-from urllib.parse import urljoin, urlparse
+import threading
 from collections import deque
+from typing import ClassVar
+from urllib.parse import urljoin, urlparse
 
+from ._utils import hundred_thousandths_place, is_leap_year
 from ._vendor.agent_profile import RandomUserAgent
-from ._utils import is_leap_year, hundred_thousandths_place
-
 
 
 class UserAgentRandomizer:
@@ -58,7 +56,7 @@ class UserAgentRandomizer:
 
     _NO_REPEAT = 5
     _lock = threading.Lock()
-    _recent = deque(maxlen=_NO_REPEAT)
+    _recent: ClassVar[deque] = deque(maxlen=_NO_REPEAT)
     _generator = RandomUserAgent()
 
     @classmethod
@@ -71,18 +69,22 @@ class UserAgentRandomizer:
             cls._recent.append(agent)
             return agent
 
+
 def is_valid_url(string):
     url_pattern = re.compile(
-        r'^(https?|ftp):\/\/'  # protocol
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain
-        r'localhost|'  # localhost
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|'  # IPv4
-        r'\[?[A-F0-9]*:[A-F0-9:]+\]?)'  # IPv6
-        r'(?::\d+)?'  # port
-        r'(?:\/?|[\/?]\S+)$', re.IGNORECASE)  # resource path
+        r"^(https?|ftp):\/\/"  # protocol
+        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain
+        r"localhost|"  # localhost
+        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|"  # IPv4
+        r"\[?[A-F0-9]*:[A-F0-9:]+\]?)"  # IPv6
+        r"(?::\d+)?"  # port
+        r"(?:\/?|[\/?]\S+)$",
+        re.IGNORECASE,
+    )  # resource path
 
     # Use the pattern to check if the string matches a URL
     return re.match(url_pattern, string) is not None
+
 
 def absolute_url(base_url, relative_path):
     """
@@ -97,16 +99,14 @@ def absolute_url(base_url, relative_path):
     """
     return urljoin(base_url, relative_path)
 
+
 def find_os_in_user_agent(user_agent):
-    os_dict = {
-        "Windows": "Windows",
-        "Macintosh": "macOS",
-        "Linux": "Linux",
-        "CrOS": "Chrome OS"}
-    for key in os_dict:
+    os_dict = {"Windows": "Windows", "Macintosh": "macOS", "Linux": "Linux", "CrOS": "Chrome OS"}
+    for key, value in os_dict.items():
         if key in user_agent:
-            return os_dict[key]
+            return value
     return None
+
 
 def findhost(url):
     parsed_url = urlparse(url)
@@ -115,30 +115,27 @@ def findhost(url):
     elif not parsed_url.netloc and not parsed_url.scheme:
         return url
     else:
-        parsed_url = urlparse('//'+url)
+        parsed_url = urlparse("//" + url)
         return parsed_url.netloc
-
-
 
 
 def __dir__():
     return [
-        'is_leap_year',
-        'hundred_thousandths_place',
-        'UserAgentRandomizer',
-        'find_os_in_user_agent',
-        'findhost',
-        ]
-
-__all__ = [
-    'is_leap_year',
-    'hundred_thousandths_place',
-    'UserAgentRandomizer',
-    'find_os_in_user_agent',
-    'findhost',
+        "is_leap_year",
+        "hundred_thousandths_place",
+        "UserAgentRandomizer",
+        "find_os_in_user_agent",
+        "findhost",
     ]
 
 
+__all__ = [
+    "UserAgentRandomizer",
+    "find_os_in_user_agent",
+    "findhost",
+    "hundred_thousandths_place",
+    "is_leap_year",
+]
 
 
 UserAgentRandomizer.get()
