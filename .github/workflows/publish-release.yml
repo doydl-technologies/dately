@@ -301,9 +301,11 @@ jobs:
             }
             if (!release.draft) throw new Error('Refusing to replace an already published release');
             const body = release.body || '';
-            if (!body.startsWith(`# ${tag}\n`)) throw new Error('Approved notes do not match the release tag');
-            const summary = body.match(/> \*\*([^\n]+)\*\*/);
-            if (!body.includes('> [!NOTE]') || !summary || summary[1].trim().split(/\s+/).length > 11) {
+            if (!/^> \[!NOTE\]\r?\n/.test(body)) {
+              throw new Error('The release description must start with the NOTE callout; keep the version in the release title');
+            }
+            const summary = body.match(/^> \[!NOTE\]\r?\n> \*\*([^\r\n]+)\*\*[ \t]*(?:\r?\n|$)/);
+            if (!summary || !summary[1].trim() || summary[1].trim().split(/\s+/).length > 11) {
               throw new Error('Approved notes need a bold summary of eleven words or fewer in a NOTE');
             }
             if (/\[(VERSION|REPO-NAME|PREVIOUS_TAG|CURRENT_TAG)\]/.test(body)) {
