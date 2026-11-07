@@ -11,3 +11,7 @@ mold/pyx/*.c
 *.dylib
 wheelhouse/
 Home.lnk
+
+# Local team notes, maintenance tools, and generated artifacts.
+/.local/
+/.venv*/

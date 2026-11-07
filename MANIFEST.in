@@ -8,6 +8,6 @@ recursive-include assets *.png
 include files/country_variants.json
 include files/holiday.json
 include files/timezone_data.json
-recursive-include _vendor *.md
+prune .local
 recursive-include examples *.py
 recursive-include tests *.py

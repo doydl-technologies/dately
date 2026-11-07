@@ -114,7 +114,6 @@ setup(
             "files/country_variants.json",
             "files/holiday.json",
             "files/timezone_data.json",
-            "_vendor/agent_profile/user_agent/*.md",
         ]
     },
     ext_modules=extensions,
