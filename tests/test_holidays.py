@@ -204,7 +204,9 @@ def test_web_source_preserves_labels_columns_and_formats():
     ({"response": "<html>Access denied</html>"}, "table is missing"),
     ({"response": "<table id='holidays-table'></table>"}, "no dated holiday rows"),
     ({"response": WEB_HTML.replace("2026", "2027")}, "year does not match"),
-    ({"response": WEB_HTML.replace("Jan&nbsp;1", "Feb 30")}, "day is out of range"),
+    # Python 3.14 changed datetime's wording; assert our wrapper and the
+    # invalid day rather than depending on a particular interpreter message.
+    ({"response": WEB_HTML.replace("Jan&nbsp;1", "Feb 30")}, "Invalid holiday data.*day"),
     ({"response": "<table id='holidays-table'><tr><td>Jan 1</td></tr></table>"}, "incomplete row"),
 ])
 def test_web_failures_raise_useful_errors_and_restore_state(payload, match):

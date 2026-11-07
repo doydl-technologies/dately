@@ -86,9 +86,34 @@ jobs:
           path: dist/*.tar.gz
           if-no-files-found: error
 
+  macos-arm64-python38-test:
+    name: Test CPython 3.8 wheel natively on Apple Silicon
+    needs: wheels
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v5
+        with:
+          name: dately-macos-arm64
+          path: wheelhouse
+      - uses: astral-sh/setup-uv@v7
+      - name: Test the wheel using native managed CPython 3.8
+        shell: bash
+        run: |
+          set -euo pipefail
+          # cibuildwheel builds cp38 ARM wheels but cannot test them with the
+          # x86-only python.org installer. A native standalone interpreter can.
+          uv python install 3.8.20
+          venv_path="$RUNNER_TEMP/dately-cp38-arm64"
+          uv venv --python 3.8.20 --managed-python "$venv_path"
+          uv pip install --python "$venv_path/bin/python" wheelhouse/*cp38*.whl pytest packaging
+          "$venv_path/bin/python" -c "import platform; assert platform.machine() == 'arm64', platform.machine()"
+          cd "$RUNNER_TEMP"
+          DATELY_TEST_INSTALLED=1 "$venv_path/bin/python" -m pytest "$GITHUB_WORKSPACE/tests" --rootdir="$GITHUB_WORKSPACE/tests"
+
   validate-downloads:
     name: Validate complete release matrix
-    needs: [wheels, source-archive]
+    needs: [wheels, source-archive, macos-arm64-python38-test]
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6

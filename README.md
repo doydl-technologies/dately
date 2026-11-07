@@ -72,6 +72,8 @@ on Python 3.8.
 The build workflow uses pinned `cibuildwheel` 3.4.0, which supports the complete
 Python 3.8-3.14 matrix. Every wheel is installed into an isolated test environment
 and tested there. CI also rebuilds a wheel from the source archive and tests it.
+The Python 3.8 Apple Silicon wheel has an additional native test job using a
+managed CPython 3.8 interpreter because the wheel builder's installer is x86-only.
 Release validation requires each Python/platform pair and a matching source
 archive; it checks coverage rather than relying on a fixed download count.
 
