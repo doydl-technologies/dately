@@ -51,6 +51,9 @@ from datetime import datetime as dt, timedelta as td, date as d
 from ._log import logger
 from ._datetime_scan import DateTimeScan
 from ._temporal_scan import parse_temporal
+from .dt_nlp.business_calendar import BusinessCalendar
+from .dt_nlp.fiscal_calendar import FiscalCalendar, get_fiscal_calendar
+from ._holiday import HolidayLookupError
 from ._timeutils import (
     strTime, validate_date, make_datetime_string, replace_time_by_position,
     remove_marker, exist_meridiem, validate_timezone,
@@ -649,7 +652,7 @@ def sequence(start_date, end_date, to_format=None):
 #────────────────────────────────────────────────────────────────────────────
 # 7) PARSE
 #────────────────────────────────────────────────────────────────────────────
-def parse(input_str):
+def parse(input_str, *, business_calendar=None, country=None, subdiv=None, observed=True, fiscal_calendar=None):
     """
     Parse a natural language or formatted date string into a datetime object or range.
 
@@ -663,6 +666,23 @@ def parse(input_str):
     ──────────────────────────
     - input_str (str):
         A natural-language expression or a formatted date string.
+    - business_calendar (BusinessCalendar, optional):
+        Working weekdays and explicit holidays. Defaults to Monday-Friday
+        without holiday exclusions. Applies only to business/working days;
+        weekday expressions always mean Monday-Friday.
+    - country (str, optional):
+        Country name, alias, or ISO alpha-2 code for offline public holidays.
+        Cannot be combined with business_calendar. Uses Monday-Friday.
+    - subdiv (str, optional):
+        State/province code for the selected country.
+    - observed (bool, default True):
+        Include observed holidays where supported. Requires country when False.
+    - fiscal_calendar (FiscalCalendar, optional):
+        Fiscal year/quarter configuration, overriding set_fiscal_calendar().
+        Applies to explicit fiscal expressions such as FY2027 or this fiscal year.
+
+    Invalid calendar options raise TypeError/ValueError. Holiday data failures
+    raise HolidayLookupError rather than returning a date with missing exclusions.
 
     Returns:
     ──────────────────────────
@@ -670,8 +690,26 @@ def parse(input_str):
     - or (start_date, end_date) tuple
     - or None if the input is invalid or unrecognized.
     """
+    if business_calendar is not None and not isinstance(business_calendar, BusinessCalendar):
+        raise TypeError("business_calendar must be a BusinessCalendar")
+    if type(observed) is not bool:
+        raise TypeError("observed must be a boolean")
+    if country is not None:
+        if business_calendar is not None:
+            raise ValueError("Specify country or business_calendar, not both")
+        business_calendar = BusinessCalendar(country=country, subdiv=subdiv, observed=observed)
+    elif subdiv is not None or observed is not True:
+        raise ValueError("subdiv and observed options require country; configure a supplied calendar directly")
+    if fiscal_calendar is None:
+        fiscal_calendar = get_fiscal_calendar()
+    if not isinstance(fiscal_calendar, FiscalCalendar):
+        raise TypeError("fiscal_calendar must be a FiscalCalendar")
     try:
-        temporal_result = parse_temporal(input_str, skip_validation=False, parse=True, clean_tokens=True)
+        temporal_result = parse_temporal(
+            input_str, skip_validation=False, parse=True, clean_tokens=True,
+            business_calendar=business_calendar,
+            fiscal_calendar=fiscal_calendar,
+        )
         if isinstance(temporal_result, tuple) and temporal_result[0] == "datetime":
             result = convert_date(temporal_result[1])
         else:
@@ -688,6 +726,8 @@ def parse(input_str):
             )
         return result
 
+    except HolidayLookupError:
+        raise
     except Exception as e:
         msg = (
             f"[dately:parse] NLP parsing failed for input: '{input_str}'.\n"

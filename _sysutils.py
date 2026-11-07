@@ -207,6 +207,16 @@ class DataImport:
         )
 
     @staticmethod
+    def load_country_codes():
+        """Read bundled country names/codes without constructing timezone objects."""
+        data = _load_json(
+            "dately.files",
+            "timezone_data.json",
+            f"https://raw.githubusercontent.com/doydl-technologies/dately/v{__version__}/files/timezone_data.json",
+        )
+        return {entry["countryName"]: entry["countryCode"] for entry in data}
+
+    @staticmethod
     def load_timezone_data():
         data = _load_json(
             "dately.files",

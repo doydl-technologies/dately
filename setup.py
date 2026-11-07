@@ -124,6 +124,7 @@ setup(
     cmdclass={"build_py": BuildPy},
     include_package_data=False,
     install_requires=[
+        "holidays>=0.58,<1",
         "importlib-resources; python_version < '3.9'",
         "numbr",
         "numpy",
@@ -131,12 +132,14 @@ setup(
         "pytz",
         "requests",
         "requests-cache",
+        "tzdata; python_version >= '3.9'",
     ],
     python_requires=">=3.8,<3.15",
-    platforms=["Windows"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Operating System :: Microsoft :: Windows",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: POSIX :: Linux",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.8",

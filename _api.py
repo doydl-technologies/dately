@@ -45,6 +45,7 @@
 
 from ._log import logger
 from ._temporal_scan import resolver
+from .dt_nlp.fiscal_calendar import get_fiscal_calendar, set_fiscal_calendar
 
 
 
@@ -81,5 +82,5 @@ def set_week_start(day):
     # Informative log message (quiet unless the user enables it) -------------
     logger.info("Week-start updated → %s", resolver.week_start.capitalize())
 
-__all__ = ["set_week_start"]
+__all__ = ["set_week_start", "get_fiscal_calendar", "set_fiscal_calendar"]
 

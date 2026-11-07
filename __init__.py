@@ -153,14 +153,18 @@ By harmonizing symbolic reasoning, deterministic NLP, and high-throughput engine
 elevates temporal data from an error-prone nuisance to a rigorously modeled, first-class element of
 modern software architecture.
 """
-if __package__:
+if __package__ == "dately":
     from . import core as __core
-    from ._api import set_week_start
+    from ._api import get_fiscal_calendar, set_fiscal_calendar, set_week_start
     from ._version import __version__
+    from .dt_nlp.business_calendar import BusinessCalendar
+    from .dt_nlp.fiscal_calendar import FiscalCalendar, RetailFiscalCalendar
 else:  # Allows test collectors to import this flat-layout package initializer.
     from dately import core as __core
-    from dately._api import set_week_start
+    from dately._api import get_fiscal_calendar, set_fiscal_calendar, set_week_start
     from dately._version import __version__
+    from dately.dt_nlp.business_calendar import BusinessCalendar
+    from dately.dt_nlp.fiscal_calendar import FiscalCalendar, RetailFiscalCalendar
 
 
 __all__ = [
@@ -171,9 +175,15 @@ __all__ = [
     'replace_datestring',
     'sequence',
     'parse',
+    'BusinessCalendar',
+    'FiscalCalendar',
+    'RetailFiscalCalendar',
+    'get_fiscal_calendar',
+    'set_fiscal_calendar',
     'set_week_start',
     '__version__',
     'Holidate',
+    'HolidayLookupError',
     'TimeZoner',
 ]
 
@@ -191,12 +201,12 @@ globals().pop('core', None)
 
 # Import the real types and their lazy factories. Constructing either feature is
 # local-only; network access occurs only when a network-backed method is called.
-if __package__:
-    from ._holiday import HolidayManager
+if __package__ == "dately":
+    from ._holiday import HolidayLookupError, HolidayManager
     from ._proxy import proxyObj as _proxyObj
     from ._timezone import ZoneInfoManager
 else:
-    from dately._holiday import HolidayManager
+    from dately._holiday import HolidayLookupError, HolidayManager
     from dately._proxy import proxyObj as _proxyObj
     from dately._timezone import ZoneInfoManager
 
@@ -250,12 +260,12 @@ class HolidateStub:
 
     Methods:
         ListCountries
-        Holiday(country_name, year=None, format='list')
+        Holiday(country_name, year=None, format='list', source='public', subdiv=None, observed=True)
     """
     @property
     def ListCountries(self): pass
 
-    def Holiday(self, country_name, year=None, format='list'): pass
+    def Holiday(self, country_name, year=None, format='list', *, source='public', subdiv=None, observed=True): pass
 
 Holidate: HolidayManager = _proxyObj('dately._holiday', 'get_Holidate')
 Holidate.__doc__ = HolidateStub.__doc__
@@ -275,7 +285,8 @@ def __dir__():
         {
             'extract_datetime_component', 'detect_date_format', 'convert_date',
             'replace_timestring', 'replace_datestring', 'sequence', 'parse',
-            'set_week_start', '__version__', 'Holidate', 'TimeZoner'
+            'set_week_start', '__version__', 'Holidate', 'TimeZoner', 'BusinessCalendar', 'HolidayLookupError',
+            'FiscalCalendar', 'RetailFiscalCalendar', 'get_fiscal_calendar', 'set_fiscal_calendar'
             }
         )
                   )

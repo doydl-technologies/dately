@@ -153,27 +153,27 @@ cdef bint has_non_padded_specifier(str format_string):
     return any(spec in format_string for spec in non_padded_specifiers)
 
 cpdef str date_format_leading_zero(datetime date, str format_string):
-    cdef str platform_compatible_format, formatted_date, orig, repl
-    if has_non_padded_specifier(format_string):
-        platform_compatible_format = format_string
-        for orig, repl in non_padded_to_zero_padded_specifiers().items():
-            platform_compatible_format = platform_compatible_format.replace(orig, repl)
-
-        formatted_date = date.strftime(platform_compatible_format)
-
-        for orig in non_padded_to_zero_padded_specifiers(ret_format='no_leading_zero'):
-            if orig in format_string:
-                formatted_date = re.sub(r'\b0(?=\d)', '', formatted_date)
-        return formatted_date
-    else:
-        return date.strftime(format_string)
+    # Format only the requested unpadded field. Preserve literal %% and the
+    # padding of every other field, independently of the host C runtime.
+    values = {'d': date.day, 'm': date.month, 'y': date.year % 100,
+              'H': date.hour, 'I': date.hour % 12 or 12,
+              'M': date.minute, 'S': date.second}
+    result = []
+    for part in re.split(r'(%%|%[-#][dmyHIMS])', format_string):
+        if part == '%%':
+            result.append('%')
+        elif re.fullmatch(r'%[-#][dmyHIMS]', part):
+            result.append(str(values[part[-1]]))
+        else:
+            result.append(date.strftime(part))
+    return ''.join(result)
 
 
 cpdef str replace_non_padded_with_padded(str input_format):
-    cdef str category, non_padded, zero_padded
-    # Direct dictionary access avoids repeated wrapper calls in this hot path.
-    for category in _zero_handling_date_formats:
-        non_padded = _zero_handling_date_formats[category]['no_leading_zero']['format']
-        zero_padded = _zero_handling_date_formats[category]['zero_padded']['format']
-        input_format = input_format.replace(non_padded, zero_padded)
-    return input_format
+    result = []
+    for part in re.split(r'(%%|%[-#][dmyHIMS])', input_format):
+        if re.fullmatch(r'%[-#][dmyHIMS]', part):
+            result.append('%' + part[-1])
+        else:
+            result.append(part)
+    return ''.join(result)

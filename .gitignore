@@ -6,3 +6,7 @@ build/
 dist/
 *.egg-info/
 mold/pyx/*.c
+*.pyd
+*.so
+*.dylib
+wheelhouse/

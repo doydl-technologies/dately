@@ -85,6 +85,11 @@ from .dt_nlp.temporal_preprocessing import PhraseEngine
 from .dt_nlp.syntactic_validation.structure_validator import validate_temporal_structure
 from .dt_nlp.semantic_validation.unit_bounds import validate_bounds, validate_range_bounds
 from .dt_nlp.lexical_validation.vocabulary_checks import vocab_validate
+from .dt_nlp.business_calendar import DEFAULT_BUSINESS_CALENDAR
+from .dt_nlp.calendar_expressions import parse_calendar_expression
+from .dt_nlp.fiscal_calendar import FiscalCalendar, get_fiscal_calendar
+from .dt_nlp.fiscal_expressions import parse_fiscal_expression
+from ._holiday import HolidayLookupError
 
 
 
@@ -2271,9 +2276,11 @@ def _compute_starting_from_expression(tokens):
     if not start_date:
         return None
     original_ref = resolver.reference_date
-    resolver.reference_date = start_date
-    outer_result = resolver.compute(left_part)
-    resolver.reference_date = original_ref
+    try:
+        resolver.reference_date = start_date
+        outer_result = resolver.compute(left_part)
+    finally:
+        resolver.reference_date = original_ref
     if not outer_result:
         return None
     return _apply_starting_point(outer_result, start_date)
@@ -2465,7 +2472,8 @@ class _auditor:
                     continue
         return semantic_fallback
 
-def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens=True):
+def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens=True,
+                   business_calendar=None, fiscal_calendar=None):
     """
     Parse a natural-language temporal phrase or pre-tokenized input and return a concrete date or date range.
 
@@ -2498,10 +2506,14 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
     None
         If parsing fails or input is invalid.
     """
+    if fiscal_calendar is None:
+        fiscal_calendar = get_fiscal_calendar()
+    if not isinstance(fiscal_calendar, FiscalCalendar):
+        raise TypeError("fiscal_calendar must be a FiscalCalendar")
     try:
         if isinstance(phrase, list):
             tokens = [str(x).lower() for x in phrase]
-            phrase = ' '.join(str(x) for x in phrase)
+            phrase = ' '.join(tokens)
         elif isinstance(phrase, str):
             phrase = ' '.join(str(phrase).split()).lower()
             tokens = phrase.lower().split()
@@ -2511,6 +2523,43 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
         if parse:
             if not phrase:
                 return None
+
+        def resolve_calendar_anchor(anchor):
+            try:
+                return d.fromisoformat(anchor)
+            except ValueError:
+                pass
+            month_scope = re.fullmatch(r"([a-z]+)(?: (\d{4}))?", anchor)
+            if month_scope and month_scope[1] in timeline.months:
+                scope_tokens = ["this", month_scope[1]]
+                if month_scope[2]:
+                    scope_tokens.append(month_scope[2])
+                return resolver.compute(scope_tokens)
+            if re.fullmatch(r"\d{4}", anchor):
+                year = int(anchor)
+                return d(year, 1, 1), d(year, 12, 31)
+            result = parse_temporal(anchor, business_calendar=business_calendar, fiscal_calendar=fiscal_calendar)
+            if isinstance(result, tuple) and result[0] == "datetime":
+                # Ordinary partial-date parsing already owns locale/format rules.
+                from .core import convert_date
+                result = convert_date(result[1])
+                if isinstance(result, dt):
+                    if result.year == 1900:
+                        result = result.replace(year=resolver.reference_date.year)
+                    result = result.date()
+            return result
+
+        handled, result = parse_calendar_expression(
+            phrase, resolver.reference_date,
+            business_calendar if business_calendar is not None else DEFAULT_BUSINESS_CALENDAR,
+            resolve_calendar_anchor, resolver._add_months, resolver._add_years,
+        )
+        if handled:
+            return result
+
+        handled, result = parse_fiscal_expression(phrase, resolver.reference_date, fiscal_calendar)
+        if handled:
+            return result
 
         # 1) Shortcut for plain month names or partial dates
         if phrase in set(timeline.months.keys()) | set(k.capitalize() for k in timeline.months) | set(timeline.months.values()):
@@ -2566,6 +2615,8 @@ def parse_temporal(phrase, *, skip_validation=DEBUGGER, parse=True, clean_tokens
             toks_no_of = PhraseEngine.drop.of(toks, return_tokens=True)
             return resolver.compute(toks_no_of)
         return None
+    except HolidayLookupError:
+        raise
     except Exception:
         return None
 

@@ -146,7 +146,7 @@ def test_holidate_restores_http_state_after_fixture_backed_request():
     fake = FakeHTTP(html)
     manager = HolidayManager(fake)
 
-    result = manager.Holiday("Belgium", year=2026)
+    result = manager.Holiday("Belgium", year=2026, source="timeanddate")
 
     assert result == [
         ["Date", "Name", "Type"],

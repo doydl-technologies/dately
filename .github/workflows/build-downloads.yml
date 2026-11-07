@@ -3,70 +3,101 @@ name: Build Python downloads
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
 
 permissions:
   contents: read
 
 jobs:
-  windows-wheels:
-    name: CPython ${{ matrix.python-version }} Windows wheel
-    runs-on: windows-latest
+  wheels:
+    name: Wheels / ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - {os: windows-2022, target: windows-x64, arch: AMD64}
+          - {os: ubuntu-22.04, target: linux-x64, arch: x86_64}
+          - {os: macos-15-intel, target: macos-x64, arch: x86_64}
+          - {os: macos-15, target: macos-arm64, arch: arm64}
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
+      - name: Install pinned wheel builder
+        # 3.4.0 supports the complete CPython 3.8-3.14 matrix.
+        run: python -m pip install cibuildwheel==3.4.0 twine packaging
       - name: Verify release tag
-        if: startsWith(github.ref, 'refs/tags/v')
-        shell: pwsh
-        run: |
-          $packageVersion = python -c "from pathlib import Path; values = {}; exec(Path('_version.py').read_text(encoding='utf-8'), values); print(values['__version__'])"
-          $tagVersion = "${{ github.ref_name }}" -replace '^v', ''
-          if ($packageVersion -ne $tagVersion) {
-            throw "Tag version $tagVersion does not match package version $packageVersion."
-          }
-      - name: Install build tools
-        run: python -m pip install --upgrade build pytest twine
-      - name: Build wheel
-        run: python -m build --wheel
-      - name: Validate wheel metadata
-        run: python -m twine check dist/*.whl
-      - name: Install and test wheel
-        shell: pwsh
+        if: startsWith(github.ref, 'refs/tags/')
         env:
-          DATELY_TEST_INSTALLED: "1"
-        run: |
-          $wheel = Get-ChildItem dist\*.whl | Select-Object -First 1
-          python -m pip install $wheel.FullName
-          python -m pytest -q
-      - uses: actions/upload-artifact@v7
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/release_checks.py --tag "$RELEASE_TAG"
+      - name: Build and test installed wheels
+        env:
+          CIBW_ARCHS: ${{ matrix.arch }}
+        run: python -m cibuildwheel --output-dir wheelhouse
+      - name: Validate metadata
+        run: python -m twine check wheelhouse/*.whl
+      - uses: actions/upload-artifact@v6
         with:
-          name: dately-${{ matrix.python-version }}-windows-x64
-          path: dist/*.whl
+          name: dately-${{ matrix.target }}
+          path: wheelhouse/*.whl
           if-no-files-found: error
 
   source-archive:
-    name: Source archive
-    runs-on: windows-latest
+    name: Source archive / rebuild and test
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Install build tools
-        run: python -m pip install --upgrade build twine
+      - run: python -m pip install build twine packaging
+      - name: Verify release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/release_checks.py --tag "$RELEASE_TAG"
       - name: Build source archive
         run: python -m build --sdist
       - name: Validate source metadata
         run: python -m twine check dist/*.tar.gz
-      - uses: actions/upload-artifact@v7
+      - name: Rebuild source archive and test installed package
+        run: |
+          set -euo pipefail
+          python -m pip wheel --no-deps dist/*.tar.gz --wheel-dir sdist-wheel
+          venv_path="$RUNNER_TEMP/dately-sdist-test"
+          python -m venv "$venv_path"
+          "$venv_path/bin/python" -m pip install sdist-wheel/*.whl pytest packaging
+          cd "$RUNNER_TEMP"
+          DATELY_TEST_INSTALLED=1 "$venv_path/bin/python" -m pytest "$GITHUB_WORKSPACE/tests" --rootdir="$GITHUB_WORKSPACE/tests"
+      - uses: actions/upload-artifact@v6
         with:
           name: dately-source
           path: dist/*.tar.gz
           if-no-files-found: error
+
+  validate-downloads:
+    name: Validate complete release matrix
+    needs: [wheels, source-archive]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install packaging
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: dately-*
+          path: artifacts
+      - run: python scripts/release_checks.py --artifacts artifacts

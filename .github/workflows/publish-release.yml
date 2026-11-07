@@ -4,103 +4,125 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing release tag to publish
-        required: false
+        description: Existing stable release tag (for example v3.4.0)
+        required: true
         type: string
       run_id:
-        description: Successful Build Python downloads run ID
-        required: false
+        description: Successful Build Python downloads run for that exact tag commit
+        required: true
         type: string
   workflow_run:
-    workflows:
-      - Build Python downloads
-    types:
-      - completed
+    workflows: [Build Python downloads]
+    types: [completed]
 
 permissions:
+  contents: read
   actions: read
-  contents: write
+
+concurrency:
+  group: dately-release
+  cancel-in-progress: false
 
 jobs:
   publish:
-    name: Publish validated downloads
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       startsWith(github.event.workflow_run.head_branch, 'v') &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      actions: read
     steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Resolve release inputs
+      - name: Verify build provenance and tag commit
         id: release
-        shell: bash
+        uses: actions/github-script@v8
         env:
-          GH_TOKEN: ${{ github.token }}
-          INPUT_RUN_ID: ${{ inputs.run_id || github.event.workflow_run.id }}
           INPUT_TAG: ${{ inputs.tag }}
-          RELEASE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-        run: |
-          set -euo pipefail
-          tag="$INPUT_TAG"
-          if [[ -z "$tag" ]]; then
-            tag=$(git tag --points-at "$RELEASE_SHA" | grep '^v' | sort -V | tail -1 || true)
-          fi
-          tag="${tag:-$(git describe --tags --abbrev=0)}"
-          run_id="${INPUT_RUN_ID:-$(gh run list --workflow build-downloads.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId')}"
-
-          if [[ -z "$tag" || -z "$run_id" ]]; then
-            echo "A release tag and successful build run are required." >&2
-            exit 1
-          fi
-
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-
-      - name: Download validated build artifacts
-        shell: bash
+          INPUT_RUN_ID: ${{ inputs.run_id }}
+        with:
+          script: |
+            const {owner, repo} = context.repo;
+            const runId = process.env.INPUT_RUN_ID || context.payload.workflow_run?.id;
+            if (!/^\d+$/.test(String(runId))) throw new Error('A valid build run ID is required');
+            const {data: run} = await github.rest.actions.getWorkflowRun({owner, repo, run_id: Number(runId)});
+            if (run.conclusion !== 'success' || !['push', 'workflow_dispatch'].includes(run.event) ||
+                run.head_repository?.full_name !== `${owner}/${repo}` ||
+                run.path.split('@')[0] !== '.github/workflows/build-downloads.yml') {
+              throw new Error('Expected a successful trusted Build Python downloads run');
+            }
+            const tag = process.env.INPUT_TAG || run.head_branch;
+            if (!/^v\d+\.\d+\.\d+$/.test(tag)) throw new Error('Expected a stable vX.Y.Z release tag');
+            const {data: ref} = await github.rest.git.getRef({owner, repo, ref: `tags/${tag}`});
+            let object = ref.object;
+            for (let depth = 0; object.type === 'tag' && depth < 10; depth++) {
+              const {data: annotated} = await github.rest.git.getTag({owner, repo, tag_sha: object.sha});
+              object = annotated.object;
+            }
+            if (object.type !== 'commit' || object.sha !== run.head_sha) {
+              throw new Error('Release tag does not point to the tested build commit');
+            }
+            core.setOutput('tag', tag);
+            core.setOutput('sha', object.sha);
+            core.setOutput('run_id', String(runId));
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install packaging
+      - uses: actions/download-artifact@v5
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.release.outputs.run_id }}
+          pattern: dately-*
+          path: artifacts
+      - name: Validate all platform and Python artifacts
         env:
-          GH_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ steps.release.outputs.run_id }}
-        run: gh run download "$RUN_ID" --dir artifacts
-
-      - name: Verify release files
-        shell: bash
-        run: |
-          set -euo pipefail
-          wheel_count=$(find artifacts -type f -name '*.whl' | wc -l)
-          source_count=$(find artifacts -type f -name '*.tar.gz' | wc -l)
-
-          if [[ "$wheel_count" -ne 7 || "$source_count" -ne 1 ]]; then
-            echo "Expected seven wheels and one source archive; found $wheel_count wheels and $source_count source archives." >&2
-            exit 1
-          fi
-
-      - name: Publish release
-        shell: bash
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: python scripts/release_checks.py --tag "$RELEASE_TAG" --artifacts artifacts
+      - name: Upload complete draft, then publish
+        uses: actions/github-script@v8
         env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.release.outputs.tag }}
-        run: |
-          set -euo pipefail
-          mapfile -t assets < <(find artifacts -type f \( -name '*.whl' -o -name '*.tar.gz' \) | sort)
-          notes=$(cat <<'EOF'
-          ## Release downloads
-
-          - Seven Windows x64 wheels for CPython 3.8 through 3.14.
-          - One source distribution for supported source-build environments.
-          - Requires Python 3.8 or newer and earlier than Python 3.15.
-
-          ## Package
-
-          - Author: **DOYDL Technologies**
-          - Install or upgrade with `python -m pip install --upgrade dately`.
-          EOF
-          )
-
-          gh release create "$TAG" "${assets[@]}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "$TAG" \
-            --notes "$notes" \
-            --generate-notes \
-            --latest \
-            --verify-tag
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        with:
+          script: |
+            const fs = require('node:fs/promises');
+            const path = require('node:path');
+            const {owner, repo} = context.repo;
+            const tag = process.env.RELEASE_TAG;
+            async function collect(directory) {
+              const files = [];
+              for (const entry of await fs.readdir(directory, {withFileTypes: true})) {
+                const full = path.join(directory, entry.name);
+                if (entry.isDirectory()) files.push(...await collect(full));
+                else if (entry.name.endsWith('.whl') || entry.name.endsWith('.tar.gz')) files.push(full);
+              }
+              return files;
+            }
+            const files = (await collect('artifacts')).sort();
+            const {data: notes} = await github.rest.repos.generateReleaseNotes({owner, repo, tag_name: tag});
+            const body = [
+              '## Release downloads',
+              'Windows x64, Linux x86-64 (glibc 2.28+), macOS Intel and Apple Silicon wheels.',
+              'CPython 3.8 through 3.14, plus a source archive rebuilt and tested on Linux.',
+              'Install with `python -m pip install --upgrade dately`.',
+              notes.body,
+            ].join('\n\n');
+            const {data: release} = await github.rest.repos.createRelease({
+              owner, repo, tag_name: tag, target_commitish: process.env.RELEASE_SHA,
+              name: tag, body, draft: true, prerelease: false,
+            });
+            for (const file of files) {
+              await github.rest.repos.uploadReleaseAsset({
+                owner, repo, release_id: release.id, name: path.basename(file),
+                data: await fs.readFile(file),
+              });
+            }
+            await github.rest.repos.updateRelease({owner, repo, release_id: release.id, draft: false, make_latest: 'true'});
+            core.notice(`Published ${tag} with ${files.length} validated downloads`);

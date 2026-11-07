@@ -66,3 +66,8 @@ if os.environ.get("DATELY_TEST_INSTALLED") != "1":
     module = importlib.util.module_from_spec(spec)
     sys.modules["dately"] = module
     spec.loader.exec_module(module)
+else:
+    import dately
+
+    if Path(dately.__file__).resolve().parent == ROOT:
+        raise RuntimeError("Installed-wheel tests imported the source checkout instead of the installed package")

@@ -10,3 +10,4 @@ include files/timezone_data.json
 recursive-include _vendor *.md
 recursive-include examples *.py
 recursive-include tests *.py
+recursive-include scripts *.py

@@ -2,19 +2,21 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include "clean_str.h"
 
-void clean_string(const char* input, char* output) {
-    int i = 0, j = 0;
+void clean_string(const char* input, char* output, size_t output_size) {
+    size_t i = 0, j = 0;
     int in_space = 0;
+    if (output_size == 0) return;
 
     // Skip leading whitespace
-    while (isspace(input[i])) {
+    while (isspace((unsigned char)input[i])) {
         i++;
     }
 
     // Copy characters to output
-    for (; input[i] != '\0'; i++) {
-        if (isspace(input[i])) {
+    for (; input[i] != '\0' && j < output_size - 1; i++) {
+        if (isspace((unsigned char)input[i])) {
             if (!in_space) {
                 output[j++] = ' ';
                 in_space = 1;
