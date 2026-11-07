@@ -670,6 +670,8 @@ archive; it checks coverage rather than relying on a fixed download count.
 ### Release workflow
 
 Tagged builds can publish a GitHub release after the full matrix succeeds.
+Create a draft GitHub release containing the approved notes before publication;
+the workflow reads the notes from that draft's description.
 Manual publication requires both a stable `vX.Y.Z` tag and its successful build
 run ID. The release workflow checks the build's repository, workflow, event, and
 commit against the tag, uploads all files to a draft, then publishes the complete
@@ -687,7 +689,7 @@ Runnable examples with expected output are available in the [`examples`](example
 ## Release history
 
 See [CHANGELOG.md](CHANGELOG.md) for the release history and
-[the 4.7.6 release notes](release-notes/v4.7.6.md) for upgrade guidance.
+[the 4.7.6 release notes](https://github.com/doydl-technologies/dately/releases/tag/v4.7.6) for upgrade guidance.
 
 ## License
 

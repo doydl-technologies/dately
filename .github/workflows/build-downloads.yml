@@ -12,17 +12,198 @@ permissions:
 
 jobs:
   quality:
-    name: Source quality and release notes
+    name: Source quality and metadata
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - name: Prepare release checks
+        shell: bash
+        run: &prepare-release-checks |
+          python - <<"PY"
+          import os
+          from pathlib import Path
+          code = r'''
+          """Version/provenance-independent artifact checks used by build and release CI."""
+
+          import argparse
+          import ast
+          import re
+          from pathlib import Path
+
+          from packaging.utils import parse_sdist_filename, parse_wheel_filename
+          from packaging.version import Version
+
+          PYTHONS = {f"cp3{minor}" for minor in range(8, 15)}
+          PLATFORMS = {"windows-x64", "linux-x64", "macos-x64", "macos-arm64"}
+
+
+          def source_version(root):
+              tree = ast.parse((Path(root) / "_version.py").read_text(encoding="utf-8"))
+              for node in tree.body:
+                  if isinstance(node, ast.Assign) and any(
+                      isinstance(t, ast.Name) and t.id == "__version__" for t in node.targets
+                  ):
+                      return Version(ast.literal_eval(node.value))
+              raise ValueError("Missing __version__ declaration")
+
+
+          def verify_tag(root, tag):
+              if not tag.startswith("v") or Version(tag[1:]) != source_version(root):
+                  raise ValueError(f"Tag {tag!r} does not match source version {source_version(root)}")
+              return Version(tag[1:])
+
+
+          def platform_family(platform):
+              if platform == "win_amd64":
+                  return "windows-x64"
+              # auditwheel may emit legacy policy aliases alongside PEP 600 tags in
+              # the same wheel (for example manylinux2014 + manylinux_2_17).
+              if re.fullmatch(r"manylinux(?:1|2010|2014|_[0-9]+_[0-9]+)_x86_64", platform):
+                  return "linux-x64"
+              if platform.startswith("macosx_"):
+                  if platform.endswith("_arm64"):
+                      return "macos-arm64"
+                  if platform.endswith("_x86_64"):
+                      return "macos-x64"
+              raise ValueError(f"Unexpected wheel platform: {platform}")
+
+
+          def verify_artifacts(root, version):
+              """Require every supported Python/platform pair and one matching sdist.
+
+              Multi-policy Linux tags may cover the same pair within one wheel. Validation
+              checks coverage rather than a hard-coded total wheel count.
+              """
+              version = Version(str(version))
+              covered, files = set(), []
+              for path in sorted(Path(root).rglob("*.whl")):
+                  name, wheel_version, _, tags = parse_wheel_filename(path.name)
+                  if name != "dately" or wheel_version != version:
+                      raise ValueError(f"Wrong package/version: {path.name}")
+                  pairs = set()
+                  for tag in tags:
+                      if tag.interpreter not in PYTHONS or tag.abi != tag.interpreter:
+                          raise ValueError(f"Unexpected Python/ABI tag in {path.name}: {tag}")
+                      pairs.add((tag.interpreter, platform_family(tag.platform)))
+                  if pairs & covered:
+                      raise ValueError(f"Duplicate Python/platform coverage: {path.name}")
+                  covered.update(pairs)
+                  files.append(path)
+              missing = {(python, platform) for python in PYTHONS for platform in PLATFORMS} - covered
+              if missing:
+                  raise ValueError(f"Missing wheel coverage: {sorted(missing)}")
+              sources = sorted(Path(root).rglob("*.tar.gz"))
+              if len(sources) != 1 or parse_sdist_filename(sources[0].name) != ("dately", version):
+                  raise ValueError("Expected one dately source archive matching the release version")
+              return files + sources
+
+
+          """Check source syntax and distribution metadata and contents."""
+
+          import argparse
+          import ast
+          import py_compile
+          import subprocess
+          import tarfile
+          import tempfile
+          import zipfile
+          from email.parser import BytesParser
+          from pathlib import Path
+
+          from packaging.specifiers import SpecifierSet
+
+          ROOT = Path.cwd()
+
+
+          def check_source():
+              source_version(ROOT)
+              setup = ast.parse((ROOT / "setup.py").read_text(encoding="utf-8"))
+              call = next(n for n in ast.walk(setup) if isinstance(n, ast.Call) and getattr(n.func, "id", None) == "setup")
+              metadata = {item.arg: item.value for item in call.keywords}
+              requires = ast.literal_eval(metadata["python_requires"])
+              assert requires == ">=3.8,<3.15", "Unexpected Python support metadata"
+              assert ast.literal_eval(metadata["name"]) == "dately"
+              assert (ROOT / "CHANGELOG.md").is_file()
+              paths = subprocess.check_output(["git", "ls-files", "--cached", "--others", "--exclude-standard"], cwd=ROOT)
+              with tempfile.TemporaryDirectory() as cache:
+                  for index, relative in enumerate(paths.decode().splitlines()):
+                      if relative.endswith(".py"):
+                          py_compile.compile(str(ROOT / relative), cfile=str(Path(cache) / f"{index}.pyc"), doraise=True)
+
+
+          def check_archive(path):
+              version = str(source_version(ROOT))
+              if path.suffix == ".whl":
+                  with zipfile.ZipFile(path) as archive:
+                      names = archive.namelist()
+                      metadata_name = f"dately-{version}.dist-info/METADATA"
+                      metadata = BytesParser().parsebytes(archive.read(metadata_name))
+                      required = {
+                          f"dately/{name}"
+                          for name in (
+                              "__init__.py",
+                              "_version.py",
+                              "files/holiday.json",
+                              "files/country_variants.json",
+                              "files/timezone_data.json",
+                          )
+                      }
+                      assert required <= set(names), f"Missing runtime resources: {path.name}"
+                      extensions = [name for name in names if name.endswith((".pyd", ".so"))]
+                      assert len(extensions) == 7, f"Expected seven native extensions: {path.name}"
+                      assert "dately/setup.py" not in names
+              else:
+                  with tarfile.open(path, "r:gz") as archive:
+                      names = archive.getnames()
+                      prefix = f"dately-{version}/"
+                      metadata = BytesParser().parsebytes(archive.extractfile(prefix + "PKG-INFO").read())
+                      required = {
+                          prefix + name
+                          for name in (
+                              "setup.py",
+                              "pyproject.toml",
+                              "CHANGELOG.md",
+                              "mold/include/iso8601Z.h",
+                              "mold/pyx/iso8601Z.pyx",
+                              "mold/src/iso8601Z_impl.c",
+                          )
+                      }
+                      assert required <= set(names), f"Missing source/build resources: {path.name}"
+                      assert not any(name.endswith((".pyd", ".so", ".dylib")) for name in names), (
+                          "Source archive contains native binaries"
+                      )
+              assert metadata["Name"] == "dately" and metadata["Version"] == version
+              assert metadata["Requires-Python"] == ">=3.8,<3.15"
+              assert "3.13" in SpecifierSet(metadata["Requires-Python"])
+              assert not any(".venv" in name or ".publishing-creds" in name or "/.git/" in name for name in names)
+              assert not any("release-audit" in name or "release-history-docs" in name for name in names)
+              print(f"Checked {path.name}")
+
+
+          parser = argparse.ArgumentParser()
+          parser.add_argument("--tag")
+          parser.add_argument("--source", action="store_true")
+          parser.add_argument("--artifacts", type=Path)
+          parser.add_argument("archives", nargs="*", type=Path)
+          args = parser.parse_args()
+          version = verify_tag(ROOT, args.tag) if args.tag else source_version(ROOT)
+          if args.source:
+              check_source()
+          if args.artifacts:
+              verify_artifacts(args.artifacts, version)
+          for archive in args.archives:
+              check_archive(archive)
+          print("Release checks passed")
+          '''
+          Path(os.environ["RUNNER_TEMP"], "dately-checks.py").write_text(code, encoding="utf-8")
+          PY
       - run: python -m pip install ruff==0.17.4 packaging
       - run: python -m ruff check .
       - run: python -m ruff format --check .
-      - run: python scripts/check_distribution.py --source
+      - run: python "$RUNNER_TEMP/dately-checks.py" --source
 
   wheels:
     needs: quality
@@ -44,6 +225,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - name: Prepare release checks
+        shell: bash
+        run: *prepare-release-checks
       - name: Install pinned wheel builder
         # 3.4.0 supports the complete CPython 3.8-3.14 matrix.
         run: python -m pip install cibuildwheel==3.4.0 twine packaging
@@ -51,7 +235,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         env:
           RELEASE_TAG: ${{ github.ref_name }}
-        run: python scripts/release_checks.py --tag "$RELEASE_TAG"
+        run: python "$RUNNER_TEMP/dately-checks.py" --tag "$RELEASE_TAG"
       - name: Build and test installed wheels
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
@@ -59,7 +243,7 @@ jobs:
       - name: Validate metadata
         run: python -m twine check wheelhouse/*.whl
       - name: Validate wheel contents
-        run: python scripts/check_distribution.py wheelhouse/*.whl
+        run: python "$RUNNER_TEMP/dately-checks.py" wheelhouse/*.whl
       - uses: actions/upload-artifact@v6
         with:
           name: dately-${{ matrix.target }}
@@ -78,18 +262,21 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - name: Prepare release checks
+        shell: bash
+        run: *prepare-release-checks
       - run: python -m pip install build twine packaging
       - name: Verify release tag
         if: startsWith(github.ref, 'refs/tags/')
         env:
           RELEASE_TAG: ${{ github.ref_name }}
-        run: python scripts/release_checks.py --tag "$RELEASE_TAG"
+        run: python "$RUNNER_TEMP/dately-checks.py" --tag "$RELEASE_TAG"
       - name: Build source archive
         run: python -m build --sdist
       - name: Validate source metadata
         run: python -m twine check dist/*.tar.gz
       - name: Validate source contents
-        run: python scripts/check_distribution.py dist/*.tar.gz
+        run: python "$RUNNER_TEMP/dately-checks.py" dist/*.tar.gz
       - name: Rebuild source archive and test installed package
         run: |
           set -euo pipefail
@@ -139,9 +326,12 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
+      - name: Prepare release checks
+        shell: bash
+        run: *prepare-release-checks
       - run: python -m pip install packaging
       - uses: actions/download-artifact@v5
         with:
           pattern: dately-*
           path: artifacts
-      - run: python scripts/release_checks.py --artifacts artifacts
+      - run: python "$RUNNER_TEMP/dately-checks.py" --artifacts artifacts
