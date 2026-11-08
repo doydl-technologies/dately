@@ -18,7 +18,7 @@ exclude = ["build"]
 
 [tool.ruff.lint.per-file-ignores]
 # This flat-layout package is named dately by setup.py; its checkout directory
-# may have a versioned name such as v004.007.006.
+# may have a versioned name such as v004.007.007.
 "**/__init__.py" = ["N999"]
 
 [tool.cibuildwheel]

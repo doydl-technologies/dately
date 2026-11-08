@@ -10,6 +10,7 @@ mold/pyx/*.c
 *.so
 *.dylib
 wheelhouse/
+*-deprecated-[0-9]*
 Home.lnk
 
 # Local team notes, maintenance tools, and generated artifacts.

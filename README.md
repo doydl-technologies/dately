@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  Deterministic date, time, timezone, holiday, and natural-language temporal processing for Python.
+  📅 Deterministic date, time, timezone, holiday, and natural-language temporal processing for Python.
 </p>
 
 <p align="center">
@@ -17,7 +17,12 @@
   <a href="https://doydl.com"><img src="https://img.shields.io/badge/Powered%20by-DOYDL%20Technologies-blue" alt="Powered by DOYDL Technologies"></a>
 </p>
 
-## Overview
+> **🚀 New to dately?** Start with [Installation](#installation) and [Quick start](#quick-start), or jump to the [function guide](#overview) to find the right API.
+
+---
+
+<a id="overview"></a>
+## 🔎 Overview
 
 `dately` is a Python library for turning date and time text into values your code
 can use. It can read a phrase such as `first Monday of next month`, reformat dates
@@ -29,40 +34,47 @@ uses English grammar rules and calendar arithmetic; it runs locally without an
 AI model or an API key. The library also includes compiled Cython extensions for
 some date-processing operations.
 
-### Which function do I need?
+### 🧰 Which function do I need?
 
 | What you want to do | Use | What you get |
 | --- | --- | --- |
-| Understand a date phrase, such as `Q2 2025` | `parse()` | A date, a date range, or a list, depending on the phrase |
-| Identify how a date string is written | `detect_date_format()` | A Python format string, such as `%Y-%m-%d` |
-| Change a date's display format or turn text into a Python value | `convert_date()` | Formatted text, or a Python date/datetime value |
-| Read just the year, month, day, or a time component | `extract_datetime_component()` | The component as text, such as `"03"` |
-| Change selected fields in an existing date/time string | `replace_datestring()` / `replace_timestring()` | An updated string |
-| Generate every calendar date between two endpoints | `sequence()` | An inclusive list of dates or formatted strings |
-| Count working days and exclude holidays or company closures | `BusinessCalendar` with `parse()` | A deadline or a selection of eligible dates |
-| Define financial years, quarters, and periods | `FiscalCalendar` / `RetailFiscalCalendar` | Reusable calendar objects and inclusive date ranges |
-| List a country's public holidays | `Holidate.Holiday()` | Rows, records, or a pandas DataFrame |
-| Look up timezone names and country metadata | `TimeZoner` | Lists and dictionaries from bundled timezone data |
+| 🗣️ Understand a date phrase, such as `Q2 2025` | `parse()` | A date, a date range, or a list, depending on the phrase |
+| 🔍 Identify how a date string is written | `detect_date_format()` | A Python format string, such as `%Y-%m-%d` |
+| 🔄 Change a date's display format or turn text into a Python value | `convert_date()` | Formatted text, or a Python date/datetime value |
+| 🧩 Read just the year, month, day, or a time component | `extract_datetime_component()` | The component as text, such as `"03"` |
+| 🛠️ Change selected fields in an existing date/time string | `replace_datestring()` / `replace_timestring()` | An updated string |
+| 🗓️ Generate every calendar date between two endpoints | `sequence()` | An inclusive list of dates or formatted strings |
+| 💼 Count working days and exclude holidays or company closures | `BusinessCalendar` with `parse()` | A deadline or a selection of eligible dates |
+| 📊 Define financial years, quarters, and periods | `FiscalCalendar` / `RetailFiscalCalendar` | Reusable calendar objects and inclusive date ranges |
+| 🎉 List a country's public holidays | `Holidate.Holiday()` | Rows, records, or a pandas DataFrame |
+| 🌍 Look up timezone names and country metadata | `TimeZoner` | Lists and dictionaries from bundled timezone data |
 
 For example, use `convert_date()` to change `2024-03-13` into `13/03/2024`.
 Use `parse()` to work out which dates `Q2 2025` covers. Use a business calendar
 when an invoice is due a certain number of working days after an issue date.
 
-## Contents
+<a id="contents"></a>
+## 🧭 Contents
 
-- [Installation](#installation)
-- [Quick start](#quick-start)
-- [Working with date and time strings](#working-with-date-and-time-strings)
-- [Natural-language parsing](#natural-language-parsing)
-- [Business days](#business-days)
-- [Fiscal calendars](#fiscal-calendars-optional)
-- [Public holidays](#public-holidays)
-- [Timezones](#timezones)
-- [Errors and practical limits](#errors-and-practical-limits)
-- [Platform support, development, and releases](#platform-support-development-and-releases)
-- [More examples](#more-examples)
+- [🔎 Overview](#overview)
+- [📦 Installation](#installation)
+- [🚀 Quick start](#quick-start)
+- [🗓️ Working with date and time strings](#working-with-date-and-time-strings)
+- [🗣️ Natural-language parsing](#natural-language-parsing)
+- [💼 Business days](#business-days)
+- [📊 Fiscal calendars](#fiscal-calendars-optional)
+- [🎉 Public holidays](#public-holidays)
+- [🌍 Timezones](#timezones)
+- [⚠️ Errors and practical limits](#errors-and-practical-limits)
+- [🖥️ Platform support, development, and releases](#platform-support-development-and-releases)
+- [📚 More examples](#more-examples)
+- [🏷️ Release history](#release-history)
+- [⚖️ License](#license)
 
-## Installation
+<a id="installation"></a>
+## 📦 Installation
+
+### 1️⃣ Install from PyPI
 
 Install the latest published release from PyPI:
 
@@ -70,7 +82,9 @@ Install the latest published release from PyPI:
 python -m pip install dately
 ```
 
-This README describes **4.7.6**, including business-day and fiscal-calendar
+### 2️⃣ Install a local checkout (optional)
+
+This README describes **4.7.7**, including business-day and fiscal-calendar
 features. To use a local checkout, run the following from the directory containing
 `setup.py`:
 
@@ -83,10 +97,12 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install -e .
 ```
 
-The virtual environment keeps this installation separate from other projects.
+**💡 Why use a virtual environment?** The virtual environment keeps this installation separate from other projects.
 The `-e` option installs the checkout in editable mode. Installing from source
 requires a compatible C compiler; installing a matching prebuilt wheel does not.
 See [platform support](#platform-support-development-and-releases) for details.
+
+### 3️⃣ Check your installation
 
 Check which version and installation your Python interpreter is using:
 
@@ -94,7 +110,8 @@ Check which version and installation your Python interpreter is using:
 python -c "import dately; print(dately.__version__); print(dately.__file__)"
 ```
 
-## Quick start
+<a id="quick-start"></a>
+## 🚀 Quick start
 
 ```python
 import dately as dtly
@@ -120,13 +137,14 @@ print(start.isoformat(), end.isoformat())
 # 2026-07-01 2026-09-30
 ```
 
-These examples include explicit years so their results stay the same whenever
+**📌 Reproducibility note:** These examples include explicit years so their results stay the same whenever
 you run them. Phrases containing `today`, `next month`, or `last year` depend on
 the parser's reference date, explained below.
 
-## Working with date and time strings
+<a id="working-with-date-and-time-strings"></a>
+## 🗓️ Working with date and time strings
 
-### Detect, convert, and extract
+### 🔎 Detect, convert, and extract
 
 Detection describes the input's structure. Conversion changes its display format
 or creates a Python value. Extraction reads one component without changing it:
@@ -168,7 +186,7 @@ dtly.convert_date("2026-03-04", to_format="%-m/%d/%Y")
 # '3/04/2026'
 ```
 
-### Process multiple values
+### 📚 Process multiple values
 
 The string utilities support collections such as lists, NumPy arrays, and pandas
 Series. For example, conversion of a list returns a list:
@@ -187,7 +205,7 @@ dates. By default it returns a copy. Set `dict_inplace=True` to update the origi
 dictionary and return `None`. Collection support is specific to each utility;
 `parse()` takes one expression string per call.
 
-### Replace date or time components
+### 🛠️ Replace date or time components
 
 Replacement edits selected fields, retaining the other components and the
 original structure where supported. This is useful when you already have a
@@ -205,7 +223,7 @@ Replacing a field is different from adding elapsed time. For example, replacing
 the month is a calendar edit; it is not a duration calculation. Changing `tzinfo`
 attaches or replaces a timezone rather than converting the clock to another zone.
 
-### Generate an inclusive sequence
+### 📅 Generate an inclusive sequence
 
 ```python
 dtly.sequence("2024-01-01", "2024-01-03", to_format="%Y/%m/%d")
@@ -216,7 +234,8 @@ Both endpoints are included. This generates every calendar day, including
 weekends and holidays. Omit `to_format` to get Python values instead of strings.
 For a selection of working days, use the business-day parser below.
 
-## Natural-language parsing
+<a id="natural-language-parsing"></a>
+## 🗣️ Natural-language parsing
 
 `parse()` interprets a complete date expression using supported English patterns.
 It can resolve offsets, named weekdays, positions within a period, calendar
@@ -236,9 +255,9 @@ dtly.parse("first Monday of next month")
 # datetime.date(...) depending on the reference date
 ```
 
-### Understand the return value
+### 📤 Understand the return value
 
-The phrase determines the result's shape. Dately does not always return a single
+**📤 Return types vary by expression.** The phrase determines the result's shape. Dately does not always return a single
 date or a string:
 
 | Expression | Result type | Meaning |
@@ -254,7 +273,7 @@ Call `.isoformat()` on either for readable ISO text. For a range, unpack the tup
 as `start, end`; Dately does not expand it into every intervening date. Some
 selections, such as weekends, can return a list of ranges.
 
-### Relative dates and week settings
+### ⏳ Relative dates and week settings
 
 `in 3 days` means one date three days after the reference date. `next 3 days`
 means an inclusive range beginning on the reference date and ending two days
@@ -277,9 +296,10 @@ This changes the shared resolver's week setting for subsequent calls. It is
 separate from a business calendar's working weekdays and a retail fiscal
 calendar's `week_start` setting.
 
-## Business days
+<a id="business-days"></a>
+## 💼 Business days
 
-Business days and working days are aliases. By default they mean Monday-Friday,
+**📆 Default business week:** Business days and working days are aliases. By default they mean Monday-Friday,
 without holiday exclusions. Specify a country to exclude its public holidays
 automatically, including observed dates where supported:
 
@@ -295,7 +315,7 @@ dtly.parse("1 business day after 2026-07-02", country="US", observed=False)
 # datetime.date(2026, 7, 3): excludes the actual holiday, without its observed date
 ```
 
-An observed holiday is the substitute day off when a holiday falls on a weekend,
+**🎉 Observed holidays:** An observed holiday is the substitute day off when a holiday falls on a weekend,
 where the country's rules provide one. For example, US Independence Day falls on
 Saturday in 2026 and is observed on Friday, July 3. With the default
 `observed=True`, the next business day after July 2 is July 6.
@@ -357,9 +377,10 @@ Invalid or unsupported countries/subdivisions raise `TypeError`/`ValueError`.
 Unavailable holiday data raises `HolidayLookupError` through the parser; it does
 not silently fall back to counting dates without the requested holidays.
 
-## Fiscal calendars (optional)
+<a id="fiscal-calendars-optional"></a>
+## 📊 Fiscal calendars (optional)
 
-A fiscal year is the year an organization uses for financial reporting. It may
+**📊 For finance and reporting:** A fiscal year is the year an organization uses for financial reporting. It may
 start in a month other than January, or follow whole weeks rather than calendar
 months. A fiscal **period** is one reporting block within that year; a fiscal
 **quarter** groups several periods. `FY2027`, `Q1`, and `P2` mean fiscal year 2027,
@@ -367,12 +388,12 @@ quarter 1, and period 2 when used together in a fiscal expression.
 
 | Calendar | Configuration | Periods and quarters |
 | --- | --- | --- |
-| January-December | `FiscalCalendar()` | 12 calendar months; three months per quarter |
-| A different starting month | `FiscalCalendar(start_month=7)` | 12 calendar months, beginning in July in this example |
-| 4-4-5 retail | `RetailFiscalCalendar(pattern=(4, 4, 5))` | Each quarter has periods of four, four, and five weeks |
-| 4-5-4 retail | `RetailFiscalCalendar(pattern=(4, 5, 4))` | Each quarter has periods of four, five, and four weeks |
-| 5-4-4 retail | `RetailFiscalCalendar(pattern=(5, 4, 4))` | Each quarter has periods of five, four, and four weeks |
-| Custom week pattern | `RetailFiscalCalendar(pattern=..., quarter_periods=...)` | You define period lengths and how periods form quarters |
+| 📆 January-December | `FiscalCalendar()` | 12 calendar months; three months per quarter |
+| 🗓️ A different starting month | `FiscalCalendar(start_month=7)` | 12 calendar months, beginning in July in this example |
+| 🛒 4-4-5 retail | `RetailFiscalCalendar(pattern=(4, 4, 5))` | Each quarter has periods of four, four, and five weeks |
+| 🛒 4-5-4 retail | `RetailFiscalCalendar(pattern=(4, 5, 4))` | Each quarter has periods of four, five, and four weeks |
+| 🛒 5-4-4 retail | `RetailFiscalCalendar(pattern=(5, 4, 4))` | Each quarter has periods of five, four, and four weeks |
+| ⚙️ Custom week pattern | `RetailFiscalCalendar(pattern=..., quarter_periods=...)` | You define period lengths and how periods form quarters |
 
 Choose a calendar object and either pass it to `parse()` or set it as the default
 for the current execution context. The default fiscal calendar is January-December.
@@ -402,6 +423,9 @@ dtly.set_fiscal_calendar(None)  # restore the January-December default
 `FiscalCalendar` starts on the first day of any month, with three-month quarters
 and monthly periods. `year_label="start"` instead labels July 2026-June 2027 as
 FY2026. For January starts, both conventions use the same year.
+
+<details>
+<summary><strong>🛒 Advanced: Retail fiscal calendars, custom patterns, and 53-week years</strong></summary>
 
 For week-based years, select `RetailFiscalCalendar`. The same parser and direct
 methods work with 4-4-5, 4-5-4, 5-4-4, or a custom period pattern:
@@ -485,7 +509,10 @@ configuration raises `TypeError`/`ValueError`; unrecognized fiscal phrases retur
 Defaults are isolated by execution context; pass the calendar explicitly when
 sharing work between threads or configuring separate requests/customers.
 
-## Public holidays
+</details>
+
+<a id="public-holidays"></a>
+## 🎉 Public holidays
 
 Use `Holidate.Holiday()` when you want to inspect or display a holiday calendar,
 rather than calculate a deadline. The default lookup uses
@@ -515,7 +542,7 @@ dtly.parse("1 business day after 2026-11-25", country="US")
 # datetime.date(2026, 11, 27): skips Thanksgiving
 ```
 
-The default `source="public"` returns public holidays, with observed dates where
+**🌐 Public holiday source:** The default `source="public"` returns public holidays, with observed dates where
 the selected calendar supports them. `subdiv` selects an optional state/province;
 without it, the provider's country calendar is used. Names are returned in English
 where the provider supports English. The three formats retain the `Date`, `Name`,
@@ -550,7 +577,8 @@ raise `TypeError`/`ValueError`. `HolidayLookupError` covers missing dependencies
 unavailable calendar data, transport errors, and missing/malformed web tables.
 No failed lookup returns `None`. Omitting `year` uses the current year at call time.
 
-## Timezones
+<a id="timezones"></a>
+## 🌍 Timezones
 
 `TimeZoner` provides bundled timezone names and country metadata. Like `Holidate`,
 it is loaded when first used; ordinary imports do not make remote requests:
@@ -578,12 +606,13 @@ dtly.replace_timestring("2024-03-13T14:30:00", tzinfo="+02:00")
 # '2024-03-13T14:30:00+02:00'
 ```
 
-The clock still reads 14:30. This assigns an offset to that clock time; it does
+**⚠️ Assigning is not converting:** The clock still reads 14:30. This assigns an offset to that clock time; it does
 not preserve an existing instant by converting it between timezones.
 
-## Errors and practical limits
+<a id="errors-and-practical-limits"></a>
+## ⚠️ Errors and practical limits
 
-Check `parse()` results before using them. Unsupported phrases can return `None`,
+**🩺 Check outcomes before use.** Check `parse()` results before using them. Unsupported phrases can return `None`,
 while invalid calendar options and holiday lookup failures raise exceptions:
 
 ```python
@@ -602,33 +631,34 @@ else:
         print(result)
 ```
 
-- Give `parse()` one date expression, rather than a paragraph containing dates.
+- 🗣️ Give `parse()` one date expression, rather than a paragraph containing dates.
   It is a rule-based English parser, not a general text extraction or reminder
   service. Unsupported wording is not guaranteed to be understood.
-- Prefer explicit years and unambiguous dates such as `2026-11-25`. A string such
+- 📅 Prefer explicit years and unambiguous dates such as `2026-11-25`. A string such
   as `03/04/2026` does not communicate whether you intend March 4 or April 3.
-- Ordinary `days`, `weekdays`, and `business days` have different meanings.
+- 📆 Ordinary `days`, `weekdays`, and `business days` have different meanings.
   Holidays are excluded only by a business calendar configured to exclude them.
-- Fiscal settings affect explicit fiscal phrases. Configuring a July start does
+- 📊 Fiscal settings affect explicit fiscal phrases. Configuring a July start does
   not change the meaning of the ordinary calendar expression `Q1 2027`.
-- Format detection and conversion can raise `ValueError` for invalid or
+- ⚠️ Format detection and conversion can raise `ValueError` for invalid or
   unrecognized date strings. Component extraction can return `None` when a
   component cannot be found. Do not assume every function uses the same failure
   convention.
-- Holiday coverage depends on the installed provider, country, subdivision,
+- 🎉 Holiday coverage depends on the installed provider, country, subdivision,
   and year. A public holiday calendar is not a complete list of every employer's
   closures; add those dates to `BusinessCalendar` yourself.
 
-## Platform support, development, and releases
+<a id="platform-support-development-and-releases"></a>
+## 🖥️ Platform support, development, and releases
 
-The 4.7.6 build matrix targets CPython 3.8-3.14 on:
+The 4.7.7 build matrix targets CPython 3.8-3.14 on:
 
 | System | Wheel architecture | Notes |
 | --- | --- | --- |
-| Windows | x64 (AMD64) | Native Windows wheels |
-| Linux | x86-64 | manylinux, glibc 2.28 or newer |
-| macOS | Intel x86-64 | Built and tested on an Intel runner |
-| macOS | Apple Silicon arm64 | Built and tested on an ARM runner |
+| 🪟 Windows | x64 (AMD64) | Native Windows wheels |
+| 🐧 Linux | x86-64 | manylinux, glibc 2.28 or newer |
+| 🍎 macOS | Intel x86-64 | Built and tested on an Intel runner |
+| 🍎 macOS | Apple Silicon arm64 | Built and tested on an ARM runner |
 
 A wheel is a prebuilt Python package. Use one matching your Python version,
 operating system, and architecture; pip normally selects it automatically when
@@ -636,7 +666,7 @@ it is available. Linux ARM, Alpine/musllinux, and Windows ARM wheels are outside
 this release matrix. Native macOS and Linux support is verified by their CI jobs;
 local Windows tests alone do not establish compatibility with those systems.
 
-### Building and testing a checkout
+### 🧪 Building and testing a checkout
 
 Source installs require a C compiler compatible with Python: MSVC on Windows,
 Xcode Command Line Tools on macOS, or a C compiler and Python development headers
@@ -667,7 +697,10 @@ managed CPython 3.8 interpreter because the wheel builder's installer is x86-onl
 Release validation requires each Python/platform pair and a matching source
 archive; it checks coverage rather than relying on a fixed download count.
 
-### Release workflow
+### 🚀 Release workflow
+
+<details>
+<summary><strong>📦 Maintainer release and publication process</strong></summary>
 
 Tagged builds can publish a GitHub release after the full matrix succeeds.
 Create a draft GitHub release containing the approved notes before publication;
@@ -677,20 +710,25 @@ run ID. The release workflow checks the build's repository, workflow, event, and
 commit against the tag, uploads all files to a draft, then publishes the complete
 release. Branch/PR builds do not automatically publish releases.
 
-## More examples
+</details>
+
+<a id="more-examples"></a>
+## 📚 More examples
 
 Runnable examples with expected output are available in the [`examples`](examples/) directory:
 
-- [Date conversion and formatting](examples/convert_dates.py)
-- [Replacing date and time components](examples/replace_datestring.py)
-- [Timezone operations](examples/timezone_operations.py)
-- [Natural-language parsing](examples/nlp_parsing.py)
+- 🔄 [Date conversion and formatting](examples/convert_dates.py)
+- 🛠️ [Replacing date and time components](examples/replace_datestring.py)
+- 🌍 [Timezone operations](examples/timezone_operations.py)
+- 🗣️ [Natural-language parsing](examples/nlp_parsing.py)
 
-## Release history
+<a id="release-history"></a>
+## 🏷️ Release history
 
 See [CHANGELOG.md](CHANGELOG.md) for the release history and
-[the 4.7.6 release notes](https://github.com/doydl-technologies/dately/releases/tag/v4.7.6) for upgrade guidance.
+[the 4.7.7 release notes](https://github.com/doydl-technologies/dately/releases/tag/v4.7.7) for upgrade guidance.
 
-## License
+<a id="license"></a>
+## ⚖️ License
 
 `dately` is distributed under the MIT License. See [LICENSE](LICENSE) for details.
