@@ -41,7 +41,7 @@
 # SOFTWARE.
 #
 
-__version__ = "4.7.7"
+__version__ = "4.7.8"
 
 
 __all__ = ["__version__"]

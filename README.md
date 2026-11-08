@@ -66,7 +66,7 @@ when an invoice is due a certain number of working days after an issue date.
 - [🎉 Public holidays](#public-holidays)
 - [🌍 Timezones](#timezones)
 - [⚠️ Errors and practical limits](#errors-and-practical-limits)
-- [🖥️ Platform support, development, and releases](#platform-support-development-and-releases)
+- [🖥️ Platform support and source installation](#platform-support-development-and-releases)
 - [📚 More examples](#more-examples)
 - [🏷️ Release history](#release-history)
 - [⚖️ License](#license)
@@ -84,7 +84,7 @@ python -m pip install dately
 
 ### 2️⃣ Install a local checkout (optional)
 
-This README describes **4.7.7**, including business-day and fiscal-calendar
+This README describes **4.7.8**, including business-day and fiscal-calendar
 features. To use a local checkout, run the following from the directory containing
 `setup.py`:
 
@@ -649,24 +649,23 @@ else:
   closures; add those dates to `BusinessCalendar` yourself.
 
 <a id="platform-support-development-and-releases"></a>
-## 🖥️ Platform support, development, and releases
+## 🖥️ Platform support and source installation
 
-The 4.7.7 build matrix targets CPython 3.8-3.14 on:
+Dately 4.7.8 provides wheels for CPython 3.8-3.14 on:
 
 | System | Wheel architecture | Notes |
 | --- | --- | --- |
 | 🪟 Windows | x64 (AMD64) | Native Windows wheels |
 | 🐧 Linux | x86-64 | manylinux, glibc 2.28 or newer |
-| 🍎 macOS | Intel x86-64 | Built and tested on an Intel runner |
-| 🍎 macOS | Apple Silicon arm64 | Built and tested on an ARM runner |
+| 🍎 macOS | Intel x86-64 | Native macOS Intel wheels |
+| 🍎 macOS | Apple Silicon arm64 | Native macOS Apple Silicon wheels |
 
 A wheel is a prebuilt Python package. Use one matching your Python version,
 operating system, and architecture; pip normally selects it automatically when
 it is available. Linux ARM, Alpine/musllinux, and Windows ARM wheels are outside
-this release matrix. Native macOS and Linux support is verified by their CI jobs;
-local Windows tests alone do not establish compatibility with those systems.
+the supported wheel platforms.
 
-### 🧪 Building and testing a checkout
+### 🔧 Installing from source
 
 Source installs require a C compiler compatible with Python: MSVC on Windows,
 Xcode Command Line Tools on macOS, or a C compiler and Python development headers
@@ -676,41 +675,6 @@ automatically and compiles all seven required extensions; there is no pure Pytho
 fallback. Precompiled Windows binaries are not kept in the source tree.
 Timezone data is supplied by the `tzdata` dependency on Python 3.9+, with the
 existing `pytz` path on Python 3.8.
-
-After installing the checkout in the virtual environment described above, run:
-
-```bash
-python -m pip install pytest build
-python -m pytest -q
-python -m build
-```
-
-`python -m build` creates a source archive and a wheel in `dist/`. A wheel built
-locally serves the current Python/platform combination, rather than every system
-in the release matrix.
-
-The build workflow uses pinned `cibuildwheel` 3.4.0, which supports the complete
-Python 3.8-3.14 matrix. Every wheel is installed into an isolated test environment
-and tested there. CI also rebuilds a wheel from the source archive and tests it.
-The Python 3.8 Apple Silicon wheel has an additional native test job using a
-managed CPython 3.8 interpreter because the wheel builder's installer is x86-only.
-Release validation requires each Python/platform pair and a matching source
-archive; it checks coverage rather than relying on a fixed download count.
-
-### 🚀 Release workflow
-
-<details>
-<summary><strong>📦 Maintainer release and publication process</strong></summary>
-
-Tagged builds can publish a GitHub release after the full matrix succeeds.
-Create a draft GitHub release containing the approved notes before publication;
-the workflow reads the notes from that draft's description.
-Manual publication requires both a stable `vX.Y.Z` tag and its successful build
-run ID. The release workflow checks the build's repository, workflow, event, and
-commit against the tag, uploads all files to a draft, then publishes the complete
-release. Branch/PR builds do not automatically publish releases.
-
-</details>
 
 <a id="more-examples"></a>
 ## 📚 More examples
@@ -726,7 +690,7 @@ Runnable examples with expected output are available in the [`examples`](example
 ## 🏷️ Release history
 
 See [CHANGELOG.md](CHANGELOG.md) for the release history and
-[the 4.7.7 release notes](https://github.com/doydl-technologies/dately/releases/tag/v4.7.7) for upgrade guidance.
+[the 4.7.8 release notes](https://github.com/doydl-technologies/dately/releases/tag/v4.7.8) for upgrade guidance.
 
 <a id="license"></a>
 ## ⚖️ License
