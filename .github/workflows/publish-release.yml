@@ -292,13 +292,15 @@ jobs:
               return files;
             }
             const files = (await collect('artifacts')).sort();
-            let release;
-            try {
-              ({data: release} = await github.rest.repos.getReleaseByTag({owner, repo, tag}));
-            } catch (error) {
-              if (error.status !== 404) throw error;
+            // The tag lookup endpoint only returns published releases. List releases
+            // with this job's contents:write token to include the approved draft.
+            const releases = await github.paginate(github.rest.repos.listReleases, {owner, repo, per_page: 100});
+            const matching = releases.filter(release => release.tag_name === tag);
+            if (matching.length === 0) {
               throw new Error('Create a draft GitHub release with the approved notes before publishing');
             }
+            if (matching.length !== 1) throw new Error('Expected exactly one release for the tag');
+            const release = matching[0];
             if (!release.draft) throw new Error('Refusing to replace an already published release');
             const body = release.body || '';
             if (!/^> \[!NOTE\]\r?\n/.test(body)) {
