@@ -317,7 +317,10 @@ jobs:
             if (!body.includes(`python -m pip install --upgrade dately==${version}`)) {
               throw new Error('Approved notes need the matching pinned install command');
             }
-            await github.rest.repos.updateRelease({owner, repo, release_id: release.id, name: tag});
+            await github.rest.repos.updateRelease({
+              owner, repo, release_id: release.id, name: tag, tag_name: tag,
+              target_commitish: process.env.RELEASE_SHA,
+            });
             const crypto = require('node:crypto');
             const sums = [];
             for (const file of files) {
@@ -345,7 +348,10 @@ jobs:
                 data: Buffer.from(sums.join('\n') + '\n'),
               });
             }
-            await github.rest.repos.updateRelease({owner, repo, release_id: release.id, draft: false, make_latest: 'true'});
+            await github.rest.repos.updateRelease({
+              owner, repo, release_id: release.id, tag_name: tag,
+              target_commitish: process.env.RELEASE_SHA, draft: false, make_latest: 'true',
+            });
             core.notice(`Published ${tag} with ${files.length} validated downloads`);
 
   pypi:
